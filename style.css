@@ -1769,8 +1769,9 @@ html.is-vip-active .vip-lock-item {
   aspect-ratio: 480 / 320;
 }
 
-/* Countdown lights overlay */
-.kart-countdown-overlay {
+/* Countdown lights overlay (Shared for Mario Kart & Super Mario Run) */
+.kart-countdown-overlay,
+.mario-countdown-overlay {
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at center, rgba(15, 23, 42, 0.85), rgba(0, 0, 0, 0.92));

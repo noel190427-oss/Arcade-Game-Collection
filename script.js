@@ -1115,6 +1115,18 @@ const SFX = {
     playSynthTone({ freq: 1320, duration: 0.45, type: 'triangle', sweep: 150, gainMul: 0.8 });
     triggerHaptic([30, 50, 80]);
   },
+  marioCountdownLow: () => {
+    playSynthTone({ freq: 523.25, duration: 0.16, type: 'square', gainMul: 1.1 });
+    playSynthTone({ freq: 1046.50, duration: 0.16, type: 'sine', gainMul: 0.4 });
+    triggerHaptic(25);
+  },
+  marioCountdownGo: () => {
+    playSynthTone({ freq: 659.25, duration: 0.12, type: 'square', gainMul: 1.2 });
+    setTimeout(() => playSynthTone({ freq: 783.99, duration: 0.14, type: 'square', gainMul: 1.3 }), 90);
+    setTimeout(() => playSynthTone({ freq: 1046.50, duration: 0.35, type: 'square', sweep: 80, gainMul: 1.4 }), 180);
+    setTimeout(() => playSynthTone({ freq: 1318.51, duration: 0.45, type: 'triangle', sweep: 150, gainMul: 0.8 }), 270);
+    triggerHaptic([30, 50, 80]);
+  },
   achievement: () => {
     [587, 740, 880, 1174].forEach((f, i) => {
       setTimeout(() => playSynthTone({ freq: f, duration: 0.18, type: 'triangle', sweep: 40 }), i * 90);
@@ -1676,6 +1688,12 @@ function switchGame(gameId) {
   if (gameId === 'mariokart') {
     if (!kartPlayer || kartGameOver || kartPlayer.progress === 0) {
       resetMarioKart();
+    }
+  }
+
+  if (gameId === 'supermario') {
+    if (marioGameOver || marioScore === 0) {
+      resetMarioRun();
     }
   }
 
@@ -2555,10 +2573,87 @@ let marioParallaxOffset = 0;
 let marioGoalDistance = 1500;
 let marioLoopRunning = false;
 let marioAutoRestartTimer = null;
+let marioCountdownActive = false;
+let marioCountdownTimers = [];
 
 const marioSpeeds = { easy: 4.0, medium: 5.5, hard: 7.0 };
 const marioCanvasRay = document.getElementById('mario-raycast-canvas');
 const marioRayCtx = marioCanvasRay ? marioCanvasRay.getContext('2d') : null;
+
+function clearMarioCountdownTimers() {
+  marioCountdownTimers.forEach(t => clearTimeout(t));
+  marioCountdownTimers = [];
+}
+
+function runMarioCountdown(callback) {
+  clearMarioCountdownTimers();
+  marioCountdownActive = true;
+
+  const overlay = document.getElementById('mario-countdown-overlay');
+  const textEl = document.getElementById('mario-countdown-text');
+  const l1 = document.getElementById('mario-light-1');
+  const l2 = document.getElementById('mario-light-2');
+  const l3 = document.getElementById('mario-light-3');
+
+  if (!overlay || !textEl || !l1 || !l2 || !l3) return;
+
+  overlay.classList.remove('hidden');
+  overlay.style.opacity = '1';
+
+  const showStep = (numText) => {
+    textEl.textContent = numText;
+    textEl.classList.remove('pop-anim');
+    void textEl.offsetWidth;
+    textEl.classList.add('pop-anim');
+  };
+
+  // Step 1: 0.0s -> "3" (Red Light 1)
+  l1.className = 'light active red';
+  l2.className = 'light';
+  l3.className = 'light';
+  showStep('3');
+  SFX.marioCountdownLow();
+
+  // Step 2: 1.0s -> "2" (Red 1 + Yellow 2)
+  marioCountdownTimers.push(setTimeout(() => {
+    l1.className = 'light active red';
+    l2.className = 'light active yellow';
+    l3.className = 'light';
+    showStep('2');
+    SFX.marioCountdownLow();
+  }, 1000));
+
+  // Step 3: 2.0s -> "1" (Red 1 + Yellow 2 + Green 3)
+  marioCountdownTimers.push(setTimeout(() => {
+    l1.className = 'light active red';
+    l2.className = 'light active yellow';
+    l3.className = 'light active green';
+    showStep('1');
+    SFX.marioCountdownLow();
+  }, 2000));
+
+  // Step 4: 3.0s -> "RUN! 🍄💨" (All Green Lights + Fanfare + Launch)
+  marioCountdownTimers.push(setTimeout(() => {
+    l1.className = 'light active green flash';
+    l2.className = 'light active green flash';
+    l3.className = 'light active green flash';
+    showStep('RUN! 🍄💨');
+    SFX.marioCountdownGo();
+    createMarioDust();
+
+    marioCountdownActive = false;
+
+    // Smoothly fade out overlay
+    marioCountdownTimers.push(setTimeout(() => {
+      overlay.style.opacity = '0';
+      marioCountdownTimers.push(setTimeout(() => {
+        overlay.classList.add('hidden');
+        overlay.style.opacity = '1';
+        if (callback) callback();
+      }, 350));
+    }, 650));
+  }, 3000));
+}
 
 function startMarioRunLoop() {
   if (marioLoopRunning) return;
@@ -2568,6 +2663,7 @@ function startMarioRunLoop() {
 
 function resetMarioRun() {
   if (marioAutoRestartTimer) clearTimeout(marioAutoRestartTimer);
+  clearMarioCountdownTimers();
   marioScore = 0;
   marioCoins = 0;
   marioJumpVelocity = 0;
@@ -2588,8 +2684,14 @@ function resetMarioRun() {
   marioObstacles = [];
   marioCoinsList = [];
 
-  spawnMarioObstacle(world.clientWidth + 120);
-  spawnMarioCoin(world.clientWidth + 280);
+  const runner = document.getElementById('mario-runner');
+  if (runner) runner.style.transform = 'translateY(0px)';
+
+  spawnMarioObstacle(world.clientWidth + 160);
+  spawnMarioCoin(world.clientWidth + 320);
+
+  runMarioCountdown();
+  startMarioRunLoop();
 }
 
 function spawnMarioObstacle(x) {
@@ -2612,6 +2714,7 @@ function spawnMarioCoin(x) {
 }
 
 function triggerMarioJump() {
+  if (marioCountdownActive) return;
   if (marioGameOver) {
     resetMarioRun();
     return;
@@ -2631,6 +2734,7 @@ function triggerMarioJump() {
 
 function createMarioDust() {
   const container = document.getElementById('mario-particles');
+  if (!container) return;
   for (let i = 0; i < 4; i++) {
     const p = document.createElement('div');
     p.className = 'mario-dust-particle';
@@ -2651,7 +2755,7 @@ function tickMarioRun() {
 
   const dt = appState.admin.gameSpeed || 1.0;
 
-  if (!marioGameOver) {
+  if (!marioGameOver && !marioCountdownActive) {
     const speed = marioSpeeds[marioDifficulty] * dt;
 
     // Jump Physics (Hover gliding if Gold Suit active)

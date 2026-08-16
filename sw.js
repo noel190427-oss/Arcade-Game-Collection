@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v10-all-game-guides';
+const CACHE_NAME = 'arcade-collection-v11-mario-countdown';
 const APP_SHELL = [
   './',
   './index.html',
