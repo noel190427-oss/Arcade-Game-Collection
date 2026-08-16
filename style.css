@@ -1,0 +1,641 @@
+:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --accent: #8b5cf6;
+  --accent-2: #22c55e;
+  --text: #e5eefc;
+  --muted: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(139, 92, 246, 0.25), transparent 35%),
+    linear-gradient(135deg, #020617, #111827 50%, #0f172a);
+  color: var(--text);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.app-shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.welcome-screen {
+  display: grid;
+  place-items: center;
+  min-height: 70vh;
+}
+
+.welcome-card {
+  max-width: 460px;
+  width: 100%;
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.tutorial-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+.tutorial-card h2 {
+  margin-bottom: 10px;
+}
+
+.tutorial-card ul {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: #dbeafe;
+}
+
+.name-panel {
+  margin-top: 16px;
+}
+
+.name-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.domain-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: #a5b4fc;
+  text-decoration: none;
+}
+
+.domain-link:hover {
+  text-decoration: underline;
+}
+
+#player-name {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: #0b1220;
+  color: var(--text);
+}
+
+.topbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#player-label {
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.topbar,
+.panel-header,
+.memory-stats,
+.rps-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topbar {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+.launcher {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.game-card,
+.primary-button,
+.ghost-button,
+.rps-choice,
+.cell,
+.memory-card {
+  border: 0;
+  border-radius: 18px;
+}
+
+.game-card {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  padding: 18px;
+  background: rgba(17, 24, 39, 0.9);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.game-card:hover,
+.active {
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.45), rgba(34, 197, 94, 0.18));
+  box-shadow: 0 14px 32px rgba(37, 99, 235, 0.22);
+}
+
+.game-icon {
+  font-size: 1.8rem;
+}
+
+.game-card small {
+  color: var(--muted);
+}
+
+.game-panel {
+  display: none;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.active-panel {
+  display: block;
+}
+
+.ttt-mode-switch {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.mode-button {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: #0b1220;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.mode-button.active-mode {
+  background: rgba(139, 92, 246, 0.45);
+  border-color: rgba(139, 92, 246, 0.9);
+}
+
+.status-line {
+  margin: 16px 0;
+  color: #cbd5e1;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 420px;
+}
+
+.cell {
+  aspect-ratio: 1;
+  font-size: 2.1rem;
+  font-weight: 800;
+  background: #0b1220;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cell:disabled {
+  cursor: default;
+  opacity: 0.98;
+}
+
+.primary-button,
+.ghost-button,
+.rps-choice {
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: var(--accent);
+  color: white;
+}
+
+.ghost-button {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.runner-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.mario-kart-controls {
+  margin: 12px 0 14px;
+  color: #cbd5e1;
+}
+
+#mario-kart-canvas {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1d4ed8, #0f172a);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.runner-mode-switch {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mario-mode-button {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  background: #0b1220;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.mario-mode-button.active-mode {
+  background: rgba(34, 197, 94, 0.35);
+  border-color: rgba(34, 197, 94, 0.9);
+}
+
+.runner-world {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.9), rgba(14, 116, 144, 0.28) 56%, rgba(34, 197, 94, 0.26)),
+    #111827;
+}
+
+.goal-flag {
+  position: absolute;
+  right: 24px;
+  bottom: 58px;
+  z-index: 1;
+}
+
+.goal-flag-top {
+  display: block;
+  width: 18px;
+  height: 12px;
+  background: #ef4444;
+  border-radius: 2px;
+}
+
+.goal-flag-pole {
+  display: block;
+  width: 4px;
+  height: 48px;
+  margin-left: 7px;
+  background: #f8fafc;
+  border-radius: 4px;
+}
+
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #84cc16);
+}
+
+.runner-world::before {
+  content: '';
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 40px;
+  height: 80px;
+  background:
+    radial-gradient(circle at 20% 80%, #86efac 0 22%, transparent 23%),
+    radial-gradient(circle at 42% 75%, #4ade80 0 28%, transparent 29%),
+    radial-gradient(circle at 70% 82%, #86efac 0 24%, transparent 25%),
+    radial-gradient(circle at 88% 75%, #4ade80 0 30%, transparent 31%);
+  opacity: 0.6;
+}
+
+.cloud {
+  position: absolute;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 8px 16px rgba(148, 163, 184, 0.18);
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.cloud::before {
+  width: 26px;
+  height: 26px;
+  left: 10px;
+  top: -10px;
+}
+
+.cloud::after {
+  width: 32px;
+  height: 32px;
+  right: 12px;
+  top: -14px;
+}
+
+.cloud-1 {
+  width: 84px;
+  top: 28px;
+  left: 48px;
+}
+
+.cloud-2 {
+  width: 74px;
+  top: 54px;
+  right: 60px;
+}
+
+.runner-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  background:
+    linear-gradient(180deg, rgba(34, 197, 94, 0.94), rgba(21, 128, 61, 0.95));
+}
+
+.runner-floor::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 10px,
+      rgba(255, 255, 255, 0.08) 10px 12px,
+      transparent 12px 26px
+    );
+  opacity: 0.35;
+}
+
+.runner-shadow {
+  position: absolute;
+  left: 66px;
+  bottom: 56px;
+  width: 44px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.34);
+  filter: blur(1px);
+  z-index: 1;
+}
+
+.runner-character {
+  position: absolute;
+  left: 58px;
+  bottom: 56px;
+  width: 54px;
+  height: 78px;
+  z-index: 2;
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.3));
+}
+
+.runner-character .mario-hat {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  width: 36px;
+  height: 20px;
+  background: linear-gradient(180deg, #f87171, #dc2626);
+  border-radius: 5px 5px 0 0;
+  box-shadow: inset 0 -4px 0 #9f1239;
+}
+
+.runner-character .mario-hat::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  bottom: -4px;
+  height: 5px;
+  background: #f8fafc;
+  border-radius: 4px;
+}
+
+.runner-character .mario-face {
+  position: absolute;
+  top: 14px;
+  left: 8px;
+  width: 36px;
+  height: 28px;
+  background: linear-gradient(180deg, #f6d0b4, #efb38b);
+  border-radius: 4px;
+  border: 1px solid rgba(120, 53, 15, 0.15);
+}
+
+.runner-character .mario-face::before,
+.runner-character .mario-face::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  width: 4px;
+  height: 4px;
+  background: #111827;
+  border-radius: 50%;
+}
+
+.runner-character .mario-face::before {
+  left: 9px;
+}
+
+.runner-character .mario-face::after {
+  right: 9px;
+}
+
+.runner-character .mario-body {
+  position: absolute;
+  top: 40px;
+  left: 10px;
+  width: 30px;
+  height: 26px;
+  background: linear-gradient(180deg, #ef4444, #b91c1c);
+  border-radius: 4px;
+}
+
+.runner-character .mario-body::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 6px;
+  height: 8px;
+  background: #f8fafc;
+  border-radius: 2px;
+}
+
+.runner-character .mario-arm,
+.runner-character .mario-leg {
+  position: absolute;
+  background: #d97706;
+  border-radius: 8px;
+}
+
+.runner-character .mario-arm {
+  top: 42px;
+  left: 1px;
+  width: 10px;
+  height: 22px;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.runner-character .mario-leg {
+  top: 64px;
+  left: 16px;
+  width: 10px;
+  height: 14px;
+  background: linear-gradient(180deg, #1d4ed8, #1e3a8a);
+}
+
+.runner-obstacle {
+  position: absolute;
+  left: 100%;
+  bottom: 56px;
+  width: 40px;
+  height: 54px;
+  border-radius: 8px 8px 4px 4px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #d97706 0 10px,
+      #f59e0b 10px 20px,
+      #b45309 20px 30px
+    );
+  box-shadow:
+    inset 0 -7px 0 rgba(0, 0, 0, 0.24),
+    0 4px 10px rgba(15, 23, 42, 0.3);
+  z-index: 1;
+}
+
+.runner-obstacle::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 3px;
+  right: 3px;
+  height: 10px;
+  background: linear-gradient(180deg, #84cc16, #4d7c0f);
+  border-radius: 999px;
+}
+
+.memory-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.memory-card {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #0b1220;
+  color: var(--text);
+  font-size: 1.8rem;
+  cursor: pointer;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.memory-card.revealed {
+  background: rgba(139, 92, 246, 0.22);
+}
+
+.memory-card.matched {
+  background: rgba(34, 197, 94, 0.2);
+  cursor: default;
+}
+
+.rps-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.rps-choice {
+  background: #172036;
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 16px;
+  }
+
+  .topbar,
+  .panel-header,
+  .memory-stats,
+  .rps-stats {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .memory-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

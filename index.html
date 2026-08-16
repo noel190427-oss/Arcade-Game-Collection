@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8b5cf6" />
+    <title>Arcade Collection</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="welcome-screen" class="welcome-screen">
+        <div class="welcome-card">
+          <p class="eyebrow">Mini Arcade</p>
+          <h1>Game Lounge</h1>
+
+          <div id="tutorial-card" class="tutorial-card">
+            <h2>So geht's</h2>
+            <ul>
+              <li>Gib deinen Namen ein.</li>
+              <li>Wähle ein Spiel aus der Liste.</li>
+              <li>Im Tic-Tac-Toe-Modus kannst du gegen Mensch oder KI spielen.</li>
+            </ul>
+            <button id="continue-tutorial" class="primary-button">Weiter</button>
+          </div>
+
+          <div id="name-panel" class="name-panel hidden">
+            <label for="player-name">Wie heißt du?</label>
+            <div class="name-row">
+              <input id="player-name" type="text" maxlength="20" placeholder="Dein Name" />
+              <button id="start-game" class="primary-button">Los geht's</button>
+            </div>
+            <a class="domain-link" href="https://www.Arcade.Collection.de" target="_blank" rel="noreferrer">https://www.Arcade.Collection.de</a>
+          </div>
+        </div>
+      </section>
+
+      <header class="topbar hidden" id="topbar">
+        <div>
+          <p class="eyebrow">Mini Arcade</p>
+          <h1>Game Lounge</h1>
+        </div>
+        <div class="topbar-meta">
+          <span id="player-label">Spieler: Gast</span>
+          <button id="reset-all" class="ghost-button">Alle zurücksetzen</button>
+        </div>
+      </header>
+
+      <section class="launcher hidden" id="launcher" aria-label="Spiele-Liste">
+        <button class="game-card active" data-game="tictactoe">
+          <span class="game-icon">❌⭕</span>
+          <strong>Tic-Tac-Toe</strong>
+          <small>3 in a row</small>
+        </button>
+        <button class="game-card" data-game="memory">
+          <span class="game-icon">🧠</span>
+          <strong>Memory</strong>
+          <small>Paare finden</small>
+        </button>
+        <button class="game-card" data-game="supermario">
+          <span class="game-icon">🍄🏃</span>
+          <strong>Super Mario Run</strong>
+          <small>Tippe zum Springen</small>
+        </button>
+        <button class="game-card" data-game="mariokart">
+          <span class="game-icon">🏁🍄</span>
+          <strong>Mario Kart Rush</strong>
+          <small>WASD oder Pfeile</small>
+        </button>
+        <button class="game-card" data-game="rps">
+          <span class="game-icon">✊🖐️✌️</span>
+          <strong>Stein, Papier, Schere</strong>
+          <small>Gegen den Computer</small>
+        </button>
+      </section>
+
+      <section id="tictactoe" class="game-panel active-panel">
+        <div class="panel-header">
+          <h2>Tic-Tac-Toe</h2>
+          <button class="primary-button" id="reset-tictactoe">Neu starten</button>
+        </div>
+        <div class="ttt-mode-switch" aria-label="Tic-Tac-Toe Modus">
+          <button class="mode-button active-mode" data-mode="human">Mensch gegen Mensch</button>
+          <button class="mode-button" data-mode="ai">Mensch gegen KI</button>
+        </div>
+        <div class="status-line" id="ttt-status">Spieler X ist am Zug.</div>
+        <div class="board" id="ttt-board" aria-label="Tic-Tac-Toe Spielfeld">
+          <button class="cell" data-index="0"></button>
+          <button class="cell" data-index="1"></button>
+          <button class="cell" data-index="2"></button>
+          <button class="cell" data-index="3"></button>
+          <button class="cell" data-index="4"></button>
+          <button class="cell" data-index="5"></button>
+          <button class="cell" data-index="6"></button>
+          <button class="cell" data-index="7"></button>
+          <button class="cell" data-index="8"></button>
+        </div>
+      </section>
+
+      <section id="memory" class="game-panel">
+        <div class="panel-header">
+          <h2>Memory</h2>
+          <button class="primary-button" id="reset-memory">Neu mischen</button>
+        </div>
+        <div class="memory-stats">
+          <span>Paare gefunden: <strong id="memory-score">0</strong></span>
+          <span>Versuche: <strong id="memory-attempts">0</strong></span>
+        </div>
+        <div class="memory-grid" id="memory-board" aria-label="Memory Karten"></div>
+      </section>
+
+      <section id="supermario" class="game-panel">
+        <div class="panel-header">
+          <h2>Super Mario Run</h2>
+          <button class="primary-button" id="reset-supermario">Neu starten</button>
+        </div>
+        <div class="runner-toolbar">
+          <span>Score: <strong id="mario-score">0</strong></span>
+          <div class="runner-mode-switch" aria-label="Mario Schwierigkeitsmodus">
+            <button class="mario-mode-button active-mode" data-mario-mode="easy">Leicht</button>
+            <button class="mario-mode-button" data-mario-mode="medium">Mittel</button>
+            <button class="mario-mode-button" data-mario-mode="hard">Schwer</button>
+          </div>
+        </div>
+        <div class="status-line" id="mario-status">Tippe in die Welt, um Mario zum Springen zu bringen.</div>
+        <div class="runner-world" id="mario-world" aria-label="Super Mario Runner">
+          <div class="cloud cloud-1"></div>
+          <div class="cloud cloud-2"></div>
+          <div class="goal-flag">
+            <span class="goal-flag-top"></span>
+            <span class="goal-flag-pole"></span>
+          </div>
+          <div class="runner-floor"></div>
+          <div class="runner-shadow"></div>
+          <div class="runner-character" id="mario-runner">
+            <div class="mario-hat"></div>
+            <div class="mario-face"></div>
+            <div class="mario-body"></div>
+            <div class="mario-arm"></div>
+            <div class="mario-leg"></div>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-track">
+            <div class="progress-fill" id="mario-progress-fill"></div>
+          </div>
+          <span id="mario-progress-label">0%</span>
+        </div>
+      </section>
+
+      <section id="mariokart" class="game-panel">
+        <div class="panel-header">
+          <h2>Mario Kart Rush</h2>
+          <button class="primary-button" id="reset-mariokart">Neu starten</button>
+        </div>
+        <div class="mario-kart-controls">
+          <span>Steuerung: <strong>W / ↑</strong> Gas, <strong>S / ↓</strong> Bremse, <strong>A / ←</strong> Links, <strong>D / →</strong> Rechts</span>
+        </div>
+        <canvas id="mario-kart-canvas" width="420" height="260" aria-label="Mario Kart Spiel"></canvas>
+        <div class="status-line" id="mario-kart-status">Rennziel: 6 KI-Gegner schlagen.</div>
+      </section>
+
+      <section id="rps" class="game-panel">
+        <div class="panel-header">
+          <h2>Stein, Papier, Schere</h2>
+          <button class="primary-button" id="reset-rps">Punkte zurücksetzen</button>
+        </div>
+        <div class="rps-stats">
+          <span>Du: <strong id="rps-user-score">0</strong></span>
+          <span>Computer: <strong id="rps-computer-score">0</strong></span>
+        </div>
+        <div class="rps-controls">
+          <button class="rps-choice" data-choice="Stein">✊ Stein</button>
+          <button class="rps-choice" data-choice="Papier">🖐️ Papier</button>
+          <button class="rps-choice" data-choice="Schere">✌️ Schere</button>
+        </div>
+        <div class="status-line" id="rps-status">Mach deinen Zug.</div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
