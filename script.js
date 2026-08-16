@@ -805,31 +805,40 @@ function resizeConfetti() {
 window.addEventListener('resize', resizeConfetti);
 resizeConfetti();
 
-function triggerConfetti(count = 70, isMoney = false) {
+function triggerConfetti(count = 50, isMoney = false) {
   if (appState.lowEndMode || !confettiCtx) return;
+
+  // Immediately cancel previous animation and wipe old particles to prevent stutter & save CPU
+  if (confettiAnimId) {
+    cancelAnimationFrame(confettiAnimId);
+    confettiAnimId = null;
+  }
+  confettiParticles = [];
+  if (confettiCanvas) {
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+
   const standardColors = ['#facc15', '#ec4899', '#8b5cf6', '#06b6d4', '#10b981', '#38bdf8'];
   const moneySymbols = ['💵', '🪙', '💰', '💎'];
 
   for (let i = 0; i < count; i++) {
     confettiParticles.push({
-      x: window.innerWidth * (0.2 + Math.random() * 0.6),
+      x: window.innerWidth * (0.25 + Math.random() * 0.5),
       y: window.innerHeight * 0.35,
-      vx: (Math.random() - 0.5) * 18,
-      vy: (Math.random() - 0.8) * 20,
-      size: Math.random() * 8 + 6,
+      vx: (Math.random() - 0.5) * 16,
+      vy: (Math.random() - 0.8) * 18,
+      size: Math.random() * 7 + 6,
       color: standardColors[Math.floor(Math.random() * standardColors.length)],
       isMoney: isMoney,
       symbol: moneySymbols[Math.floor(Math.random() * moneySymbols.length)],
       rotation: Math.random() * 360,
-      rSpeed: (Math.random() - 0.5) * 12,
+      rSpeed: (Math.random() - 0.5) * 10,
       opacity: 1,
-      decay: Math.random() * 0.015 + 0.008
+      decay: Math.random() * 0.02 + 0.012
     });
   }
 
-  if (!confettiAnimId) {
-    confettiAnimId = requestAnimationFrame(updateConfetti);
-  }
+  confettiAnimId = requestAnimationFrame(updateConfetti);
 }
 
 function updateConfetti() {
@@ -1187,7 +1196,15 @@ function updateVipVisualState() {
 
   const walletCoinsEl = document.getElementById('vip-wallet-coins');
   const bankBalanceEl = document.getElementById('admin-bank-balance');
-  if (walletCoinsEl) walletCoinsEl.textContent = Number(appState.vipCoins).toLocaleString();
+  if (walletCoinsEl) {
+    walletCoinsEl.textContent = Number(appState.vipCoins).toLocaleString();
+    if (typeof walletCoinsEl.animate === 'function') {
+      walletCoinsEl.animate(
+        [{ transform: 'scale(1.22)', color: '#fef08a' }, { transform: 'scale(1)', color: '#facc15' }],
+        { duration: 160, easing: 'ease-out' }
+      );
+    }
+  }
   if (bankBalanceEl) bankBalanceEl.textContent = Number(appState.vipCoins).toLocaleString();
 }
 
@@ -1357,7 +1374,7 @@ function mintVipCoins(amount) {
   updateVipVisualState();
 
   SFX.kaching();
-  triggerConfetti(60, true);
+  triggerConfetti(45, true);
 
   if (appState.vipCoins >= 100000) {
     unlockTrophy('vip_tycoon');
