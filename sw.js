@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v9-kart-countdown';
+const CACHE_NAME = 'arcade-collection-v10-all-game-guides';
 const APP_SHELL = [
   './',
   './index.html',

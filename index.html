@@ -319,7 +319,10 @@
             <h2>❌⭕ Tic-Tac-Toe</h2>
             <span class="panel-subtitle" data-i18n="ttt_desc">Klassisches 3-in-einer-Reihe mit wählbarer KI</span>
           </div>
-          <button class="primary-button" id="reset-tictactoe" data-i18n="restart_btn">Neu starten</button>
+          <div class="header-action-group">
+            <button class="ghost-button how-to-play-btn" data-guide-game="tictactoe" id="ttt-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-tictactoe" data-i18n="restart_btn">Neu starten</button>
+          </div>
         </div>
 
         <div class="panel-controls-row">
@@ -367,7 +370,10 @@
             <h2>🧠 Memory</h2>
             <span class="panel-subtitle" data-i18n="memory_desc">Finde alle Bildpaare mit möglichst wenigen Versuchen</span>
           </div>
-          <button class="primary-button" id="reset-memory" data-i18n="reshuffle_btn">Neu mischen</button>
+          <div class="header-action-group">
+            <button class="ghost-button how-to-play-btn" data-guide-game="memory" id="memory-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-memory" data-i18n="reshuffle_btn">Neu mischen</button>
+          </div>
         </div>
 
         <div class="panel-controls-row">
@@ -406,6 +412,7 @@
             <span class="panel-subtitle" data-i18n="mario_desc">Prädiktive Raycast-KI, Doppelsprung & Münzenjagd</span>
           </div>
           <div class="header-action-group">
+            <button class="ghost-button how-to-play-btn" data-guide-game="supermario" id="mario-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
             <button class="ghost-button vip-lock-item" id="mario-gold-suit-toggle" title="VIP Gold-Anzug & Flugsprung">👑 Gold-Anzug <span class="vip-lock-badge">🔒</span></button>
             <button class="ghost-button" id="mario-ai-toggle" title="KI-Autopilot">🤖 <span data-i18n="ai_autopilot">Autopilot</span></button>
             <button class="primary-button" id="reset-supermario" data-i18n="restart_btn">Neu starten</button>
@@ -485,7 +492,7 @@
             <span class="panel-subtitle" data-i18n="kart_desc">50cc-200cc Cups, Mystery Item-Boxen, Drift & 6 KI-Gegner</span>
           </div>
           <div class="header-action-group">
-            <button class="ghost-button" id="kart-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="ghost-button how-to-play-btn" data-guide-game="mariokart" id="kart-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
             <button class="primary-button" id="reset-mariokart" data-i18n="restart_btn">Neu starten</button>
           </div>
         </div>
@@ -570,7 +577,10 @@
             <h2 data-i18n="rps_title">✊🖐️✌️ Stein, Papier, Schere</h2>
             <span class="panel-subtitle" data-i18n="rps_desc">Mit erweiterter Markov-Ketten Vorhersage-KI</span>
           </div>
-          <button class="primary-button" id="reset-rps" data-i18n="reset_points_btn">Punkte zurücksetzen</button>
+          <div class="header-action-group">
+            <button class="ghost-button how-to-play-btn" data-guide-game="rps" id="rps-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-rps" data-i18n="reset_points_btn">Punkte zurücksetzen</button>
+          </div>
         </div>
 
         <div class="panel-controls-row">
@@ -628,7 +638,10 @@
             <h2>🐍⚡ Neon Snake Retro</h2>
             <span class="panel-subtitle" data-i18n="snake_desc">Sammle Neon-Äpfel, Bonus-Blitze und wachse unendlich</span>
           </div>
-          <button class="primary-button" id="reset-snake" data-i18n="restart_btn">Neu starten</button>
+          <div class="header-action-group">
+            <button class="ghost-button how-to-play-btn" data-guide-game="snake" id="snake-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-snake" data-i18n="restart_btn">Neu starten</button>
+          </div>
         </div>
 
         <div class="snake-hud-bar">
@@ -669,7 +682,10 @@
             <h2>🧱💥 Cyber Brick Breaker</h2>
             <span class="panel-subtitle" data-i18n="bricks_desc">Zerstöre alle Steine, schnapp dir Power-ups und Laser</span>
           </div>
-          <button class="primary-button" id="reset-bricks" data-i18n="restart_btn">Neu starten</button>
+          <div class="header-action-group">
+            <button class="ghost-button how-to-play-btn" data-guide-game="brickbreaker" id="bricks-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-bricks" data-i18n="restart_btn">Neu starten</button>
+          </div>
         </div>
 
         <div class="brick-hud-bar">
@@ -1181,6 +1197,30 @@
           <p style="margin-bottom: 10px;"><strong style="color: var(--text-main);">Zero-Data Collection:</strong> Diese Progressive Web App sammelt, speichert oder überträgt zu keinem Zeitpunkt personenbezogene Daten an externe Server.</p>
           <p style="margin-bottom: 10px;"><strong style="color: var(--text-main);">Lokale Datenspeicherung:</strong> Sämtliche Einstellungen, Trophäen, Highscores und VIP-Tokens verbleiben ausschließlich im lokalen Speicher (LocalStorage) deines eigenen Endgeräts.</p>
           <p><strong style="color: var(--text-main);">Offline-Betrieb:</strong> Über den integrierten Service Worker läuft die Anwendung vollständig autark und netzwerkunabhängig.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIVERSAL GAME HOW-TO-PLAY / INSTRUCTIONS MODAL -->
+    <div id="guide-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Spielanleitung">
+      <div class="modal-card guide-modal-card">
+        <div class="modal-header">
+          <div class="admin-title-row">
+            <span class="guide-game-icon" id="guide-modal-icon" style="font-size: 2rem;">❓</span>
+            <div>
+              <h2 id="guide-modal-title">Spielanleitung</h2>
+              <small id="guide-modal-subtitle">Regeln, Steuerung & Profi-Tipps</small>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="close-guide-btn" aria-label="Schließen">✕</button>
+        </div>
+
+        <div class="guide-modal-scroll-body" id="guide-modal-body">
+          <!-- Dynamically injected per game -->
+        </div>
+
+        <div class="guide-footer-actions">
+          <button class="primary-button full-width" id="guide-start-btn">🎮 Verstanden – Los geht's!</button>
         </div>
       </div>
     </div>

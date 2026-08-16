@@ -3292,10 +3292,6 @@ function initMarioKart() {
     SFX.click();
   });
 
-  document.getElementById('kart-how-to-play-btn').addEventListener('click', () => {
-    alert("🏎️ Mario Kart Anleitung:\n- W / Gas: Beschleunigen (oder Auto-Gas aktivieren)\n- A/D: Lenken\n- SHIFT / Drift: In Kurven halten für Drift-Turbos!\n- E / Item: Gesammeltes Item (Pilz, Stern, Banane) auslösen!\n- Auf 50cc fahren die Bots entspannter zum Einstieg!");
-  });
-
   document.getElementById('reset-mariokart').addEventListener('click', resetMarioKart);
   resetMarioKart();
 }
@@ -3969,6 +3965,831 @@ function initPWA() {
 }
 
 /* ==========================================================================
+   20.5 UNIVERSAL GAME INSTRUCTIONS & HOW-TO-PLAY MODAL SYSTEM
+   ========================================================================== */
+const GAME_GUIDES = {
+  tictactoe: {
+    icon: '❌⭕',
+    title: {
+      de: 'Tic-Tac-Toe Minimax',
+      en: 'Tic-Tac-Toe Minimax',
+      fr: 'Morpion Minimax',
+      pt: 'Jogo da Velha Minimax',
+      tr: 'Tic-Tac-Toe Minimax',
+      es: 'Tres en Línea Minimax'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Ziel des Spiels',
+          items: [
+            'Bringe 3 deiner Symbole (<span class="guide-key-tag">X</span>) in eine ununterbrochene Reihe – horizontal, vertikal oder diagonal.',
+            'Blockiere gleichzeitig deinen Gegner, bevor er seine Dreierreihe vollenden kann.'
+          ]
+        },
+        {
+          title: '🎮 Steuerung & Modi',
+          items: [
+            'Klicke oder tippe einfach auf ein beliebiges freies Feld auf dem 3x3 Raster.',
+            'Wähle zwischen <strong>Mensch vs Mensch</strong> (lokales Duell) oder <strong>Mensch vs KI</strong>.'
+          ]
+        },
+        {
+          title: '🤖 KI-Schwierigkeitsgrade',
+          items: [
+            '<strong>Leicht:</strong> Zufällige Züge – ideal für Einsteiger.',
+            '<strong>Mittel:</strong> Erkennt Bedrohungen und nutzt direkte Gewinnchancen.',
+            '<strong>Meister (Minimax):</strong> Ein echter mathematischer Spielbaum-Algorithmus. Bei fehlerfreiem Spiel ist das bestmögliche Ergebnis ein Unentschieden!'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Objective',
+          items: [
+            'Align 3 of your symbols (<span class="guide-key-tag">X</span>) horizontally, vertically, or diagonally.',
+            'Block your opponent from completing their 3-in-a-row first.'
+          ]
+        },
+        {
+          title: '🎮 Controls & Modes',
+          items: [
+            'Tap or click on any empty square on the 3x3 board.',
+            'Switch between <strong>Human vs Human</strong> and <strong>Human vs AI</strong>.'
+          ]
+        },
+        {
+          title: '🤖 AI Modes',
+          items: [
+            '<strong>Easy:</strong> Random casual moves.',
+            '<strong>Medium:</strong> Defends against immediate threats.',
+            '<strong>Master (Minimax):</strong> Mathematically optimal AI. Best possible result is a draw!'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 But du jeu',
+          items: [
+            'Alignez 3 symboles (<span class="guide-key-tag">X</span>) horizontalement, verticalement ou en diagonale.',
+            'Empêchez votre adversaire de compléter sa ligne en premier.'
+          ]
+        },
+        {
+          title: '🎮 Contrôles & IA',
+          items: [
+            'Touchez une case vide de la grille 3x3.',
+            'Le mode <strong>Maître (Minimax)</strong> utilise un algorithme d\'arbre imbattable !'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Alinhe 3 símbolos (<span class="guide-key-tag">X</span>) na horizontal, vertical ou diagonal.',
+            'Bloqueie o adversário para impedi-lo de vencer.'
+          ]
+        },
+        {
+          title: '🎮 Controles & IA',
+          items: [
+            'Toque em qualquer casa vazia do tabuleiro 3x3.',
+            'O modo <strong>Mestre (Minimax)</strong> é matematicamente imbatível!'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyunun Amacı',
+          items: [
+            '3 sembolünüzü (<span class="guide-key-tag">X</span>) yatay, dikey veya çapraz olarak hizalayın.',
+            'Rakibinizin 3lü seri yapmasını engelleyin.'
+          ]
+        },
+        {
+          title: '🎮 Kontroller & YZ',
+          items: [
+            'Boş kareye tıklayın veya dokunun.',
+            '<strong>Usta (Minimax)</strong> modu matematiksel olarak yenilmezdir!'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Alinea 3 de tus símbolos (<span class="guide-key-tag">X</span>) en horizontal, vertical o diagonal.',
+            'Bloquea a tu rival antes de que forme una línea.'
+          ]
+        },
+        {
+          title: '🎮 Controles & IA',
+          items: [
+            'Toca cualquier casilla vacía del tablero 3x3.',
+            '¡El modo <strong>Maestro (Minimax)</strong> es matemáticamente invencible!'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Sichere dir im ersten Zug das Zentrum oder eine Ecke, um dir zwei parallele Gewinnwege aufzubauen!',
+      en: '💡 <strong>Pro Tip:</strong> Claim the center or a corner on your first turn to open up dual winning paths!',
+      fr: '💡 <strong>Astuce Pro:</strong> Prenez le centre ou un coin dès le premier coup !',
+      pt: '💡 <strong>Dica Pro:</strong> Ocupe o centro ou um canto na primeira jogada!',
+      tr: '💡 <strong>Usta İpucu:</strong> İlk hamlede merkezi veya bir köşeyi kaparak çift kazanma yolu açın!',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Toma el centro o una esquina en tu primer turno!'
+    }
+  },
+  memory: {
+    icon: '🧠',
+    title: {
+      de: 'Memory Matrix',
+      en: 'Memory Matrix',
+      fr: 'Memory Matrix',
+      pt: 'Jogo da Memória',
+      tr: 'Hafıza Kartları',
+      es: 'Matrix de Memoria'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Ziel des Spiels',
+          items: [
+            'Finde alle zusammengehörenden Bildpaare auf dem Spielfeld.',
+            'Schaffe das Raster mit möglichst wenigen Fehlversuchen und in Bestzeit!'
+          ]
+        },
+        {
+          title: '🎮 Steuerung & Themes',
+          items: [
+            'Klicke oder tippe nacheinander auf zwei verdeckte Karten, um sie aufzudecken.',
+            'Wähle zwischen 5 Themen: 🎮 Arcade, 🐾 Tiere, 🍕 Essen, 🚀 Space und 👑 VIP Diamond.',
+            'Rastergrößen: <strong>4x4 (8 Paare)</strong> oder <strong>4x5 (10 Paare)</strong>.'
+          ]
+        },
+        {
+          title: '🔥 Combo-Streak Multiplikator',
+          items: [
+            'Jedes gefundene Paar ohne zwischenzeitlichen Fehlversuch erhöht deinen Combo-Multiplikator!',
+            'Hohe Combos belohnen dich mit Konfetti, Chiptune-Jingles und Trophäen.'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Objective',
+          items: [
+            'Flip cards and match all identical symbol pairs.',
+            'Clear the board in the fewest moves and fastest time.'
+          ]
+        },
+        {
+          title: '🎮 Controls & Themes',
+          items: [
+            'Tap 2 cards to reveal them. Matching cards remain turned face up.',
+            'Choose from 5 themes including Arcade, Animals, Food, Space, and VIP Diamond.'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 But du jeu',
+          items: [
+            'Retournez les cartes et trouvez toutes les paires identiques.',
+            'Enchaînez les paires sans erreur pour monter votre multiplicateur de combo !'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Vire as cartas e encontre todos os pares no menor tempo possível.',
+            'Faça combos consecutivos para ganhar recompensas extras!'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyunun Amacı',
+          items: [
+            'Kartları çevirin ve tüm eşleşen çiftleri en az denemeyle bulun.',
+            'Seri yakalayarak kombo puanınızı katlayın!'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Voltea las cartas y encuentra todas las parejas idénticas.',
+            '¡Encadena aciertos para multiplicar tus puntos de combo!'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Präge dir die Eckkarten zuerst ein – das erleichtert das gedankliche Raster ungemein!',
+      en: '💡 <strong>Pro Tip:</strong> Memorize the corners first to create mental anchor points across the grid.',
+      fr: '💡 <strong>Astuce Pro:</strong> Mémorisez les coins pour structurer votre mémoire visuelle.',
+      pt: '💡 <strong>Dica Pro:</strong> Memorize primeiro os cantos do tabuleiro.',
+      tr: '💡 <strong>Usta İpucu:</strong> Önce köşelerdeki kartları ezberleyin.',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Memoriza primero las esquinas para ubicar las parejas!'
+    }
+  },
+  supermario: {
+    icon: '🍄🏃',
+    title: {
+      de: 'Super Mario Run',
+      en: 'Super Mario Run',
+      fr: 'Super Mario Run',
+      pt: 'Super Mario Run',
+      tr: 'Super Mario Koşusu',
+      es: 'Super Mario Run'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Ziel des Spiels',
+          items: [
+            'Renne durch das Level, weiche Gumbas & Röhren aus, sammle Goldmünzen und erreiche die Zielflagge bei 100%!',
+            'Halte deinen Run so lange wie möglich am Leben, um Highscores aufzustellen.'
+          ]
+        },
+        {
+          title: '🎮 Steuerung',
+          items: [
+            'Tippe auf den Bildschirm oder drücke <span class="guide-key-tag">LEERTASTE</span> / <span class="guide-key-tag">W</span> / <span class="guide-key-tag">↑</span> zum Springen.',
+            '<strong>Doppelsprung:</strong> Drücke die Sprungtaste ein 2. Mal in der Luft für zusätzliche Höhe!'
+          ]
+        },
+        {
+          title: '🤖 KI-Autopilot & VIP Gold-Anzug',
+          items: [
+            '<strong>🤖 Autopilot:</strong> Schaltet die Raycast-Laser-KI ein. Sie scannt Hindernisse live und springt automatisch mit perfektem Timing.',
+            '<strong>👑 VIP Gold-Anzug:</strong> Schaltet unendlichen Dreifachsprung und Schwebeflug frei.'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Objective',
+          items: [
+            'Run through the world, jump over Goombas & pipes, collect coins, and reach the goal flag at 100%!',
+            'Keep your streak alive to beat the highscore.'
+          ]
+        },
+        {
+          title: '🎮 Controls',
+          items: [
+            'Tap screen or press <span class="guide-key-tag">SPACE</span> / <span class="guide-key-tag">W</span> / <span class="guide-key-tag">↑</span> to jump.',
+            '<strong>Double Jump:</strong> Press jump again in mid-air to reach higher platforms!'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 But du jeu',
+          items: [
+            'Courez, sautez par-dessus les obstacles et ramassez des pièces jusqu\'à la bannière finale !',
+            'Appuyez sur <span class="guide-key-tag">ESPACE</span> ou touchez l\'écran pour sauter (double saut actif).'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Corra pelo cenário, salte sobre os canos e colete moedas até o castelo final!',
+            'Pressione <span class="guide-key-tag">ESPAÇO</span> ou toque na tela para pular (pulo duplo ativo).'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyunun Amacı',
+          items: [
+            'Engellerin üzerinden atlayın, altınları toplayın ve kaleye ulaşın!',
+            'Zıplamak için <span class="guide-key-tag">BOŞLUK</span> tuşuna basın veya ekrana dokunun (çift zıplama aktif).'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            '¡Corre, esquiva obstáculos, recoge monedas y llega al castillo final!',
+            'Presiona <span class="guide-key-tag">ESPACIO</span> o toca la pantalla para saltar (doble salto disponible).'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Zünde den Doppelsprung genau am höchsten Punkt deines ersten Sprungs, um über weite Röhren-Kombinationen zu segeln!',
+      en: '💡 <strong>Pro Tip:</strong> Trigger your second jump at the apex of the first jump to clear wide pipe gaps with ease!',
+      fr: '💡 <strong>Astuce Pro:</strong> Déclenchez le deuxième saut au sommet du premier pour planer plus loin !',
+      pt: '💡 <strong>Dica Pro:</strong> Use o segundo pulo no topo do primeiro para planar sobre abismos largos!',
+      tr: '💡 <strong>Usta İpucu:</strong> Geniş engelleri aşmak için ilk zıplamanın en tepe noktasında ikinci kez zıplayın!',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Activa el segundo salto en la cúspide del primero para superar grandes distancias!'
+    }
+  },
+  mariokart: {
+    icon: '🏁🏎️',
+    title: {
+      de: 'Mario Kart Rush',
+      en: 'Mario Kart Rush',
+      fr: 'Mario Kart Rush',
+      pt: 'Mario Kart Rush',
+      tr: 'Mario Kart Rush',
+      es: 'Mario Kart Rush'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Ziel des Spiels',
+          items: [
+            'Tritt gegen 6 KI-Gegner an und überquere nach 2000m als Erster (#1) die Ziellinie!',
+            'Sammle Mystery-Boxen, meistere Drifts und nutze Power-ups taktisch.'
+          ]
+        },
+        {
+          title: '⌨️ Steuerung',
+          items: [
+            '<span class="guide-key-tag">W</span> / <span class="guide-key-tag">↑</span> / <span class="guide-key-tag">🏎️ GAS</span>: Beschleunigen (oder Auto-Gas aktivieren).',
+            '<span class="guide-key-tag">S</span> / <span class="guide-key-tag">↓</span> / <span class="guide-key-tag">🛑 BREMSE</span>: Bremsen & Rückwärts.',
+            '<span class="guide-key-tag">A</span> / <span class="guide-key-tag">D</span> / <span class="guide-key-tag">←</span> / <span class="guide-key-tag">→</span>: Lenken.',
+            '<span class="guide-key-tag">SHIFT</span> / <span class="guide-key-tag">LEERTASTE</span> / <span class="guide-key-tag">⚡ DRIFT</span>: In Kurven halten für Drift-Turbos!',
+            '<span class="guide-key-tag">E</span> / <span class="guide-key-tag">📦 ITEM</span>: Gesammeltes Mystery-Item abfeuern.'
+          ]
+        },
+        {
+          title: '📦 Items & Countdown-Turbostart',
+          items: [
+            '<strong>🍄 Turbo-Pilz:</strong> Sofortiger massiver Nitro-Schub.',
+            '<strong>⭐ Super-Stern:</strong> Temporäre Unbesiegbarkeit und Höchsttempo.',
+            '<strong>🍌 Banane:</strong> Lässt nachfolgende Fahrer ins Schleudern geraten.',
+            '<strong>🚦 Startampel:</strong> Drücke bei `GO!` die Gas-Taste für einen Raketen-Turbostart!'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Objective',
+          items: [
+            'Race against 6 AI drivers and cross the 2000m finish line in 1st place!',
+            'Collect mystery boxes, drift around corners, and unleash tactical power-ups.'
+          ]
+        },
+        {
+          title: '⌨️ Controls',
+          items: [
+            '<span class="guide-key-tag">W</span> / <span class="guide-key-tag">↑</span>: Accelerate | <span class="guide-key-tag">S</span> / <span class="guide-key-tag">↓</span>: Brake',
+            '<span class="guide-key-tag">A</span> / <span class="guide-key-tag">D</span>: Steer | <span class="guide-key-tag">SHIFT</span> / <span class="guide-key-tag">SPACE</span>: Drift Boost',
+            '<span class="guide-key-tag">E</span> / <span class="guide-key-tag">Touch ITEM</span>: Fire Mystery Item'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 But du jeu',
+          items: [
+            'Battez 6 adversaires IA et terminez 1er sur la ligne d\'arrivée (2000m) !',
+            'Utilisez <span class="guide-key-tag">W/↑</span> (Gaz), <span class="guide-key-tag">A/D</span> (Direction), <span class="guide-key-tag">SHIFT</span> (Drift) et <span class="guide-key-tag">E</span> (Objet).'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Vença 6 karts da IA e chegue em 1º lugar na linha de chegada (2000m)!',
+            'Use <span class="guide-key-tag">W/↑</span> (Acelerar), <span class="guide-key-tag">A/D</span> (Direção), <span class="guide-key-tag">SHIFT</span> (Drift) e <span class="guide-key-tag">E</span> (Usar Item).'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyunun Amacı',
+          items: [
+            '6 yapay zeka yarışçısını geçerek 2000 metreyi 1. sırada tamamlayın!',
+            '<span class="guide-key-tag">W/↑</span> (Gaz), <span class="guide-key-tag">A/D</span> (Direksiyon), <span class="guide-key-tag">SHIFT</span> (Drift) ve <span class="guide-key-tag">E</span> (Öğe) tuşlarını kullanın.'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            '¡Compite contra 6 pilotos de IA y cruza la meta (2000m) en 1.er lugar!',
+            'Usa <span class="guide-key-tag">W/↑</span> (Acelerar), <span class="guide-key-tag">A/D</span> (Girar), <span class="guide-key-tag">SHIFT</span> (Derrape) y <span class="guide-key-tag">E</span> (Usar Item).'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Drücke bei `GO!` im Countdown sofort Gas für den Raketenstart (+45 Turbo) und lade in Kurven lange Drifts auf!',
+      en: '💡 <strong>Pro Tip:</strong> Hit Gas exactly as `GO!` flashes for an instant rocket launch and hold drifts through curves for speed boosts!',
+      fr: '💡 <strong>Astuce Pro:</strong> Accélérez pile au moment du `GO!` pour le départ turbo fusée !',
+      pt: '💡 <strong>Dica Pro:</strong> Acelere no exato momento do `GO!` para largar com turbo foguete!',
+      tr: '💡 <strong>Usta İpucu:</strong> Geri sayımda `GO!` yazdığı an gaza basarak roket hızlanması kazanın!',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Acelera justo cuando aparezca `GO!` para activar el turbo cohete de salida!'
+    }
+  },
+  rps: {
+    icon: '✊🖐️✌️',
+    title: {
+      de: 'Stein, Papier, Schere, Echse, Spock',
+      en: 'Rock, Paper, Scissors, Lizard, Spock',
+      fr: 'Pierre, Papier, Ciseaux, Lézard, Spock',
+      pt: 'Pedra, Papel, Tesoura, Lagarto, Spock',
+      tr: 'Taş, Kağıt, Makas, Kertenkele, Spock',
+      es: 'Piedra, Papel, Tijera, Lagarto, Spock'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Spielregeln (RPSLS)',
+          items: [
+            '✂️ <strong>Schere</strong> schneidet 📄 Papier & köpft 🦎 Echse.',
+            '📄 <strong>Papier</strong> bedeckt 🪨 Stein & widerlegt 🖖 Spock.',
+            '🪨 <strong>Stein</strong> zerschmettert ✂️ Schere & zerquetscht 🦎 Echse.',
+            '🦎 <strong>Echse</strong> frisst 📄 Papier & vergiftet 🖖 Spock.',
+            '🖖 <strong>Spock</strong> zertrümmert ✂️ Schere & verdampft 🪨 Stein.'
+          ]
+        },
+        {
+          title: '🤖 Adaptive Markov-Ketten KI',
+          items: [
+            'Die KI besitzt ein statistisches Übergangsgedächtnis (Markov Matrix) und lernt deine Gewohnheiten.',
+            'Je mehr Runden du spielst, desto präziser sagt die KI deine nächsten Züge voraus!'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Game Rules (RPSLS)',
+          items: [
+            '✂️ <strong>Scissors</strong> cuts 📄 Paper & decapitates 🦎 Lizard.',
+            '📄 <strong>Paper</strong> covers 🪨 Rock & disproves 🖖 Spock.',
+            '🪨 <strong>Rock</strong> crushes ✂️ Scissors & crushes 🦎 Lizard.',
+            '🦎 <strong>Lizard</strong> eats 📄 Paper & poisons 🖖 Spock.',
+            '🖖 <strong>Spock</strong> smashes ✂️ Scissors & vaporizes 🪨 Rock.'
+          ]
+        },
+        {
+          title: '🤖 Markov Predictor AI',
+          items: [
+            'The AI tracks your historical move sequences to anticipate your next choice.',
+            'Play unpredictably to beat the predictive machine learning engine!'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 Règles du jeu',
+          items: [
+            'Les ciseaux coupent le papier et décapitent le lézard.',
+            'Le papier recouvre la pierre et réfute Spock.',
+            'La pierre brise les ciseaux et écrase le lézard.',
+            'Le lézard mange le papier et empoisonne Spock.',
+            'Spock désintègre la pierre et casse les ciseaux.'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Regras do Jogo',
+          items: [
+            'Tesoura corta papel e decapita lagarto.',
+            'Papel cobre pedra e refuta Spock.',
+            'Pedra quebra tesoura e esmaga lagarto.',
+            'Lagarto come papel e envenena Spock.',
+            'Spock vaporiza pedra e quebra tesoura.'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyun Kuralları',
+          items: [
+            'Makas kağıdı keser ve kertenkeleyi keser.',
+            'Kağıt taşı sarar ve Spock\'ı çürütür.',
+            'Taş makası kırar ve kertenkeleyi ezer.',
+            'Kertenkele kağıdı yer ve Spock\'ı zehirler.',
+            'Spock taşı buharlaştırır ve makası kırar.'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Reglas del Juego',
+          items: [
+            'Tijera corta papel y decapita lagarto.',
+            'Papel cubre piedra y refuta a Spock.',
+            'Piedra rompe tijera y aplasta lagarto.',
+            'Lagarto come papel y envenena a Spock.',
+            'Spock vaporiza piedra y rompe tijera.'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Wechsle regelmäßig zwischen klassischen und erweiterten Symbolen (Echse & Spock), um die Berechnungsmatrix der KI zu verwirren!',
+      en: '💡 <strong>Pro Tip:</strong> Frequently rotate between classic moves and Lizard/Spock to break the AI\'s learned pattern weights!',
+      fr: '💡 <strong>Astuce Pro:</strong> Utilisez Lézard et Spock pour casser les prédictions de l\'IA !',
+      pt: '💡 <strong>Dica Pro:</strong> Varie frequentemente entre clássicos e Lagarto/Spock!',
+      tr: '💡 <strong>Usta İpucu:</strong> YZ\'nin tahmin matrisini bozmak için Kertenkele ve Spock kullanın!',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Alterna con frecuencia entre las opciones clásicas y Lagarto/Spock!'
+    }
+  },
+  snake: {
+    icon: '🐍⚡',
+    title: {
+      de: 'Neon Snake Retro',
+      en: 'Neon Snake Retro',
+      fr: 'Neon Snake Retro',
+      pt: 'Neon Snake Retro',
+      tr: 'Neon Yılan Oyunu',
+      es: 'Neon Snake Retro'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Ziel des Spiels',
+          items: [
+            'Steuere die Neon-Schlange und sammle leuchtende Äpfel ein.',
+            'Jeder Apfel lässt deine Schlange um 1 Segment wachsen und steigert das Spieltempo.',
+            'Vermeide Kollisionen mit den Außenwänden und deinem eigenen Schwanz.'
+          ]
+        },
+        {
+          title: '🎮 Steuerung',
+          items: [
+            'Tastatur: <span class="guide-key-tag">↑ ↓ ← →</span> Pfeiltasten oder <span class="guide-key-tag">W A S D</span>.',
+            'Smartphones & Tablets: Nutze das virtuelle Touch-Steuerkreuz (D-Pad) unter dem Canvas.'
+          ]
+        },
+        {
+          title: '👑 VIP God-Mode Feature',
+          items: [
+            'Im VIP Administrator Menü kannst du den <strong>Snake God-Mode</strong> aktivieren, der die Wände durchlässig macht (Screen-Wrap).'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Objective',
+          items: [
+            'Guide the neon snake to eat apples and grow longer.',
+            'Avoid bumping into the board boundaries or your own tail.'
+          ]
+        },
+        {
+          title: '🎮 Controls',
+          items: [
+            'Use keyboard arrow keys <span class="guide-key-tag">↑ ↓ ← →</span> or <span class="guide-key-tag">W A S D</span>.',
+            'On mobile, use the virtual touch D-pad below the screen.'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 But du jeu',
+          items: [
+            'Mangez des pommes néon pour grandir et évitez de percuter les murs ou votre corps !',
+            'Dirigez le serpent avec les touches fléchées ou le pavé tactile.'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Colete maçãs neon para crescer e evite bater nas bordas ou no próprio corpo!',
+            'Use as setas do teclado ou o controle tátil na tela.'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyunun Amacı',
+          items: [
+            'Neon elmaları toplayarak yılanı büyütün ve engellere çarpmaktan kaçının!',
+            'Yön tuşları, WASD veya dokunmatik D-pad ile yönlendirin.'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            '¡Recoge manzanas de neón para crecer y evita chocar contra las paredes o tu cuerpo!',
+            'Usa las flechas del teclado, WASD o la cruceta táctil.'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Fahre bei hoher Länge in engen Bahnen am Rand entlang und nutze U-Turns, um dir den Rückweg nie zu versperren!',
+      en: '💡 <strong>Pro Tip:</strong> Move along the perimeter when very long and snake back and forth in tight rows to conserve open space!',
+      fr: '💡 <strong>Astuce Pro:</strong> Longez les murs et effectuez des allers-retours serrés pour maximiser l\'espace libre.',
+      pt: '💡 <strong>Dica Pro:</strong> Ande pelas bordas e faça voltas organizadas para não se prender.',
+      tr: '💡 <strong>Usta İpucu:</strong> Yılan uzadığında kenarlardan ilerleyerek açık alanı koruyun.',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Avanza por los bordes y haz giros ordenados para no quedarte atrapado!'
+    }
+  },
+  brickbreaker: {
+    icon: '🧱💥',
+    title: {
+      de: 'Cyber Brick Breaker',
+      en: 'Cyber Brick Breaker',
+      fr: 'Cyber Brick Breaker',
+      pt: 'Cyber Brick Breaker',
+      tr: 'Cyber Tuğla Kırma',
+      es: 'Cyber Brick Breaker'
+    },
+    sections: {
+      de: [
+        {
+          title: '🎯 Ziel des Spiels',
+          items: [
+            'Zerstöre alle Steine auf dem Spielfeld mit dem Laser-Ball und halte den Ball im Spiel.',
+            'Fange herabfallende Power-ups auf, um Spezialwaffen und Boni freizuschalten.'
+          ]
+        },
+        {
+          title: '🎮 Steuerung',
+          items: [
+            'Bewege die Raquette mit der Maus, Finger auf Touchscreen oder <span class="guide-key-tag">A</span> / <span class="guide-key-tag">D</span> bzw. <span class="guide-key-tag">←</span> / <span class="guide-key-tag">→</span>.',
+            'Drücke <span class="guide-key-tag">LEERTASTE</span> oder den <span class="guide-key-tag">🚀 Start</span>-Button, um den Ball zu starten oder gesammelte Laser abzufeuern.'
+          ]
+        },
+        {
+          title: '⚡ Power-ups & Spezialwaffen',
+          items: [
+            '<strong>🔫 Laser:</strong> Rüstet dein Paddel mit Blaster-Kanonen aus.',
+            '<strong>🔵 Multiball:</strong> Teilt den Ball in 3 Laser-Kugeln.',
+            '<strong>📏 Breites Paddel:</strong> Verdoppelt die Fangfläche deines Schlägers.',
+            '<strong>❤️ Extra-Leben:</strong> Stellt verlorene Leben wieder her.'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: '🎯 Objective',
+          items: [
+            'Destroy all bricks using the laser ball without letting it fall below the paddle.',
+            'Catch falling power-ups to unlock lasers, multiballs, and wide paddle upgrades.'
+          ]
+        },
+        {
+          title: '🎮 Controls',
+          items: [
+            'Move paddle with Mouse, Touch, or <span class="guide-key-tag">A</span>/<span class="guide-key-tag">D</span>/<span class="guide-key-tag">←</span>/<span class="guide-key-tag">→</span>.',
+            'Press <span class="guide-key-tag">SPACE</span> to launch the ball and fire laser cannons.'
+          ]
+        }
+      ],
+      fr: [
+        {
+          title: '🎯 But du jeu',
+          items: [
+            'Détruisez toutes les briques sans laisser tomber la balle !',
+            'Déplacez la raquette à la souris ou au doigt, et appuyez sur <span class="guide-key-tag">ESPACE</span> pour lancer ou tirer.'
+          ]
+        }
+      ],
+      pt: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            'Destrua todos os blocos com a bola de laser e pegue os power-ups que caem!',
+            'Mova a barra com o mouse ou toque, e pressione <span class="guide-key-tag">ESPAÇO</span> para lançar/atirar.'
+          ]
+        }
+      ],
+      tr: [
+        {
+          title: '🎯 Oyunun Amacı',
+          items: [
+            'Lazer topuyla tüm tuğlaları kırın ve düşen güçlendirmeleri toplayın!',
+            'Fare veya dokunmatik ile raketi kaydırın, <span class="guide-key-tag">BOŞLUK</span> ile başlatın ve ateş edin.'
+          ]
+        }
+      ],
+      es: [
+        {
+          title: '🎯 Objetivo',
+          items: [
+            '¡Rompe todos los ladrillos con la bola láser y recoge los potenciadores!',
+            'Mueve la pala con el ratón o toque, y pulsa <span class="guide-key-tag">ESPACIO</span> para lanzar/disparar.'
+          ]
+        }
+      ]
+    },
+    tip: {
+      de: '💡 <strong>Profi-Tipp:</strong> Triff den Ball mit den äußersten Kanten des Paddels für spitze Abprallwinkel, um Steine in der oberen Reihe gezielt abzuräumen!',
+      en: '💡 <strong>Pro Tip:</strong> Rebound the ball using the outer edges of the paddle to create sharp angles and penetrate the top rows of bricks!',
+      fr: '💡 <strong>Astuce Pro:</strong> Frappez la balle avec les extrémités de la raquette pour atteindre le haut des briques.',
+      pt: '💡 <strong>Dica Pro:</strong> Use as pontas da barra para criar ângulos fechados e acertar o topo.',
+      tr: '💡 <strong>Usta İpucu:</strong> Üst sıradaki tuğlaları vurmak için topu raketin uçlarıyla karşılayın.',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Golpea la bola con los extremos de la pala para darle ángulos cerrados!'
+    }
+  }
+};
+
+function openGameGuide(gameId) {
+  const guide = GAME_GUIDES[gameId] || GAME_GUIDES['tictactoe'];
+  const lang = appState.language || 'de';
+
+  const modal = document.getElementById('guide-modal');
+  const iconEl = document.getElementById('guide-modal-icon');
+  const titleEl = document.getElementById('guide-modal-title');
+  const subtitleEl = document.getElementById('guide-modal-subtitle');
+  const bodyEl = document.getElementById('guide-modal-body');
+
+  if (!modal || !iconEl || !titleEl || !bodyEl) return;
+
+  iconEl.textContent = guide.icon || '❓';
+  titleEl.textContent = (guide.title && (guide.title[lang] || guide.title.de || guide.title.en)) || 'Spielanleitung';
+  
+  const subTexts = {
+    de: 'Regeln, Steuerung & Profi-Tipps',
+    en: 'Rules, Controls & Pro Tips',
+    fr: 'Règles, Contrôles & Astuces Pro',
+    pt: 'Regras, Controles e Dicas Pro',
+    tr: 'Kurallar, Kontroller ve Usta İpuçları',
+    es: 'Reglas, Controles y Consejos Pro'
+  };
+  if (subtitleEl) subtitleEl.textContent = subTexts[lang] || subTexts.de;
+
+  const sections = (guide.sections && (guide.sections[lang] || guide.sections.de || guide.sections.en)) || [];
+  let html = '';
+
+  sections.forEach(sec => {
+    html += `
+      <div class="guide-section">
+        <div class="guide-section-title">${sec.title}</div>
+        <ul class="guide-list">
+          ${sec.items.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  });
+
+  if (guide.tip) {
+    const tipText = guide.tip[lang] || guide.tip.de || guide.tip.en;
+    html += `
+      <div class="guide-tip-box">
+        ${tipText}
+      </div>
+    `;
+  }
+
+  bodyEl.innerHTML = html;
+  modal.classList.remove('hidden');
+  freezeApp();
+  SFX.click();
+}
+
+function closeGameGuide() {
+  const modal = document.getElementById('guide-modal');
+  if (modal) modal.classList.add('hidden');
+  unfreezeApp();
+  SFX.click();
+}
+
+function initGameGuides() {
+  document.querySelectorAll('.how-to-play-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const gameId = btn.dataset.guideGame || activeGameId;
+      openGameGuide(gameId);
+    });
+  });
+
+  const modal = document.getElementById('guide-modal');
+  const closeBtn = document.getElementById('close-guide-btn');
+  const startBtn = document.getElementById('guide-start-btn');
+
+  if (closeBtn) closeBtn.addEventListener('click', closeGameGuide);
+  if (startBtn) startBtn.addEventListener('click', closeGameGuide);
+
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeGameGuide();
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+      closeGameGuide();
+    }
+  });
+}
+
+/* ==========================================================================
    21. INITIALIZATION ENTRYPOINT
    ========================================================================== */
 window.addEventListener('DOMContentLoaded', () => {
@@ -3981,6 +4802,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initLanguageSelection();
   initWelcomeFlow();
   initSettings();
+  initGameGuides();
   initTicTacToe();
   initMemory();
   initSuperMario();
