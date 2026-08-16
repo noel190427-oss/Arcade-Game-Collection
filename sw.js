@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v8-noel-branding';
+const CACHE_NAME = 'arcade-collection-v9-kart-countdown';
 const APP_SHELL = [
   './',
   './index.html',

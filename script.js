@@ -1095,8 +1095,26 @@ const SFX = {
   },
   drift: () => playSynthTone({ freq: 240, duration: 0.08, type: 'sawtooth', sweep: 50 }),
   hit: () => { playSynthTone({ freq: 180, duration: 0.12, type: 'square', sweep: -60 }); triggerHaptic(35); },
-  beepRed: () => playSynthTone({ freq: 440, duration: 0.1, type: 'square' }),
-  beepGreen: () => playSynthTone({ freq: 880, duration: 0.25, type: 'triangle', sweep: 50 }),
+  beepRed: () => {
+    playSynthTone({ freq: 440, duration: 0.18, type: 'square', gainMul: 1.2 });
+    playSynthTone({ freq: 880, duration: 0.18, type: 'triangle', gainMul: 0.5 });
+    triggerHaptic(25);
+  },
+  beepGreen: () => {
+    playSynthTone({ freq: 880, duration: 0.45, type: 'square', sweep: 100, gainMul: 1.4 });
+    playSynthTone({ freq: 1320, duration: 0.45, type: 'triangle', sweep: 150, gainMul: 0.8 });
+    triggerHaptic([30, 50, 80]);
+  },
+  kartCountdownLow: () => {
+    playSynthTone({ freq: 440, duration: 0.18, type: 'square', gainMul: 1.2 });
+    playSynthTone({ freq: 880, duration: 0.18, type: 'triangle', gainMul: 0.5 });
+    triggerHaptic(25);
+  },
+  kartCountdownGo: () => {
+    playSynthTone({ freq: 880, duration: 0.45, type: 'square', sweep: 100, gainMul: 1.4 });
+    playSynthTone({ freq: 1320, duration: 0.45, type: 'triangle', sweep: 150, gainMul: 0.8 });
+    triggerHaptic([30, 50, 80]);
+  },
   achievement: () => {
     [587, 740, 880, 1174].forEach((f, i) => {
       setTimeout(() => playSynthTone({ freq: f, duration: 0.18, type: 'triangle', sweep: 40 }), i * 90);
@@ -1654,6 +1672,12 @@ function switchGame(gameId) {
   });
 
   SFX.click();
+
+  if (gameId === 'mariokart') {
+    if (!kartPlayer || kartGameOver || kartPlayer.progress === 0) {
+      resetMarioKart();
+    }
+  }
 
   if (!isAppFrozen) {
     requestGameLoop(gameId);
@@ -2839,7 +2863,15 @@ function startMarioKartLoop() {
   requestAnimationFrame(tickMarioKart);
 }
 
+let kartCountdownTimers = [];
+
+function clearKartCountdownTimers() {
+  kartCountdownTimers.forEach(t => clearTimeout(t));
+  kartCountdownTimers = [];
+}
+
 function runKartCountdown(callback) {
+  clearKartCountdownTimers();
   kartCountdownActive = true;
   const overlay = document.getElementById('kart-countdown-overlay');
   const textEl = document.getElementById('kart-countdown-text');
@@ -2847,41 +2879,74 @@ function runKartCountdown(callback) {
   const l2 = document.getElementById('traffic-light-2');
   const l3 = document.getElementById('traffic-light-3');
 
+  if (!overlay || !textEl || !l1 || !l2 || !l3) return;
+
   overlay.classList.remove('hidden');
-  l1.className = 'light';
+  overlay.style.opacity = '1';
+
+  const showStep = (numText) => {
+    textEl.textContent = numText;
+    textEl.classList.remove('pop-anim');
+    void textEl.offsetWidth;
+    textEl.classList.add('pop-anim');
+  };
+
+  // Step 1: 0.0s -> "3" (Red Light 1)
+  l1.className = 'light active red';
   l2.className = 'light';
   l3.className = 'light';
-  textEl.textContent = '3';
-  l1.className = 'light active red';
-  SFX.beepRed();
+  showStep('3');
+  SFX.kartCountdownLow();
 
-  setTimeout(() => {
-    textEl.textContent = '2';
+  // Step 2: 1.0s -> "2" (Red 1 + Yellow 2)
+  kartCountdownTimers.push(setTimeout(() => {
+    l1.className = 'light active red';
     l2.className = 'light active yellow';
-    SFX.beepRed();
-  }, 900);
+    l3.className = 'light';
+    showStep('2');
+    SFX.kartCountdownLow();
+  }, 1000));
 
-  setTimeout(() => {
-    textEl.textContent = '1';
+  // Step 3: 2.0s -> "1" (Red 1 + Yellow 2 + Green 3)
+  kartCountdownTimers.push(setTimeout(() => {
+    l1.className = 'light active red';
+    l2.className = 'light active yellow';
     l3.className = 'light active green';
-    SFX.beepRed();
-  }, 1800);
+    showStep('1');
+    SFX.kartCountdownLow();
+  }, 2000));
 
-  setTimeout(() => {
-    textEl.textContent = 'GO!';
-    SFX.beepGreen();
+  // Step 4: 3.0s -> "GO! 🏎️💨" (All Green Lights + Fanfare + Launch)
+  kartCountdownTimers.push(setTimeout(() => {
+    l1.className = 'light active green flash';
+    l2.className = 'light active green flash';
+    l3.className = 'light active green flash';
+    showStep('GO! 🏎️💨');
+    SFX.kartCountdownGo();
+
+    // Rocket / Turbo Start if Gas is pressed at Go!
     if (kartKeys.up || kartAutoGas) {
-      kartPlayer.speed = kartCCSpecs[kartSelectedCC].maxSpeed * 1.2;
-      kartPlayer.turboBoost = 30;
+      kartPlayer.speed = (kartCCSpecs[kartSelectedCC] || kartCCSpecs[50]).maxSpeed * 1.35;
+      kartPlayer.turboBoost = 45;
       SFX.powerup();
     }
+
     kartCountdownActive = false;
-    setTimeout(() => overlay.classList.add('hidden'), 500);
-    if (callback) callback();
-  }, 2700);
+
+    // Smoothly fade out overlay
+    kartCountdownTimers.push(setTimeout(() => {
+      overlay.style.opacity = '0';
+      kartCountdownTimers.push(setTimeout(() => {
+        overlay.classList.add('hidden');
+        overlay.style.opacity = '1';
+        if (callback) callback();
+      }, 350));
+    }, 650));
+  }, 3000));
 }
 
 function resetMarioKart() {
+  clearKartCountdownTimers();
   const specs = kartCCSpecs[kartSelectedCC] || kartCCSpecs[50];
   kartPlayer = {
     name: appState.playerName || 'Du',
