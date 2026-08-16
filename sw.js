@@ -1,11 +1,14 @@
-const CACHE_NAME = 'arcade-collection-v7-creator-bubble';
+const CACHE_NAME = 'arcade-collection-v8-noel-branding';
 const APP_SHELL = [
   './',
   './index.html',
   './style.css',
   './script.js',
   './manifest.json',
-  './favicon.svg'
+  './favicon.svg',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable.png'
 ];
 
 self.addEventListener('install', (event) => {

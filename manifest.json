@@ -1,47 +1,66 @@
 {
-  "name": "Arcade Collection Ultra",
-  "short_name": "Arcade",
+  "id": "/noel-arcade-universe",
+  "name": "Noel Arcade Universe",
+  "short_name": "Noel Arcade",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0a0d14",
+  "background_color": "#0a0d17",
   "theme_color": "#8b5cf6",
-  "description": "Offline-fähige Mini-Arcade mit Tic-Tac-Toe Minimax, Memory, Super Mario Run, Mario Kart Rush, RPSLS, Neon Snake und Cyber Brick Breaker.",
+  "description": "Offizielle PWA Gaming & Arcade Suite von noel190427-oss – 7 Retro-Games, KI-Minimax, VIP Universe, Chiptune Jukebox & Offline-Support.",
   "categories": ["games", "entertainment", "arcade"],
   "icons": [
     {
       "src": "favicon.svg",
-      "sizes": "192x192 512x512",
+      "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "Tic-Tac-Toe",
       "url": "./index.html?game=tictactoe",
-      "icons": [{ "src": "favicon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Super Mario Run",
       "url": "./index.html?game=supermario",
-      "icons": [{ "src": "favicon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Mario Kart Rush",
       "url": "./index.html?game=mariokart",
-      "icons": [{ "src": "favicon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Neon Snake",
       "url": "./index.html?game=snake",
-      "icons": [{ "src": "favicon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Cyber Brick Breaker",
       "url": "./index.html?game=brickbreaker",
-      "icons": [{ "src": "favicon.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
