@@ -1,183 +1,1180 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="synthwave" data-anim="snappy" data-low-end="false">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#8b5cf6" />
-    <title>Arcade Collection</title>
+    <meta name="description" content="Arcade Collection Ultra & VIP - Moderne PWA Mini Arcade mit quantensicherer VIP-Konsole, VIP Bank & Geld-Drucker, Chiptune Jukebox, Minimax KI, 7 Spielen und Offline-Unterstützung." />
+    <title>Arcade Collection Ultra & VIP</title>
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <section id="welcome-screen" class="welcome-screen">
-        <div class="welcome-card">
-          <p class="eyebrow">Mini Arcade</p>
-          <h1>Game Lounge</h1>
+    <!-- Confetti & Fireworks Particle Canvas -->
+    <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
 
-          <div id="tutorial-card" class="tutorial-card">
-            <h2>So geht's</h2>
-            <ul>
-              <li>Gib deinen Namen ein.</li>
-              <li>Wähle ein Spiel aus der Liste.</li>
-              <li>Im Tic-Tac-Toe-Modus kannst du gegen Mensch oder KI spielen.</li>
-            </ul>
-            <button id="continue-tutorial" class="primary-button">Weiter</button>
-          </div>
+    <!-- VIP Mouse / Touch Sparkle Trail Canvas -->
+    <canvas id="vip-sparkle-canvas" class="vip-sparkle-canvas hidden" aria-hidden="true"></canvas>
 
-          <div id="name-panel" class="name-panel hidden">
-            <label for="player-name">Wie heißt du?</label>
-            <div class="name-row">
-              <input id="player-name" type="text" maxlength="20" placeholder="Dein Name" />
-              <button id="start-game" class="primary-button">Los geht's</button>
+    <!-- CRT Scanlines Overlay (Optional in Retro Theme) -->
+    <div class="scanlines-overlay" id="scanlines-layer" aria-hidden="true"></div>
+
+    <!-- FIRST VISIT: Language Selection Overlay -->
+    <section id="language-overlay" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Language Selection">
+      <div class="modal-card language-modal-card">
+        <div class="modal-badge">🌐 Language / Sprache</div>
+        <h2 id="lang-title">Wähle deine Sprache</h2>
+        <p class="modal-subtext" id="lang-subtitle">Select your preferred language for the Arcade.</p>
+        
+        <div class="language-grid" id="language-grid">
+          <button class="lang-card active-lang" data-lang="de">
+            <span class="flag-icon">🇩🇪</span>
+            <div class="lang-info">
+              <strong>Deutsch</strong>
+              <small>German</small>
+            </div>
+          </button>
+          <button class="lang-card" data-lang="en">
+            <span class="flag-icon">🇬🇧</span>
+            <div class="lang-info">
+              <strong>English</strong>
+              <small>Englisch</small>
+            </div>
+          </button>
+          <button class="lang-card" data-lang="fr">
+            <span class="flag-icon">🇫🇷</span>
+            <div class="lang-info">
+              <strong>Français</strong>
+              <small>Französisch</small>
+            </div>
+          </button>
+          <button class="lang-card" data-lang="pt">
+            <span class="flag-icon">🇵🇹</span>
+            <div class="lang-info">
+              <strong>Português</strong>
+              <small>Portugiesisch</small>
+            </div>
+          </button>
+          <button class="lang-card" data-lang="tr">
+            <span class="flag-icon">🇹🇷</span>
+            <div class="lang-info">
+              <strong>Türkçe</strong>
+              <small>Türkisch</small>
+            </div>
+          </button>
+          <button class="lang-card" data-lang="es">
+            <span class="flag-icon">🇪🇸</span>
+            <div class="lang-info">
+              <strong>Español</strong>
+              <small>Spanisch</small>
+            </div>
+          </button>
+        </div>
+
+        <button id="confirm-language-btn" class="primary-button full-width">
+          <span class="btn-icon">✔️</span> <span data-i18n="confirm_language">Sprache bestätigen</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- QUANTUM CRYPTOGRAPHIC VIP SECURITY PIN PAD MODAL -->
+    <section id="vip-auth-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="VIP Quantum Security Passcode">
+      <div class="modal-card vip-auth-card">
+        <div class="modal-header">
+          <div class="admin-title-row">
+            <span class="security-shield-icon">🛡️</span>
+            <div>
+              <h2 data-i18n="vip_auth_title">VIP Quantum Security</h2>
+              <small data-i18n="vip_auth_subtitle">256-Bit Branching Verifikation</small>
             </div>
           </div>
+          <button class="close-modal-btn" id="close-vip-auth-btn" aria-label="Schließen">✕</button>
         </div>
-      </section>
 
-      <header class="topbar hidden" id="topbar">
-        <div>
-          <p class="eyebrow">Mini Arcade</p>
-          <h1>Game Lounge</h1>
+        <div class="vip-auth-body">
+          <p class="vip-auth-hint" data-i18n="vip_auth_prompt">Gib den 6-stelligen verschlüsselten VIP Master-Code ein:</p>
+          
+          <!-- 6 PIN Slot Display -->
+          <div class="pin-display-container">
+            <div class="pin-slot" data-slot="0"><span class="pin-dot"></span></div>
+            <div class="pin-slot" data-slot="1"><span class="pin-dot"></span></div>
+            <div class="pin-slot" data-slot="2"><span class="pin-dot"></span></div>
+            <div class="pin-slot" data-slot="3"><span class="pin-dot"></span></div>
+            <div class="pin-slot" data-slot="4"><span class="pin-dot"></span></div>
+            <div class="pin-slot" data-slot="5"><span class="pin-dot"></span></div>
+          </div>
+
+          <div class="pin-status-msg" id="pin-auth-status">[BEREIT FÜR EINGABE]</div>
+
+          <!-- Keypad Grid -->
+          <div class="pin-keypad-grid" id="pin-keypad-grid">
+            <button class="keypad-btn" data-key="1">1</button>
+            <button class="keypad-btn" data-key="2">2</button>
+            <button class="keypad-btn" data-key="3">3</button>
+            <button class="keypad-btn" data-key="4">4</button>
+            <button class="keypad-btn" data-key="5">5</button>
+            <button class="keypad-btn" data-key="6">6</button>
+            <button class="keypad-btn" data-key="7">7</button>
+            <button class="keypad-btn" data-key="8">8</button>
+            <button class="keypad-btn" data-key="9">9</button>
+            <button class="keypad-btn action-key" id="pin-key-clear" title="Löschen">CLR</button>
+            <button class="keypad-btn" data-key="0">0</button>
+            <button class="keypad-btn action-key" id="pin-key-backspace" title="Rücktaste">⌫</button>
+          </div>
+
+          <div class="pin-auth-footer-actions">
+            <button class="ghost-button btn-small" id="pin-scramble-btn" title="Tasten anordnen zur Spionageabwehr">🔀 Tasten mischen</button>
+            <button class="primary-button vip-gold-btn" id="pin-submit-verify-btn">
+              <span>🔓</span> <span data-i18n="verify_code_btn">Verifizieren</span>
+            </button>
+          </div>
         </div>
-        <div class="topbar-meta">
-          <span id="player-label">Spieler: Gast</span>
-          <button id="reset-all" class="ghost-button">Alle zurücksetzen</button>
+      </div>
+    </section>
+
+    <!-- WELCOME / ONBOARDING SCREEN -->
+    <section id="welcome-screen" class="welcome-screen" aria-modal="true" role="dialog">
+      <div class="welcome-card">
+        <div class="hero-icon-wrap">
+          <img src="favicon.svg" alt="Arcade Icon" class="hero-logo" />
+        </div>
+        <p class="eyebrow" data-i18n="arcade_edition">Arcade Collection Ultra</p>
+        <h1 data-i18n="game_lounge_title">Game Lounge</h1>
+
+        <!-- Step 1: Tutorial Card -->
+        <div id="tutorial-card" class="tutorial-card">
+          <h2 data-i18n="how_it_works">So geht's</h2>
+          <ul class="feature-list">
+            <li><span class="bullet-icon">🎮</span> <span data-i18n="tut_step1">7 Retro- & Arcade-Spiele mit intelligenter KI.</span></li>
+            <li><span class="bullet-icon">🤖</span> <span data-i18n="tut_step2">Unbesiegbarer Minimax, Markov KI & VIP Admin Menü.</span></li>
+            <li><span class="bullet-icon">⚡</span> <span data-i18n="tut_step3">Offline-fähig, 6 Themes, 4 Animationsstile & Low-End Sparmodus.</span></li>
+          </ul>
+          <button id="continue-tutorial" class="primary-button full-width">
+            <span data-i18n="continue_btn">Weiter</span> ➔
+          </button>
+        </div>
+
+        <!-- Step 2: Name & Avatar Panel -->
+        <div id="name-panel" class="name-panel hidden">
+          <label for="player-name" data-i18n="what_is_your_name">Wie heißt du?</label>
+          <div class="avatar-picker" id="avatar-picker" aria-label="Avatar wählen">
+            <button class="avatar-opt active-avatar" data-avatar="👾">👾</button>
+            <button class="avatar-opt" data-avatar="🕹️">🕹️</button>
+            <button class="avatar-opt" data-avatar="🍄">🍄</button>
+            <button class="avatar-opt" data-avatar="🏎️">🏎️</button>
+            <button class="avatar-opt" data-avatar="🚀">🚀</button>
+            <button class="avatar-opt" data-avatar="🐱">🐱</button>
+            <button class="avatar-opt" data-avatar="⚡">⚡</button>
+            <button class="avatar-opt" data-avatar="👑">👑</button>
+          </div>
+          <div class="name-row">
+            <input id="player-name" type="text" maxlength="18" placeholder="Dein Spielername" autocomplete="off" />
+            <button id="start-game" class="primary-button">
+              <span data-i18n="start_game_btn">Los geht's</span> 🚀
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN APP SHELL -->
+    <main class="app-shell" id="app-shell">
+      <!-- TOP NAVIGATION BAR -->
+      <header class="topbar hidden" id="topbar">
+        <div class="brand-group">
+          <div class="logo-title-row">
+            <span class="brand-badge" id="brand-badge-el">ULTRA</span>
+            <h1 class="brand-heading" data-i18n="brand_title">Arcade Lounge</h1>
+          </div>
+          <div class="status-tags">
+            <span class="pill-badge pill-online" id="network-status" title="Netzwerkstatus">🟢 Online</span>
+            <span class="pill-badge pill-eco hidden" id="eco-badge" title="Low-End Modus aktiv">⚡ ECO</span>
+            <span class="pill-badge pill-vip hidden" id="vip-badge-tag" title="VIP Admin aktiv">👑 VIP DEV</span>
+          </div>
+        </div>
+
+        <div class="topbar-controls">
+          <!-- VIP Interactive Money Wallet (Visible & Clickable for VIP) -->
+          <div class="vip-wallet-chip hidden" id="vip-wallet-chip" title="VIP Münz-Konto & Geld-Drucker">
+            <span>💰</span>
+            <strong id="vip-wallet-coins">0</strong>
+            <button class="vip-quick-money-btn" id="quick-add-money-btn" title="Münzen drucken">+ Geld</button>
+          </div>
+
+          <div class="player-chip" id="player-profile-trigger" title="Spielerprofil ansehen">
+            <span class="player-avatar-mini" id="topbar-avatar">👾</span>
+            <span class="player-name-label" id="player-label">Gast</span>
+          </div>
+
+          <button id="open-vip-btn" class="icon-button vip-trigger-btn" title="VIP & Admin Konsole" aria-label="VIP Admin">
+            👑 <span class="vip-glow-dot"></span>
+          </button>
+          <button id="open-lang-btn" class="icon-button" title="Sprache ändern" aria-label="Sprache">
+            <span id="current-lang-tag">🇩🇪 DE</span>
+          </button>
+          <button id="open-trophies-btn" class="icon-button" title="Errungenschaften & Trophäen" aria-label="Trophäen">
+            🏆 <span class="badge-count" id="trophy-count">0</span>
+          </button>
+          <button id="toggle-sound-btn" class="icon-button" title="Sound umschalten" aria-label="Sound">
+            <span id="sound-icon">🔊</span>
+          </button>
+          <button id="open-settings-btn" class="icon-button" title="Einstellungen & Themes" aria-label="Einstellungen">
+            ⚙️
+          </button>
         </div>
       </header>
 
+      <!-- VIP SPECIAL ANNOUNCEMENT BANNER -->
+      <div class="vip-announcement-banner hidden" id="vip-announcement-banner">
+        <span class="vip-announcement-icon">👑</span>
+        <span class="vip-announcement-text" id="vip-banner-text">VIP ELITE STATUS AKTIV • Unbegrenzte Cheats, Geld-Drucker & 300cc freigeschaltet!</span>
+      </div>
+
+      <!-- RETRO CHIPTUNE JUKEBOX BAR -->
+      <div class="jukebox-bar hidden" id="jukebox-bar">
+        <div class="jukebox-controls">
+          <button class="jukebox-btn" id="jukebox-prev-btn" title="Vorheriger Track">⏮</button>
+          <button class="jukebox-btn play-btn" id="jukebox-toggle-btn" title="BGM Chiptune Musik abspielen">▶</button>
+          <button class="jukebox-btn" id="jukebox-next-btn" title="Nächster Track">⏭</button>
+        </div>
+        <div class="jukebox-info">
+          <div class="jukebox-visualizer" id="jukebox-vis">
+            <span class="vis-bar"></span>
+            <span class="vis-bar"></span>
+            <span class="vis-bar"></span>
+            <span class="vis-bar"></span>
+            <span class="vis-bar"></span>
+          </div>
+          <span class="jukebox-track-name" id="jukebox-track-label">🎶 Chiptune Jukebox: Aus</span>
+        </div>
+      </div>
+
+      <!-- GAME LAUNCHER SELECTOR -->
       <section class="launcher hidden" id="launcher" aria-label="Spiele-Liste">
-        <button class="game-card active" data-game="tictactoe">
+        <button class="game-card active" data-game="tictactoe" id="btn-game-tictactoe">
           <span class="game-icon">❌⭕</span>
-          <strong>Tic-Tac-Toe</strong>
-          <small>3 in a row</small>
+          <div class="game-card-text">
+            <strong>Tic-Tac-Toe</strong>
+            <small data-i18n="card_ttt_sub">Minimax KI</small>
+          </div>
         </button>
-        <button class="game-card" data-game="memory">
+        <button class="game-card" data-game="memory" id="btn-game-memory">
           <span class="game-icon">🧠</span>
-          <strong>Memory</strong>
-          <small>Paare finden</small>
+          <div class="game-card-text">
+            <strong>Memory</strong>
+            <small data-i18n="card_memory_sub">Paare finden</small>
+          </div>
         </button>
-        <button class="game-card" data-game="supermario">
+        <button class="game-card" data-game="supermario" id="btn-game-supermario">
           <span class="game-icon">🍄🏃</span>
-          <strong>Super Mario Run</strong>
-          <small>Tippe zum Springen</small>
+          <div class="game-card-text">
+            <strong>Super Mario Run</strong>
+            <small data-i18n="card_mario_sub">Raycast KI & Sprung</small>
+          </div>
         </button>
-        <button class="game-card" data-game="mariokart">
-          <span class="game-icon">🏁🍄</span>
-          <strong>Mario Kart Rush</strong>
-          <small>WASD oder Pfeile</small>
+        <button class="game-card" data-game="mariokart" id="btn-game-mariokart">
+          <span class="game-icon">🏁🏎️</span>
+          <div class="game-card-text">
+            <strong>Mario Kart Rush</strong>
+            <small data-i18n="card_kart_sub">50cc-200cc & Items</small>
+          </div>
         </button>
-        <button class="game-card" data-game="rps">
+        <button class="game-card" data-game="rps" id="btn-game-rps">
           <span class="game-icon">✊🖐️✌️</span>
-          <strong>Stein, Papier, Schere</strong>
-          <small>Gegen den Computer</small>
+          <div class="game-card-text">
+            <strong data-i18n="card_rps_title">RPSLS</strong>
+            <small data-i18n="card_rps_sub">Markov Vorhersage-KI</small>
+          </div>
+        </button>
+        <button class="game-card" data-game="snake" id="btn-game-snake">
+          <span class="game-icon">🐍⚡</span>
+          <div class="game-card-text">
+            <strong>Neon Snake</strong>
+            <small data-i18n="card_snake_sub">Retro Schlangenjagd</small>
+          </div>
+        </button>
+        <button class="game-card" data-game="brickbreaker" id="btn-game-brickbreaker">
+          <span class="game-icon">🧱💥</span>
+          <div class="game-card-text">
+            <strong>Cyber Bricks</strong>
+            <small data-i18n="card_bricks_sub">Laser Breakout</small>
+          </div>
         </button>
       </section>
 
+      <!-- GAME 1: TIC-TAC-TOE -->
       <section id="tictactoe" class="game-panel active-panel">
         <div class="panel-header">
-          <h2>Tic-Tac-Toe</h2>
-          <button class="primary-button" id="reset-tictactoe">Neu starten</button>
+          <div class="panel-title-wrap">
+            <h2>❌⭕ Tic-Tac-Toe</h2>
+            <span class="panel-subtitle" data-i18n="ttt_desc">Klassisches 3-in-einer-Reihe mit wählbarer KI</span>
+          </div>
+          <button class="primary-button" id="reset-tictactoe" data-i18n="restart_btn">Neu starten</button>
         </div>
-        <div class="ttt-mode-switch" aria-label="Tic-Tac-Toe Modus">
-          <button class="mode-button active-mode" data-mode="human">Mensch gegen Mensch</button>
-          <button class="mode-button" data-mode="ai">Mensch gegen KI</button>
+
+        <div class="panel-controls-row">
+          <!-- Opponent Selector -->
+          <div class="mode-switch-group" aria-label="Gegner-Modus">
+            <button class="mode-button" data-mode="human" data-i18n="mode_human">Mensch vs Mensch</button>
+            <button class="mode-button active-mode" data-mode="ai" data-i18n="mode_ai">Mensch vs KI</button>
+          </div>
+
+          <!-- AI Difficulty Selector -->
+          <div class="mode-switch-group" id="ttt-difficulty-group" aria-label="KI-Schwierigkeit">
+            <button class="mode-button" data-ttt-diff="easy" data-i18n="diff_easy">Leicht</button>
+            <button class="mode-button" data-ttt-diff="medium" data-i18n="diff_medium">Mittel</button>
+            <button class="mode-button active-mode" data-ttt-diff="master" data-i18n="diff_master">Meister (Minimax)</button>
+          </div>
         </div>
-        <div class="status-line" id="ttt-status">Spieler X ist am Zug.</div>
-        <div class="board" id="ttt-board" aria-label="Tic-Tac-Toe Spielfeld">
-          <button class="cell" data-index="0"></button>
-          <button class="cell" data-index="1"></button>
-          <button class="cell" data-index="2"></button>
-          <button class="cell" data-index="3"></button>
-          <button class="cell" data-index="4"></button>
-          <button class="cell" data-index="5"></button>
-          <button class="cell" data-index="6"></button>
-          <button class="cell" data-index="7"></button>
-          <button class="cell" data-index="8"></button>
+
+        <div class="status-banner" id="ttt-status">Du bist X. Die KI spielt O. Du bist am Zug.</div>
+
+        <div class="ttt-container">
+          <div class="board" id="ttt-board" aria-label="Tic-Tac-Toe Spielfeld">
+            <button class="cell" data-index="0" aria-label="Feld 1"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="1" aria-label="Feld 2"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="2" aria-label="Feld 3"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="3" aria-label="Feld 4"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="4" aria-label="Feld 5"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="5" aria-label="Feld 6"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="6" aria-label="Feld 7"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="7" aria-label="Feld 8"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+            <button class="cell" data-index="8" aria-label="Feld 9"><span class="cell-symbol"></span><span class="ai-eval-score"></span></button>
+          </div>
+        </div>
+
+        <div class="game-footer-stats">
+          <div class="stat-pill"><span data-i18n="stat_player_wins">Siege:</span> <strong id="ttt-wins-x">0</strong></div>
+          <div class="stat-pill"><span data-i18n="stat_draws">Unentschieden:</span> <strong id="ttt-draws">0</strong></div>
+          <div class="stat-pill"><span data-i18n="stat_ai_wins">KI-Siege:</span> <strong id="ttt-wins-o">0</strong></div>
         </div>
       </section>
 
+      <!-- GAME 2: MEMORY -->
       <section id="memory" class="game-panel">
         <div class="panel-header">
-          <h2>Memory</h2>
-          <button class="primary-button" id="reset-memory">Neu mischen</button>
+          <div class="panel-title-wrap">
+            <h2>🧠 Memory</h2>
+            <span class="panel-subtitle" data-i18n="memory_desc">Finde alle Bildpaare mit möglichst wenigen Versuchen</span>
+          </div>
+          <button class="primary-button" id="reset-memory" data-i18n="reshuffle_btn">Neu mischen</button>
         </div>
-        <div class="memory-stats">
-          <span>Paare gefunden: <strong id="memory-score">0</strong></span>
-          <span>Versuche: <strong id="memory-attempts">0</strong></span>
+
+        <div class="panel-controls-row">
+          <!-- Theme pack selection -->
+          <div class="mode-switch-group" aria-label="Memory Theme">
+            <button class="mode-button active-mode" data-mem-theme="arcade">🎮 Arcade</button>
+            <button class="mode-button" data-mem-theme="animals">🐾 Tiere</button>
+            <button class="mode-button" data-mem-theme="food">🍕 Essen</button>
+            <button class="mode-button" data-mem-theme="space">🚀 Space</button>
+            <button class="mode-button vip-lock-item" data-mem-theme="vipdiamond" id="mem-vip-theme-btn">👑 VIP Diamond <span class="vip-lock-badge">🔒</span></button>
+          </div>
+          <!-- Grid size selection -->
+          <div class="mode-switch-group" aria-label="Feldgröße">
+            <button class="mode-button active-mode" data-mem-grid="4x4">4x4 (8 Paare)</button>
+            <button class="mode-button" data-mem-grid="4x5">4x5 (10 Paare)</button>
+          </div>
         </div>
-        <div class="memory-grid" id="memory-board" aria-label="Memory Karten"></div>
+
+        <div class="memory-stats-bar">
+          <div class="stat-pill"><span data-i18n="stat_pairs_found">Paare:</span> <strong id="memory-score">0</strong>/<span id="memory-total-pairs">8</span></div>
+          <div class="stat-pill"><span data-i18n="stat_attempts">Versuche:</span> <strong id="memory-attempts">0</strong></div>
+          <div class="stat-pill"><span data-i18n="stat_combo">Streak:</span> <strong id="memory-combo">0x</strong> 🔥</div>
+          <div class="stat-pill"><span data-i18n="stat_time">Zeit:</span> <strong id="memory-timer">0s</strong></div>
+        </div>
+
+        <div class="memory-grid-wrapper">
+          <div class="memory-grid grid-4x4" id="memory-board" aria-label="Memory Karten"></div>
+        </div>
       </section>
 
+      <!-- GAME 3: SUPER MARIO RUN -->
       <section id="supermario" class="game-panel">
         <div class="panel-header">
-          <h2>Super Mario Run</h2>
-          <button class="primary-button" id="reset-supermario">Neu starten</button>
+          <div class="panel-title-wrap">
+            <h2>🍄🏃 Super Mario Run</h2>
+            <span class="panel-subtitle" data-i18n="mario_desc">Prädiktive Raycast-KI, Doppelsprung & Münzenjagd</span>
+          </div>
+          <div class="header-action-group">
+            <button class="ghost-button vip-lock-item" id="mario-gold-suit-toggle" title="VIP Gold-Anzug & Flugsprung">👑 Gold-Anzug <span class="vip-lock-badge">🔒</span></button>
+            <button class="ghost-button" id="mario-ai-toggle" title="KI-Autopilot">🤖 <span data-i18n="ai_autopilot">Autopilot</span></button>
+            <button class="primary-button" id="reset-supermario" data-i18n="restart_btn">Neu starten</button>
+          </div>
         </div>
+
         <div class="runner-toolbar">
-          <span>Score: <strong id="mario-score">0</strong></span>
+          <div class="stat-pill"><span data-i18n="stat_score">Score:</span> <strong id="mario-score">0</strong></div>
+          <div class="stat-pill">🪙 <span data-i18n="stat_coins">Münzen:</span> <strong id="mario-coins">0</strong></div>
+          <div class="stat-pill">🏆 <span data-i18n="stat_highscore">Best:</span> <strong id="mario-highscore">0</strong></div>
+          
           <div class="runner-mode-switch" aria-label="Mario Schwierigkeitsmodus">
-            <button class="mario-mode-button active-mode" data-mario-mode="easy">Leicht</button>
-            <button class="mario-mode-button" data-mario-mode="medium">Mittel</button>
-            <button class="mario-mode-button" data-mario-mode="hard">Schwer</button>
+            <button class="mario-mode-button active-mode" data-mario-mode="easy" data-i18n="diff_easy">Leicht</button>
+            <button class="mario-mode-button" data-mario-mode="medium" data-i18n="diff_medium">Mittel</button>
+            <button class="mario-mode-button" data-mario-mode="hard" data-i18n="diff_hard">Schwer</button>
           </div>
         </div>
-        <div class="status-line" id="mario-status">Tippe in die Welt, um Mario zum Springen zu bringen.</div>
-        <div class="runner-world" id="mario-world" aria-label="Super Mario Runner">
-          <div class="cloud cloud-1"></div>
-          <div class="cloud cloud-2"></div>
-          <div class="goal-flag">
-            <span class="goal-flag-top"></span>
-            <span class="goal-flag-pole"></span>
+
+        <div class="status-banner" id="mario-status" data-i18n="mario_hint">Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)</div>
+
+        <div class="runner-world-container">
+          <!-- Live AI Autopilot HUD Indicator -->
+          <div class="ai-live-hud hidden" id="mario-ai-hud">
+            <span class="ai-hud-pulse"></span>
+            <strong>🤖 KI-AUTOPILOT AKTIV</strong>
+            <span id="mario-ai-telemetry">Raycast: Scanner bereit</span>
           </div>
-          <div class="runner-floor"></div>
-          <div class="runner-shadow"></div>
-          <div class="runner-character" id="mario-runner">
-            <div class="mario-hat"></div>
-            <div class="mario-face"></div>
-            <div class="mario-body"></div>
-            <div class="mario-arm"></div>
-            <div class="mario-leg"></div>
+
+          <div class="runner-world" id="mario-world" aria-label="Super Mario Runner World" tabindex="0">
+            <!-- Parallax layers -->
+            <div class="parallax-layer bg-sky"></div>
+            <div class="parallax-layer bg-mountains" id="mario-mountains"></div>
+            <div class="parallax-layer bg-hills" id="mario-hills"></div>
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+
+            <div class="goal-flag" id="mario-goal-flag">
+              <span class="goal-flag-top"></span>
+              <span class="goal-flag-pole"></span>
+            </div>
+
+            <div class="runner-floor" id="mario-floor"></div>
+            <div class="runner-shadow" id="mario-shadow"></div>
+
+            <div class="runner-character" id="mario-runner">
+              <div class="mario-hat"></div>
+              <div class="mario-face"></div>
+              <div class="mario-body"></div>
+              <div class="mario-arm"></div>
+              <div class="mario-leg"></div>
+              <div class="god-mode-aura hidden" id="mario-god-aura"></div>
+            </div>
+
+            <!-- Particle dust container -->
+            <div class="particle-container" id="mario-particles"></div>
+            
+            <!-- AI Laser Raycast Visualizer Canvas -->
+            <canvas class="ai-raycast-canvas" id="mario-raycast-canvas" width="600" height="220"></canvas>
           </div>
         </div>
+
         <div class="progress-wrap">
+          <span class="progress-label-start">🚩 0m</span>
           <div class="progress-track">
             <div class="progress-fill" id="mario-progress-fill"></div>
           </div>
-          <span id="mario-progress-label">0%</span>
+          <span class="progress-label-end" id="mario-progress-label">0%</span>
         </div>
       </section>
 
+      <!-- GAME 4: MARIO KART RUSH -->
       <section id="mariokart" class="game-panel">
         <div class="panel-header">
-          <h2>Mario Kart Rush</h2>
-          <button class="primary-button" id="reset-mariokart">Neu starten</button>
+          <div class="panel-title-wrap">
+            <h2>🏁🏎️ Mario Kart Rush</h2>
+            <span class="panel-subtitle" data-i18n="kart_desc">50cc-200cc Cups, Mystery Item-Boxen, Drift & 6 KI-Gegner</span>
+          </div>
+          <div class="header-action-group">
+            <button class="ghost-button" id="kart-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-mariokart" data-i18n="restart_btn">Neu starten</button>
+          </div>
         </div>
-        <div class="mario-kart-controls">
-          <span>Steuerung: <strong>W / ↑</strong> Gas, <strong>S / ↓</strong> Bremse, <strong>A / ←</strong> Links, <strong>D / →</strong> Rechts</span>
+
+        <!-- CC Engine / Difficulty Selector (With VIP 200cc & 300cc Locks) -->
+        <div class="panel-controls-row">
+          <div class="mode-switch-group" aria-label="Hubraum Klasse">
+            <button class="mode-button active-mode" data-kart-cc="50">🏎️ 50cc</button>
+            <button class="mode-button" data-kart-cc="100">🏎️ 100cc</button>
+            <button class="mode-button" data-kart-cc="150">🏎️ 150cc</button>
+            <button class="mode-button vip-lock-item" data-kart-cc="200" id="kart-200cc-btn">⚡ 200cc <span class="vip-lock-badge">🔒</span></button>
+            <button class="mode-button vip-lock-item" data-kart-cc="300" id="kart-300cc-btn">👑 300cc VIP <span class="vip-lock-badge">🔒</span></button>
+          </div>
+          <button class="ghost-button toggle-pill" id="toggle-auto-gas">
+            🏎️ <span data-i18n="auto_gas_label">Auto-Gas:</span> <strong id="auto-gas-status">AUS</strong>
+          </button>
         </div>
-        <canvas id="mario-kart-canvas" width="420" height="260" aria-label="Mario Kart Spiel"></canvas>
-        <div class="status-line" id="mario-kart-status">Rennziel: 6 KI-Gegner schlagen.</div>
+
+        <div class="kart-hud-bar">
+          <div class="stat-pill"><span data-i18n="stat_position">Rang:</span> <strong id="kart-rank-pill">#1 / 7</strong></div>
+          <div class="stat-pill">⚡ <span data-i18n="stat_speed">Speed:</span> <strong id="kart-speed-pill">0 km/h</strong></div>
+          <div class="stat-pill">🔥 <span data-i18n="stat_drift_boost">Drift-Turbo:</span> <strong id="kart-turbo-pill">0%</strong></div>
+          <div class="stat-pill">📦 <span data-i18n="stat_item">Item:</span> <strong id="kart-item-pill">LEER</strong></div>
+          <div class="stat-pill">🏁 <span data-i18n="stat_distance">Distanz:</span> <strong id="kart-distance-pill">0m / 2000m</strong></div>
+        </div>
+
+        <div class="mario-kart-controls-hint">
+          <span data-i18n="kart_controls_hint">⌨️ <strong>W / ↑</strong> Gas | <strong>S / ↓</strong> Bremse | <strong>A/D / ←/→</strong> Lenken | <strong>SHIFT/SPACE</strong> Driften | <strong>E</strong> Item nutzen</span>
+        </div>
+
+        <div class="canvas-center-wrap">
+          <div class="kart-canvas-wrapper">
+            <canvas id="mario-kart-canvas" width="480" height="320" aria-label="Mario Kart Rennstrecke"></canvas>
+            
+            <!-- Race Countdown Overlay (3, 2, 1, GO!) -->
+            <div class="kart-countdown-overlay hidden" id="kart-countdown-overlay">
+              <div class="traffic-lights">
+                <span class="light red" id="traffic-light-1"></span>
+                <span class="light yellow" id="traffic-light-2"></span>
+                <span class="light green" id="traffic-light-3"></span>
+              </div>
+              <h2 class="countdown-text" id="kart-countdown-text">READY</h2>
+            </div>
+
+            <!-- Mini-map radar overlay -->
+            <div class="kart-minimap" id="kart-minimap" aria-hidden="true">
+              <div class="minimap-track">
+                <div class="minimap-finish">🏁</div>
+                <div class="minimap-marker marker-player" id="radar-player"></div>
+                <div class="minimap-marker marker-bot" id="radar-bot-0"></div>
+                <div class="minimap-marker marker-bot" id="radar-bot-1"></div>
+                <div class="minimap-marker marker-bot" id="radar-bot-2"></div>
+                <div class="minimap-marker marker-bot" id="radar-bot-3"></div>
+                <div class="minimap-marker marker-bot" id="radar-bot-4"></div>
+                <div class="minimap-marker marker-bot" id="radar-bot-5"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Touch Controls for Mobile Kart -->
+        <div class="mobile-touch-controls" id="kart-touch-controls">
+          <div class="touch-dpad-left">
+            <button class="touch-btn" id="touch-kart-left" aria-label="Links">◀</button>
+            <button class="touch-btn" id="touch-kart-right" aria-label="Rechts">▶</button>
+          </div>
+          <div class="touch-dpad-right">
+            <button class="touch-btn btn-item" id="touch-kart-item" aria-label="Item nutzen">📦 ITEM</button>
+            <button class="touch-btn btn-drift" id="touch-kart-drift" aria-label="Drift">⚡ DRIFT</button>
+            <button class="touch-btn btn-brake" id="touch-kart-brake" aria-label="Bremse">🛑</button>
+            <button class="touch-btn btn-gas" id="touch-kart-gas" aria-label="Gas">🏎️ GAS</button>
+          </div>
+        </div>
+
+        <div class="status-banner" id="mario-kart-status">Rennziel: Besiege alle 6 KI-Fahrer und hole Platz 1!</div>
       </section>
 
+      <!-- GAME 5: ROCK-PAPER-SCISSORS-LIZARD-SPOCK (RPSLS) -->
       <section id="rps" class="game-panel">
         <div class="panel-header">
-          <h2>Stein, Papier, Schere</h2>
-          <button class="primary-button" id="reset-rps">Punkte zurücksetzen</button>
+          <div class="panel-title-wrap">
+            <h2 data-i18n="rps_title">✊🖐️✌️ Stein, Papier, Schere</h2>
+            <span class="panel-subtitle" data-i18n="rps_desc">Mit erweiterter Markov-Ketten Vorhersage-KI</span>
+          </div>
+          <button class="primary-button" id="reset-rps" data-i18n="reset_points_btn">Punkte zurücksetzen</button>
         </div>
-        <div class="rps-stats">
-          <span>Du: <strong id="rps-user-score">0</strong></span>
-          <span>Computer: <strong id="rps-computer-score">0</strong></span>
+
+        <div class="panel-controls-row">
+          <div class="mode-switch-group" aria-label="RPS Spielmodus">
+            <button class="mode-button active-mode" data-rps-mode="classic" data-i18n="rps_mode_classic">Klassisch (3 Optionen)</button>
+            <button class="mode-button" data-rps-mode="lizard_spock" data-i18n="rps_mode_spock">Erweitert (RPSLS - 5 Optionen)</button>
+          </div>
         </div>
-        <div class="rps-controls">
-          <button class="rps-choice" data-choice="Stein">✊ Stein</button>
-          <button class="rps-choice" data-choice="Papier">🖐️ Papier</button>
-          <button class="rps-choice" data-choice="Schere">✌️ Schere</button>
+
+        <div class="rps-stats-bar">
+          <div class="stat-pill"><span data-i18n="stat_you">Du:</span> <strong id="rps-user-score">0</strong></div>
+          <div class="stat-pill"><span data-i18n="stat_draws">Unentschieden:</span> <strong id="rps-draw-score">0</strong></div>
+          <div class="stat-pill"><span data-i18n="stat_computer">Computer:</span> <strong id="rps-computer-score">0</strong></div>
+          <div class="stat-pill">🔥 <span data-i18n="stat_streak">Streak:</span> <strong id="rps-streak">0</strong></div>
         </div>
-        <div class="status-line" id="rps-status">Mach deinen Zug.</div>
+
+        <div class="ai-prediction-card">
+          <div class="ai-pred-header">
+            <span class="ai-badge">🤖 MARKOV AI</span>
+            <span class="ai-pred-text" id="rps-ai-prediction-label">Analysiere Spielermuster…</span>
+          </div>
+          <div class="ai-pred-meter">
+            <div class="ai-pred-fill" id="rps-ai-meter-fill" style="width: 35%;"></div>
+          </div>
+          <div class="markov-heatmap-table hidden" id="markov-debug-table"></div>
+        </div>
+
+        <div class="rps-battlefield">
+          <div class="racer-card player-box">
+            <span class="battle-label" data-i18n="your_pick">Deine Wahl</span>
+            <div class="battle-choice-icon" id="rps-user-choice-display">❔</div>
+          </div>
+          <div class="battle-vs">VS</div>
+          <div class="racer-card ai-box">
+            <span class="battle-label" data-i18n="ai_pick">KI Wahl</span>
+            <div class="battle-choice-icon" id="rps-ai-choice-display">🤖</div>
+          </div>
+        </div>
+
+        <div class="rps-controls" id="rps-choices-container">
+          <button class="rps-choice" data-choice="Stein"><span class="rps-icon">✊</span> <span data-i18n="choice_rock">Stein</span></button>
+          <button class="rps-choice" data-choice="Papier"><span class="rps-icon">🖐️</span> <span data-i18n="choice_paper">Papier</span></button>
+          <button class="rps-choice" data-choice="Schere"><span class="rps-icon">✌️</span> <span data-i18n="choice_scissors">Schere</span></button>
+          <button class="rps-choice rpsls-only hidden" data-choice="Echse"><span class="rps-icon">🦎</span> <span data-i18n="choice_lizard">Echse</span></button>
+          <button class="rps-choice rpsls-only hidden" data-choice="Spock"><span class="rps-icon">🖖</span> <span data-i18n="choice_spock">Spock</span></button>
+        </div>
+
+        <div class="status-banner" id="rps-status" data-i18n="rps_prompt">Wähle dein Symbol und fordere die Vorhersage-KI heraus!</div>
       </section>
+
+      <!-- GAME 6: NEON SNAKE RETRO -->
+      <section id="snake" class="game-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h2>🐍⚡ Neon Snake Retro</h2>
+            <span class="panel-subtitle" data-i18n="snake_desc">Sammle Neon-Äpfel, Bonus-Blitze und wachse unendlich</span>
+          </div>
+          <button class="primary-button" id="reset-snake" data-i18n="restart_btn">Neu starten</button>
+        </div>
+
+        <div class="snake-hud-bar">
+          <div class="stat-pill">🍎 <span data-i18n="stat_score">Score:</span> <strong id="snake-score">0</strong></div>
+          <div class="stat-pill">🏆 <span data-i18n="stat_highscore">Highscore:</span> <strong id="snake-highscore">0</strong></div>
+          <div class="stat-pill">⚡ <span data-i18n="stat_speed">Tempo:</span> <strong id="snake-speed-level">1x</strong></div>
+        </div>
+
+        <div class="canvas-center-wrap">
+          <div class="snake-canvas-wrapper">
+            <canvas id="snake-canvas" width="400" height="400" aria-label="Neon Snake Spielfeld"></canvas>
+            <div class="snake-overlay-msg hidden" id="snake-overlay-msg">
+              <h3 id="snake-overlay-title">Game Over</h3>
+              <p id="snake-overlay-text">Punkte: 0</p>
+              <button class="primary-button" id="snake-overlay-btn" data-i18n="play_again">Nochmal spielen</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Touch Controls for Snake -->
+        <div class="snake-touch-dpad" id="snake-touch-dpad">
+          <button class="snake-dpad-btn up" id="snake-touch-up">▲</button>
+          <div class="snake-dpad-middle">
+            <button class="snake-dpad-btn left" id="snake-touch-left">◀</button>
+            <div class="snake-dpad-center"></div>
+            <button class="snake-dpad-btn right" id="snake-touch-right">▶</button>
+          </div>
+          <button class="snake-dpad-btn down" id="snake-touch-down">▼</button>
+        </div>
+
+        <div class="status-banner" id="snake-status" data-i18n="snake_hint">Nutze Pfeiltasten, WASD oder das Steuerkreuz zum Steuern.</div>
+      </section>
+
+      <!-- GAME 7: CYBER BRICK BREAKER -->
+      <section id="brickbreaker" class="game-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h2>🧱💥 Cyber Brick Breaker</h2>
+            <span class="panel-subtitle" data-i18n="bricks_desc">Zerstöre alle Steine, schnapp dir Power-ups und Laser</span>
+          </div>
+          <button class="primary-button" id="reset-bricks" data-i18n="restart_btn">Neu starten</button>
+        </div>
+
+        <div class="brick-hud-bar">
+          <div class="stat-pill">⭐ <span data-i18n="stat_score">Score:</span> <strong id="bricks-score">0</strong></div>
+          <div class="stat-pill">❤️ <span data-i18n="stat_lives">Leben:</span> <strong id="bricks-lives">3</strong></div>
+          <div class="stat-pill">🧱 <span data-i18n="stat_level">Level:</span> <strong id="bricks-level">1</strong></div>
+          <div class="stat-pill">🏆 <span data-i18n="stat_highscore">Best:</span> <strong id="bricks-highscore">0</strong></div>
+        </div>
+
+        <div class="canvas-center-wrap">
+          <div class="bricks-canvas-wrapper">
+            <canvas id="bricks-canvas" width="440" height="340" aria-label="Brick Breaker Spielfeld"></canvas>
+            <div class="bricks-overlay-msg hidden" id="bricks-overlay-msg">
+              <h3 id="bricks-overlay-title">Level geschafft!</h3>
+              <p id="bricks-overlay-text">Nächstes Level bereit</p>
+              <button class="primary-button" id="bricks-overlay-btn" data-i18n="continue_btn">Weiter</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Touch Controls for Brick Breaker -->
+        <div class="mobile-touch-controls" id="bricks-touch-controls">
+          <button class="touch-btn paddle-touch" id="touch-paddle-left">◀ Links</button>
+          <button class="touch-btn paddle-touch" id="touch-paddle-launch">🚀 Start / Laser</button>
+          <button class="touch-btn paddle-touch" id="touch-paddle-right">Rechts ▶</button>
+        </div>
+
+        <div class="status-banner" id="bricks-status" data-i18n="bricks_hint">Bewege den Schläger mit Maus, Touch oder A/D / Pfeiltasten. [LEERTASTE] zum Starten.</div>
+      </section>
+
+      <!-- GLOBAL FOOTER -->
+      <footer class="app-footer">
+        <div class="footer-content">
+          <span>🎮 Arcade Collection Ultra & VIP • PWA Offline Ready</span>
+          <div class="footer-links">
+            <button class="link-btn" id="footer-stats-btn" data-i18n="nav_stats">📊 Statistiken</button>
+            <button class="link-btn vip-footer-trigger" id="footer-vip-btn">👑 VIP Admin</button>
+            <button class="link-btn" id="footer-reset-all" data-i18n="nav_reset_all">🔄 Alle Scores zurücksetzen</button>
+          </div>
+        </div>
+
+        <!-- CREATOR & VERSION PILL BUBBLE (Matches Provided Design) -->
+        <div class="creator-bubble-wrapper">
+          <div class="creator-bubble" id="creator-bubble">
+            <span class="bubble-brand" data-i18n="established_2026">ESTABLISHED 2026</span>
+            <span class="bubble-divider" aria-hidden="true"></span>
+            <span class="bubble-author"><span data-i18n="created_by">Erstellt von</span> <strong>noel190427-oss</strong></span>
+            <span class="bubble-divider" aria-hidden="true"></span>
+            <span class="bubble-version">v24.106 • 2026-08-16</span>
+            <button class="bubble-link-btn" id="bubble-whats-new-btn" data-i18n="whats_new">Was ist neu?</button>
+            <span class="bubble-divider" aria-hidden="true"></span>
+            <button class="bubble-link-btn" id="bubble-privacy-btn" data-i18n="privacy">Datenschutz</button>
+          </div>
+        </div>
+      </footer>
     </main>
+
+    <!-- ==========================================================================
+         VIP & ADMINISTRATOR CONSOLE MODAL
+         ========================================================================== -->
+    <div id="admin-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="VIP & Admin Console">
+      <div class="modal-card admin-modal-card">
+        <div class="modal-header admin-modal-header">
+          <div class="admin-title-row">
+            <span class="vip-crown-icon">👑</span>
+            <div>
+              <h2 data-i18n="admin_title">VIP & Administrator Konsole</h2>
+              <small data-i18n="admin_subtitle">Entwickler-Werkzeuge, Level-Freischaltung & God-Mode</small>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="close-admin-btn" aria-label="Schließen">✕</button>
+        </div>
+
+        <!-- VIP Navigation Tabs -->
+        <div class="admin-tab-bar">
+          <button class="admin-tab-btn active-admin-tab" data-admin-tab="bank">🏦 VIP Bank & Geld</button>
+          <button class="admin-tab-btn" data-admin-tab="cheats">👑 Cheats & Unlock</button>
+          <button class="admin-tab-btn" data-admin-tab="physics">⚡ Physik & Engine</button>
+          <button class="admin-tab-btn" data-admin-tab="aidebug">🤖 KI & Debugger</button>
+          <button class="admin-tab-btn" data-admin-tab="soundboard">🎹 VIP Soundboard</button>
+        </div>
+
+        <!-- TAB 1: VIP BANK & MONEY GENERATOR -->
+        <div class="admin-tab-content" id="admin-tab-bank">
+          <div class="admin-box vip-bank-vault-box">
+            <div class="bank-header-row">
+              <div>
+                <h3>🏦 VIP Tresor & Geld-Drucker</h3>
+                <p class="admin-desc">Generiere unbegrenzte VIP Münzen & Guthaben für dein Arcade-Konto.</p>
+              </div>
+              <div class="bank-balance-display">
+                <span class="balance-label">Guthaben:</span>
+                <span class="balance-amount">🪙 <strong id="admin-bank-balance">0</strong></span>
+              </div>
+            </div>
+
+            <!-- Quick Money Mint Buttons -->
+            <div class="admin-btn-row" style="margin: 12px 0;">
+              <button class="primary-button vip-gold-btn" id="btn-mint-1k">💵 +1.000 🪙</button>
+              <button class="primary-button vip-gold-btn" id="btn-mint-10k">💰 +10.000 🪙</button>
+              <button class="primary-button vip-gold-btn" id="btn-mint-100k">💎 +100.000 🪙</button>
+              <button class="primary-button vip-gold-btn" id="btn-mint-1m">🏦 +1.000.000 🪙</button>
+            </div>
+
+            <!-- Custom Amount Mint -->
+            <div class="custom-mint-row">
+              <input type="number" id="custom-mint-input" placeholder="Eigener Betrag (z.B. 500000)" min="1" max="999999999" class="custom-mint-field" />
+              <button class="secondary-button" id="btn-custom-mint">✨ Geld überweisen</button>
+            </div>
+
+            <div class="setting-row" style="margin-top: 14px;">
+              <div>
+                <strong>Unendlicher Münz-Multiplikator (x100)</strong>
+                <p class="setting-desc">Jede gesammelte Münze in Spielen zählt 100-fach.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-infinite-coins-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: CHEATS & UNLOCKS -->
+        <div class="admin-tab-content hidden" id="admin-tab-cheats">
+          <!-- 1-Click Master Unlockers -->
+          <div class="admin-box">
+            <h3 data-i18n="admin_unlock_title">🔓 Sofort-Freischaltung</h3>
+            <p class="admin-desc" data-i18n="admin_unlock_desc">Schalte alle Spielmodi, Cups, Raster und maximalen Trophäen mit 1 Klick frei.</p>
+            <div class="admin-btn-row">
+              <button class="primary-button vip-gold-btn" id="admin-unlock-all-btn">
+                <span>👑</span> <span data-i18n="admin_btn_all_levels">Alle Level & Cups freischalten</span>
+              </button>
+              <button class="primary-button vip-gold-btn" id="admin-unlock-trophies-btn">
+                <span>🏆</span> <span data-i18n="admin_btn_all_trophies">Alle 10 Trophäen freischalten</span>
+              </button>
+              <button class="secondary-button" id="admin-max-stats-btn">
+                <span>💯</span> <span data-i18n="admin_btn_max_stats">Maximal-Statistiken vergeben</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- God Mode Toggles -->
+          <div class="admin-box">
+            <h3 data-i18n="admin_godmode_title">🛡️ God-Mode & Unverwundbarkeit</h3>
+            <div class="setting-row">
+              <div>
+                <strong>Super Mario Run: Unverwundbarkeit</strong>
+                <p class="setting-desc">Mario läuft durch Hindernisse ohne Kollisionsschaden.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-god-mario" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Mario Kart: Dauer-Turbo & Stern-Power</strong>
+                <p class="setting-desc">Unendlicher Boost, 150 km/h Topspeed und Kollisionsschutz.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-god-kart" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Cyber Bricks: Unendliche Bälle & Leben</strong>
+                <p class="setting-desc">Bälle fallen nie ins Aus und Schläger hat Dauer-Laser.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-god-bricks" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Neon Snake: Wand-Durchgang</strong>
+                <p class="setting-desc">Die Schlange kann durch Bildschirmränder gleiten.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-god-snake" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: PHYSICS & ENGINE -->
+        <div class="admin-tab-content hidden" id="admin-tab-physics">
+          <div class="admin-box">
+            <h3>⚡ Globale Game-Speed & Engine-Takte</h3>
+            <div class="setting-group">
+              <div class="setting-row-no-border">
+                <strong>Game-Speed Multiplikator</strong>
+                <span id="admin-speed-val">1.0x</span>
+              </div>
+              <input type="range" id="admin-speed-slider" min="25" max="300" value="100" class="custom-range" />
+            </div>
+
+            <div class="setting-group" style="margin-top: 14px;">
+              <div class="setting-row-no-border">
+                <strong>Super Mario Sprungkraft</strong>
+                <span id="admin-mario-jump-val">12.5</span>
+              </div>
+              <input type="range" id="admin-mario-jump-slider" min="80" max="220" value="125" class="custom-range" />
+            </div>
+
+            <div class="setting-group" style="margin-top: 14px;">
+              <div class="setting-row-no-border">
+                <strong>Mario Kart Beschleunigung</strong>
+                <span id="admin-kart-accel-val">1.0x</span>
+              </div>
+              <input type="range" id="admin-kart-accel-slider" min="50" max="250" value="100" class="custom-range" />
+            </div>
+
+            <div class="admin-btn-row" style="margin-top: 16px;">
+              <button class="secondary-button" id="admin-spawn-10balls-btn">💥 10 Multibälle spawnen</button>
+              <button class="secondary-button" id="admin-spawn-snake50-btn">🐍 Snake Länge = 50</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: AI & DEBUGGER -->
+        <div class="admin-tab-content hidden" id="admin-tab-aidebug">
+          <div class="admin-box">
+            <h3>🤖 KI-Debug-Overlays & Telemetrie</h3>
+            <div class="setting-row">
+              <div>
+                <strong>Super Mario Raycast-Laser zeichnen</strong>
+                <p class="setting-desc">Zeigt Sichtstrahlen, Hindernisdistanzen und Sprungparabeln.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-ai-raycast-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Tic-Tac-Toe Minimax Bewertungsbaum</strong>
+                <p class="setting-desc">Blendet berechnete Minimax-Scores auf jedem Spielfeld ein.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-ai-minimax-tree-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>RPSLS Markov Übergangsmatrix-Heatmap</strong>
+                <p class="setting-desc">Zeigt die gelernten Spielerwahrscheinlichkeiten in Echtzeit.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="admin-ai-markov-heatmap-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: SOUNDBOARD & VIP THEMES -->
+        <div class="admin-tab-content hidden" id="admin-tab-soundboard">
+          <div class="admin-box">
+            <h3>👑 Exklusive VIP Themes</h3>
+            <p class="admin-desc">Aktiviere königliche Designs für VIPs und Administratoren.</p>
+            <div class="admin-btn-row">
+              <button class="primary-button vip-gold-btn" id="admin-activate-gold-theme">
+                ✨ 24K Gold VIP Theme
+              </button>
+              <button class="primary-button" id="admin-activate-platinum-theme" style="background: linear-gradient(135deg, #0ea5e9, #e0f2fe); color: #000; font-weight: 800;">
+                💎 Platinum Diamond Theme
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-box">
+            <h3>🎹 Retro Synthesizer Soundboard</h3>
+            <p class="admin-desc">Teste die synthetisierten Retro-Soundwellen live.</p>
+            <div class="soundboard-grid">
+              <button class="soundboard-pad" data-sound-test="coin">🪙 Münze (987Hz)</button>
+              <button class="soundboard-pad" data-sound-test="kaching">💰 Kaching Geld</button>
+              <button class="soundboard-pad" data-sound-test="jump">🍄 Sprung Sweep</button>
+              <button class="soundboard-pad" data-sound-test="powerup">⭐ Powerup Akkord</button>
+              <button class="soundboard-pad" data-sound-test="win">🏆 Fanfare</button>
+              <button class="soundboard-pad" data-sound-test="laser">🔫 8-Bit Laser</button>
+              <button class="soundboard-pad" data-sound-test="drift">🏎️ Drift Sweep</button>
+              <button class="soundboard-pad" data-sound-test="explosion">💥 Explosion</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS & DISPLAY MODAL -->
+    <div id="settings-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Einstellungen">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 data-i18n="settings_title">⚙️ Einstellungen</h2>
+          <button class="close-modal-btn" id="close-settings-btn" aria-label="Schließen">✕</button>
+        </div>
+
+        <div class="settings-body">
+          <!-- Theme Selection (With VIP Locks) -->
+          <div class="setting-group">
+            <label class="setting-title" data-i18n="theme_select_label">🎨 Design Theme</label>
+            <div class="theme-picker-grid">
+              <button class="theme-opt active-theme" data-theme="synthwave">
+                <span class="theme-preview synthwave-preview"></span>
+                <strong>Synthwave</strong>
+              </button>
+              <button class="theme-opt" data-theme="gameboy">
+                <span class="theme-preview gameboy-preview"></span>
+                <strong>Game Boy 8-Bit</strong>
+              </button>
+              <button class="theme-opt" data-theme="oled">
+                <span class="theme-preview oled-preview"></span>
+                <strong>Cyber OLED</strong>
+              </button>
+              <button class="theme-opt" data-theme="miami">
+                <span class="theme-preview miami-preview"></span>
+                <strong>Miami Sunset</strong>
+              </button>
+              <button class="theme-opt" data-theme="nordic">
+                <span class="theme-preview nordic-preview"></span>
+                <strong>Nordic Slate</strong>
+              </button>
+              <button class="theme-opt vip-lock-item" data-theme="vipgold" id="theme-opt-vipgold">
+                <span class="theme-preview vipgold-preview"></span>
+                <strong>👑 VIP Gold</strong>
+                <span class="vip-lock-badge">🔒</span>
+              </button>
+              <button class="theme-opt vip-lock-item" data-theme="vipplatinum" id="theme-opt-vipplatinum">
+                <span class="theme-preview vipplatinum-preview"></span>
+                <strong>💎 Platinum</strong>
+                <span class="vip-lock-badge">🔒</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Animation Style Selection (With VIP Matrix Lock) -->
+          <div class="setting-group">
+            <label class="setting-title" data-i18n="anim_style_label">✨ Animations- & Motion-Stil</label>
+            <div class="segmented-control">
+              <button class="segment-btn active-segment" data-anim="snappy">🚀 Snappy</button>
+              <button class="segment-btn" data-anim="smooth">🌊 Smooth</button>
+              <button class="segment-btn" data-anim="pixel">👾 Pixel 8-Bit</button>
+              <button class="segment-btn" data-anim="eco">⚡ Eco</button>
+              <button class="segment-btn vip-lock-item" data-anim="vipmatrix" id="anim-opt-vipmatrix">👑 VIP Matrix <span class="vip-lock-badge">🔒</span></button>
+            </div>
+          </div>
+
+          <!-- Low-End Mode Toggle -->
+          <div class="setting-row">
+            <div>
+              <strong data-i18n="low_end_mode_title">⚡ Low-End / Energiesparmodus</strong>
+              <p class="setting-desc" data-i18n="low_end_mode_desc">Deaktiviert Weichzeichner, Partikeleffekte und schont Akku & CPU.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="low-end-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- CRT Scanlines Toggle -->
+          <div class="setting-row">
+            <div>
+              <strong data-i18n="scanlines_title">📺 CRT Scanlines & Retro-Effekt</strong>
+              <p class="setting-desc" data-i18n="scanlines_desc">Retro Röhrenmonitor-Filter über dem Bildschirm.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="scanlines-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- VIP Mouse Sparkle Particle Trail -->
+          <div class="setting-row vip-setting-row vip-lock-item" id="vip-sparkle-trail-row">
+            <div>
+              <strong>✨ VIP Sparkle Partikel-Spur</strong>
+              <p class="setting-desc">Goldene Glitzer-Spur bei Maus- und Touch-Bewegungen.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="vip-sparkle-trail-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Audio Volume -->
+          <div class="setting-group">
+            <div class="setting-row-no-border">
+              <strong data-i18n="sound_volume_label">🔊 Soundeffekte Lautstärke</strong>
+              <span id="volume-val-display">50%</span>
+            </div>
+            <input type="range" id="volume-slider" min="0" max="100" value="50" class="custom-range" />
+          </div>
+
+          <!-- Haptic Feedback Toggle -->
+          <div class="setting-row">
+            <div>
+              <strong data-i18n="haptic_label">📳 Haptic Feedback (Vibration)</strong>
+              <p class="setting-desc" data-i18n="haptic_desc">Taktile Impulse bei Aktionen auf Smartphones.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="haptic-toggle" checked />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Data management -->
+          <div class="setting-group action-buttons-group">
+            <button class="secondary-button" id="export-data-btn" data-i18n="export_stats">📤 Daten exportieren</button>
+            <button class="secondary-button" id="import-data-btn" data-i18n="import_stats">📥 Daten importieren</button>
+            <input type="file" id="import-file-input" accept=".json" class="hidden" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TROPHIES & ACHIEVEMENTS MODAL -->
+    <div id="trophies-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Trophäen">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 data-i18n="trophies_title">🏆 Arcade Errungenschaften</h2>
+          <button class="close-modal-btn" id="close-trophies-btn" aria-label="Schließen">✕</button>
+        </div>
+        <p class="modal-subtext" data-i18n="trophies_subtitle">Schalte Trophäen frei, indem du in den Spielen Bestleistungen erzielst!</p>
+        <div class="trophies-grid" id="trophies-list"></div>
+      </div>
+    </div>
+
+    <!-- STATS DASHBOARD MODAL -->
+    <div id="stats-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Statistiken">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 data-i18n="stats_title">📊 Spieler-Statistiken</h2>
+          <button class="close-modal-btn" id="close-stats-btn" aria-label="Schließen">✕</button>
+        </div>
+        <div class="stats-overview-grid" id="stats-overview-content"></div>
+      </div>
+    </div>
+
+    <!-- PWA INSTALL BANNER / TOAST -->
+    <div class="install-toast hidden" id="install-banner">
+      <div class="install-toast-content">
+        <img src="favicon.svg" alt="App Icon" class="install-icon" />
+        <div>
+          <strong data-i18n="install_title">Arcade Ultra installieren</strong>
+          <small data-i18n="install_desc">Schneller starten und 100% offline spielen!</small>
+        </div>
+      </div>
+      <div class="install-toast-actions">
+        <button class="primary-button btn-small" id="install-pwa-btn" data-i18n="install_btn">Installieren</button>
+        <button class="ghost-button btn-small" id="dismiss-install-btn">✕</button>
+      </div>
+    </div>
+
+    <!-- WHAT'S NEW (CHANGELOG) MODAL -->
+    <div id="whats-new-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Was ist neu?">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="admin-title-row">
+            <span style="font-size: 1.8rem;">✨</span>
+            <div>
+              <h2 data-i18n="whats_new_title">Was ist neu in v24.106?</h2>
+              <small>Arcade Collection Ultra & VIP Universe Release</small>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
+        </div>
+        <div class="whats-new-content">
+          <div class="changelog-item">
+            <div class="changelog-badge">👑 VIP UNIVERSE</div>
+            <strong>Quantensicheres VIP & Admin Menü</strong>
+            <p>256-Bit Branching-Verschlüsselung, Master-Code Verifikation, VIP Bank-Tresor und Geld-Drucker mit Münzen-Shower.</p>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-badge">🏎️ MARIO KART 300CC</div>
+            <strong>Neue 200cc & 300cc Hyper-Cups</strong>
+            <p>Maximale Renngeschwindigkeit, Nitro-Flammen, Drift-Turbos und Mystery-Item-Boxen.</p>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-badge">🎶 CHIPTUNE JUKEBOX</div>
+            <strong>Retro Synthesizer Musikleiste</strong>
+            <p>6 vollsynthetisierte Chiptune-Soundtracks, Frequenz-Equalizer und Offline-Web-Audio-Synthese.</p>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-badge">🌐 6 SPRACHEN & ECO</div>
+            <strong>Volle i18n Unterstützung & Low-End Modus</strong>
+            <p>Deutsch, Englisch, Französisch, Portugiesisch, Türkisch und Spanisch mit Ressourcen-Freeze zur Batterieschonung.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY POLICY (DATENSCHUTZ) MODAL -->
+    <div id="privacy-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Datenschutz">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="admin-title-row">
+            <span style="font-size: 1.8rem;">🛡️</span>
+            <div>
+              <h2 data-i18n="privacy_title">Datenschutzerklärung</h2>
+              <small>100% Offline, Lokal & Sicher</small>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="close-privacy-btn" aria-label="Schließen">✕</button>
+        </div>
+        <div class="privacy-content" style="font-size: 0.88rem; line-height: 1.6; color: var(--text-muted);">
+          <p style="margin-bottom: 10px;"><strong style="color: var(--text-main);">Zero-Data Collection:</strong> Diese Progressive Web App sammelt, speichert oder überträgt zu keinem Zeitpunkt personenbezogene Daten an externe Server.</p>
+          <p style="margin-bottom: 10px;"><strong style="color: var(--text-main);">Lokale Datenspeicherung:</strong> Sämtliche Einstellungen, Trophäen, Highscores und VIP-Tokens verbleiben ausschließlich im lokalen Speicher (LocalStorage) deines eigenen Endgeräts.</p>
+          <p><strong style="color: var(--text-main);">Offline-Betrieb:</strong> Über den integrierten Service Worker läuft die Anwendung vollständig autark und netzwerkunabhängig.</p>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
