@@ -1,7 +1,8 @@
-const CACHE_NAME = 'arcade-collection-v11-mario-countdown';
+const CACHE_NAME = 'arcade-collection-v0.0.11-privacy-release';
 const APP_SHELL = [
   './',
   './index.html',
+  './privacy.html',
   './style.css',
   './script.js',
   './manifest.json',
