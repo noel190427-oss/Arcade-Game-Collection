@@ -1,5 +1,5 @@
 # 🎮 Noel Arcade Universe
-**Created by [noel190427-oss](https://github.com/noel190427-oss)** • Contact: Noel190427@gmail.com
+**Created by [noel190427-oss](https://github.com/noel190427-oss)** • Contact: acade-game.support@gmail.com
 
 Ultra-polished, 100% Offline-First Progressive Web App (PWA) featuring 7 fully localized retro arcade games, dynamic chiptune jukebox, quantum-safe 256-bit VIP administrator console, and multilingual support across 6 languages.
 
