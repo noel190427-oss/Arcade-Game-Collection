@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.11-mobile-topbar-fix';
+const CACHE_NAME = 'arcade-collection-v0.0.11-clean-release';
 const APP_SHELL = [
   './',
   './index.html',
