@@ -104,8 +104,6 @@ const I18N_DATA = {
     sound_volume_label: 'Soundeffekte Lautstärke',
     haptic_label: 'Haptic Feedback (Vibration)',
     haptic_desc: 'Taktile Impulse bei Aktionen auf Smartphones.',
-    export_stats: 'Daten exportieren',
-    import_stats: 'Daten importieren',
     trophies_title: 'Arcade Errungenschaften',
     trophies_subtitle: 'Schalte Trophäen frei, indem du in den Spielen Bestleistungen erzielst!',
     stats_title: 'Spieler-Statistiken',
@@ -218,8 +216,6 @@ const I18N_DATA = {
     sound_volume_label: 'Sound Effects Volume',
     haptic_label: 'Haptic Feedback (Vibration)',
     haptic_desc: 'Tactile vibration response on smartphones.',
-    export_stats: 'Export Data',
-    import_stats: 'Import Data',
     trophies_title: 'Arcade Achievements',
     trophies_subtitle: 'Unlock trophies by achieving top scores across games!',
     stats_title: 'Player Statistics',
@@ -332,8 +328,6 @@ const I18N_DATA = {
     sound_volume_label: 'Volume des effets',
     haptic_label: 'Retour haptique',
     haptic_desc: 'Vibrations tactiles sur mobile.',
-    export_stats: 'Exporter les données',
-    import_stats: 'Importer les données',
     trophies_title: 'Trophées Arcade',
     trophies_subtitle: 'Débloquez des succès en réussissant des exploits !',
     stats_title: 'Statistiques Joueur',
@@ -446,8 +440,6 @@ const I18N_DATA = {
     sound_volume_label: 'Volume dos Efeitos',
     haptic_label: 'Vibração Tátil',
     haptic_desc: 'Respostas táteis no celular.',
-    export_stats: 'Exportar Dados',
-    import_stats: 'Importar Dados',
     trophies_title: 'Conquistas do Arcade',
     trophies_subtitle: 'Desbloqueie troféus batendo recordes nos jogos!',
     stats_title: 'Estatísticas do Jogador',
@@ -560,8 +552,6 @@ const I18N_DATA = {
     sound_volume_label: 'Ses Efekti Seviyesi',
     haptic_label: 'Dokunsal Titreşim',
     haptic_desc: 'Akıllı telefonlarda dokunma tepkisi.',
-    export_stats: 'Verileri Dışa Aktar',
-    import_stats: 'Verileri İçe Aktar',
     trophies_title: 'Arcade Başarıları',
     trophies_subtitle: 'Oyunlarda rekor kırarak kupaların kilidini açın!',
     stats_title: 'Oyuncu İstatistikleri',
@@ -674,8 +664,6 @@ const I18N_DATA = {
     sound_volume_label: 'Volumen de Efectos',
     haptic_label: 'Vibración Háptica',
     haptic_desc: 'Respuesta táctil en teléfonos móviles.',
-    export_stats: 'Exportar Datos',
-    import_stats: 'Importar Datos',
     trophies_title: 'Logros del Arcade',
     trophies_subtitle: '¡Desbloquea trofeos superando récords en los juegos!',
     stats_title: 'Estadísticas del Jogador',
@@ -1888,35 +1876,6 @@ function initSettings() {
   document.getElementById('jukebox-toggle-btn').addEventListener('click', toggleJukebox);
   document.getElementById('jukebox-next-btn').addEventListener('click', nextJukeboxTrack);
   document.getElementById('jukebox-prev-btn').addEventListener('click', prevJukeboxTrack);
-
-  // Export / Import Data
-  document.getElementById('export-data-btn').addEventListener('click', () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "arcade_ultra_backup.json");
-    dlAnchor.click();
-  });
-
-  const importFileInput = document.getElementById('import-file-input');
-  document.getElementById('import-data-btn').addEventListener('click', () => importFileInput.click());
-  importFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const parsed = JSON.parse(event.target.result);
-          appState = { ...DEFAULT_STATE, ...parsed };
-          saveState();
-          location.reload();
-        } catch (err) {
-          alert('Fehlerhafte JSON-Datei!');
-        }
-      };
-      reader.readAsText(file);
-    }
-  });
 
   document.getElementById('footer-reset-all').addEventListener('click', () => {
     if (confirm('Möchtest du wirklich alle Highscores und Spielstände zurücksetzen?')) {
