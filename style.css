@@ -1114,6 +1114,7 @@ html.is-vip-active .vip-lock-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 .player-chip {
   display: flex;
@@ -2815,17 +2816,118 @@ html.is-vip-active .vip-lock-item {
 /* --- RESPONSIVENESS & MOBILE OPTIMIZATIONS --- */
 @media (max-width: 640px) {
   .app-shell {
-    padding: 10px;
+    padding: 10px 8px;
   }
   .topbar {
-    padding: 10px 14px;
-    flex-wrap: wrap;
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .brand-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+  .logo-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
   .brand-heading {
+    font-size: 1.05rem;
+  }
+  .status-tags {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .topbar-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+  }
+  .vip-wallet-chip {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    gap: 6px;
+    flex: 0 1 auto;
+  }
+  .vip-quick-money-btn {
+    padding: 2px 6px;
+    font-size: 0.72rem;
+  }
+  .player-chip {
+    padding: 4px 10px;
+    font-size: 0.82rem;
+    height: 36px;
+    gap: 6px;
+    flex: 0 1 auto;
+  }
+  .icon-button {
+    width: 36px;
+    height: 36px;
     font-size: 1rem;
+    flex-shrink: 0;
+  }
+  #open-lang-btn {
+    padding: 0 8px;
+    font-size: 0.78rem;
+  }
+  .badge-count {
+    top: -3px;
+    right: -3px;
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+  .vip-announcement-banner {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+  .jukebox-bar {
+    padding: 8px 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .jukebox-info {
+    max-width: 100%;
+  }
+  .jukebox-track-name {
+    font-size: 0.78rem;
+  }
+  .launcher {
+    gap: 8px;
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .game-card {
+    padding: 8px 12px;
+    gap: 8px;
+    scroll-snap-align: start;
+  }
+  .game-icon {
+    font-size: 1.35rem;
+  }
+  .game-card-text strong {
+    font-size: 0.85rem;
+  }
+  .game-card-text small {
+    font-size: 0.68rem;
   }
   .game-panel {
-    padding: 16px;
+    padding: 14px;
   }
   .language-grid {
     grid-template-columns: 1fr;
@@ -2845,12 +2947,52 @@ html.is-vip-active .vip-lock-item {
   }
   .creator-bubble {
     border-radius: var(--radius-md);
-    padding: 10px 14px;
+    padding: 10px 12px;
     gap: 8px 10px;
     flex-wrap: wrap;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
 }
+
+@media (max-width: 400px) {
+  .topbar {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .brand-heading {
+    font-size: 0.95rem;
+  }
+  .brand-badge {
+    padding: 1px 5px;
+    font-size: 0.6rem;
+  }
+  .pill-badge {
+    padding: 1px 5px;
+    font-size: 0.65rem;
+  }
+  .topbar-controls {
+    gap: 4px;
+  }
+  .vip-wallet-chip {
+    padding: 3px 6px;
+    font-size: 0.72rem;
+  }
+  .player-chip {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+    height: 32px;
+  }
+  .icon-button {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+  #open-lang-btn {
+    padding: 0 4px;
+    font-size: 0.7rem;
+  }
+}
+
 @media (min-width: 641px) {
   .mobile-touch-controls {
     display: none;
