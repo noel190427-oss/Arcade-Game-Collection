@@ -5005,8 +5005,26 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
 
   pahoClient.onConnectionLost = (responseObject) => {
     if (responseObject.errorCode !== 0) {
-      if (statusText) statusText.textContent = 'Verbindung getrennt';
-      if (dot) dot.textContent = '⚪';
+      if (statusText) statusText.textContent = 'Verbindung wird wiederhergestellt... 🟡';
+      if (dot) dot.textContent = '🟡';
+      // Auto-reconnect after 1.5 seconds if still in room
+      setTimeout(() => {
+        if (mpCurrentRoom && !pahoClient.isConnected()) {
+          try {
+            pahoClient.connect({
+              useSSL: true,
+              timeout: 10,
+              keepAliveInterval: 30,
+              cleanSession: true,
+              onSuccess: () => {
+                if (statusText) statusText.textContent = 'Raum ' + mpCurrentRoom + ' aktiv 🟢 (Live)';
+                if (dot) dot.textContent = '🟢';
+                pahoClient.subscribe(topic);
+              }
+            });
+          } catch(e) {}
+        }
+      }, 1500);
     }
   };
 
@@ -5022,7 +5040,9 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
 
   pahoClient.connect({
     useSSL: true,
-    timeout: 5,
+    timeout: 10,
+    keepAliveInterval: 30,
+    cleanSession: true,
     onSuccess: () => {
       if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
       if (dot) dot.textContent = '🟢';
@@ -5088,10 +5108,12 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
       });
     },
     onFailure: (err) => {
-      console.warn('HiveMQ connection failed, fallback to local room:', err);
-      if (statusText) statusText.textContent = 'Raum ' + roomCode + ' (Lokal aktiv)';
-      if (dot) dot.textContent = '🟢';
-      if (callback) callback();
+      console.warn('HiveMQ connection failed:', err);
+      if (statusText) statusText.textContent = 'Verbindungsfehler - Versuche erneut...';
+      if (dot) dot.textContent = '🟡';
+      setTimeout(() => {
+        if (mpCurrentRoom) connectRealtimeMultiplayer(roomCode, isHosting, callback);
+      }, 2000);
     }
   });
 }
