@@ -1183,7 +1183,7 @@ async function verifyQuantumPasscode(enteredPin) {
   try {
     const encoder = new TextEncoder();
     const salt = 'ARCADE_QUANTUM_BRANCH_V4_8829F';
-    const targetDigest = 'bf1f560b3d3227c020f240630f337bca485083b936b89dfa1c8174856c8e5a9a';
+    const targetDigest = '4422bad78933d7aafeb17ae56a17986113524bf3ce9a182bf1c78bcd97285f5c';
 
     let data = encoder.encode(enteredPin + salt);
     let hashBuf = await crypto.subtle.digest('SHA-256', data);
