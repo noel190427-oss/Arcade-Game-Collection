@@ -4979,11 +4979,13 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   }
 
   if (pahoClient) {
+    pahoClient.onConnectionLost = () => {};
     try { pahoClient.disconnect(); } catch (e) {}
+    pahoClient = null;
   }
 
   const topic = 'noelarcade/rooms/' + roomCode;
-  const clientId = 'noel_' + mpPlayerId + '_' + Math.random().toString(36).substr(2, 5);
+  const clientId = 'noel_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36).slice(-4);
 
   if (typeof Paho === 'undefined' || !Paho.MQTT) {
     console.warn('Paho MQTT not loaded yet, fallback to local room');
@@ -5003,13 +5005,15 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
     return;
   }
 
+  let isIntentionallyClosed = false;
+
   pahoClient.onConnectionLost = (responseObject) => {
+    if (isIntentionallyClosed) return;
     if (responseObject.errorCode !== 0) {
       if (statusText) statusText.textContent = 'Verbindung wird wiederhergestellt... 🟡';
       if (dot) dot.textContent = '🟡';
-      // Auto-reconnect after 1.5 seconds if still in room
       setTimeout(() => {
-        if (mpCurrentRoom && !pahoClient.isConnected()) {
+        if (mpCurrentRoom && pahoClient && !pahoClient.isConnected()) {
           try {
             pahoClient.connect({
               useSSL: true,
