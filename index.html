@@ -330,6 +330,7 @@
           <div class="mode-switch-group" aria-label="Gegner-Modus">
             <button class="mode-button" data-mode="human" data-i18n="mode_human">Mensch vs Mensch</button>
             <button class="mode-button active-mode" data-mode="ai" data-i18n="mode_ai">Mensch vs KI</button>
+            <button class="mode-button mp-open-trigger" data-game-type="tictactoe" id="ttt-mp-btn">🌐 Online (Raum-Code)</button>
           </div>
 
           <!-- AI Difficulty Selector -->
@@ -371,6 +372,7 @@
             <span class="panel-subtitle" data-i18n="memory_desc">Finde alle Bildpaare mit möglichst wenigen Versuchen</span>
           </div>
           <div class="header-action-group">
+            <button class="ghost-button mp-open-trigger" data-game-type="memory" id="memory-mp-btn">🌐 <span>Online (Raum-Code)</span></button>
             <button class="ghost-button how-to-play-btn" data-guide-game="memory" id="memory-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
             <button class="primary-button" id="reset-memory" data-i18n="reshuffle_btn">Neu mischen</button>
           </div>
@@ -752,6 +754,115 @@
         </div>
       </footer>
     </main>
+
+    <!-- ==========================================================================
+         ONLINE MULTIPLAYER LOBBY MODAL (2-10 PLAYERS, ROOM CODES)
+         ========================================================================== -->
+    <div id="multiplayer-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Online Multiplayer Lobby">
+      <div class="modal-card multiplayer-modal-card">
+        <div class="modal-header">
+          <div class="admin-title-row">
+            <span style="font-size: 1.8rem;">🌐</span>
+            <div>
+              <h2 data-i18n="multiplayer_title">Online Multiplayer Lobby</h2>
+              <small data-i18n="multiplayer_sub">Live-Duelle & Turniere mit 2 bis 10 Spielern</small>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="close-multiplayer-btn" aria-label="Schließen">✕</button>
+        </div>
+
+        <!-- 3-OPTION MODE BAR: 1. Offline/KI | 2. Raum erstellen | 3. Raum beitreten -->
+        <div class="mp-mode-selection">
+          <button class="mp-mode-btn" id="mp-btn-offline-mode">
+            <span class="mp-btn-icon">🤖</span>
+            <strong>Gegen Computer / KI</strong>
+            <small>Offline mit Minimax KI spielen</small>
+          </button>
+          <button class="mp-mode-btn active-mp-tab" id="mp-tab-create">
+            <span class="mp-btn-icon">➕</span>
+            <strong>Raum erstellen</strong>
+            <small>Host werden & Code teilen</small>
+          </button>
+          <button class="mp-mode-btn" id="mp-tab-join">
+            <span class="mp-btn-icon">🔑</span>
+            <strong>Raum beitreten</strong>
+            <small>Mit 4-stelligem Code mitspielen</small>
+          </button>
+        </div>
+
+        <!-- TAB CONTENT 1: RAUM ERSTELLEN -->
+        <div class="mp-tab-pane" id="mp-pane-create">
+          <div class="mp-form-group">
+            <label>Dein Spielername:</label>
+            <input type="text" id="mp-host-name" class="mp-input" maxlength="15" placeholder="z. B. Noel" />
+          </div>
+
+          <div class="mp-form-group">
+            <label>Max. Spieleranzahl (2 bis 10 Spieler):</label>
+            <div class="player-count-picker">
+              <input type="range" id="mp-max-players-slider" min="2" max="10" value="2" class="mp-slider" />
+              <span class="player-count-display" id="mp-max-players-val">2 Spieler</span>
+            </div>
+          </div>
+
+          <div class="mp-form-group">
+            <label>Spiel:</label>
+            <select id="mp-game-select" class="mp-select">
+              <option value="tictactoe">❌⭕ Tic-Tac-Toe</option>
+              <option value="memory">🧠 Memory Matrix</option>
+            </select>
+          </div>
+
+          <button class="primary-button mp-action-btn" id="mp-create-room-btn">
+            <span>🚀 Raum erstellen & Code generieren</span>
+          </button>
+        </div>
+
+        <!-- TAB CONTENT 2: RAUM BEITRETEN -->
+        <div class="mp-tab-pane hidden" id="mp-pane-join">
+          <div class="mp-form-group">
+            <label>Dein Spielername:</label>
+            <input type="text" id="mp-join-name" class="mp-input" maxlength="15" placeholder="Dein Name" />
+          </div>
+
+          <div class="mp-form-group">
+            <label>4-stelliger Raum-Code:</label>
+            <input type="number" id="mp-room-code-input" class="mp-input mp-code-input" placeholder="z. B. 4829" />
+          </div>
+
+          <button class="primary-button mp-action-btn" id="mp-join-room-btn">
+            <span>🔑 Jetzt Raum beitreten</span>
+          </button>
+        </div>
+
+        <!-- LOBBY WAITING SCREEN -->
+        <div class="mp-lobby-waiting hidden" id="mp-lobby-waiting">
+          <div class="room-code-badge-wrap">
+            <span>DEIN RAUM-CODE:</span>
+            <div class="room-code-large" id="mp-display-code">4829</div>
+            <button class="ghost-button copy-code-btn" id="mp-copy-code-btn">📋 Code kopieren</button>
+          </div>
+
+          <div class="mp-players-list-wrap">
+            <h4>Verbundene Spieler (<span id="mp-current-count">1</span>/<span id="mp-total-count">2</span>):</h4>
+            <ul class="mp-players-ul" id="mp-players-ul">
+              <!-- Dynamisch befüllt -->
+            </ul>
+          </div>
+
+          <div class="mp-host-controls" id="mp-host-controls">
+            <button class="primary-button mp-start-game-btn" id="mp-host-start-btn">🚀 Spiel jetzt starten</button>
+            <p class="mp-waiting-hint">Das Spiel startet automatisch, sobald alle Spieler beigetreten sind.</p>
+          </div>
+        </div>
+
+        <div class="mp-server-status-bar">
+          <span class="mp-dot" id="mp-server-dot">🟢</span>
+          <span id="mp-server-status-text">Multiplayer Engine bereit • Bis zu 10 Spieler</span>
+        </div>
+
+      </div>
+    </div>
 
     <!-- ==========================================================================
          VIP & ADMINISTRATOR CONSOLE MODAL
