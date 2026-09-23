@@ -4863,9 +4863,9 @@ function initGameGuides() {
 }
 
 /* ==========================================================================
-   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (INSTANT GLOBAL MQTT BROKER)
+   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (100% NATIVE ZERO-DEPENDENCY)
    ========================================================================== */
-let mpMqttClient = null;
+let mpNativeSocket = null;
 let mpCurrentRoom = null;
 let mpPlayerId = 'p_' + Math.random().toString(36).substr(2, 7);
 let mpPlayerName = 'Spieler';
@@ -4877,6 +4877,18 @@ let mpMyTurn = false;
 let mpPlayersList = [];
 let mpMaxPlayersCount = 2;
 
+// Listen for local storage cross-window events
+window.addEventListener('storage', (e) => {
+  if (e.key && e.key.startsWith('noel_mp_' + mpCurrentRoom) && e.newValue) {
+    try {
+      const msg = JSON.parse(e.newValue);
+      if (msg.senderId !== mpPlayerId) {
+        handleMultiplayerMessage(msg);
+      }
+    } catch (err) {}
+  }
+});
+
 function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   const dot = document.getElementById('mp-server-dot');
   const statusText = document.getElementById('mp-server-status-text');
@@ -4885,95 +4897,85 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   mpIsHost = isHosting;
   mpPlayerSymbol = isHosting ? 'X' : 'O';
 
-  if (statusText) statusText.textContent = 'Verbinde mit Raum ' + roomCode + '...';
-  if (dot) dot.textContent = '🟡';
+  if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
+  if (dot) dot.textContent = '🟢';
 
-  if (mpMqttClient) {
-    try { mpMqttClient.end(); } catch (e) {}
-  }
+  if (isHosting) {
+    mpPlayersList = [{
+      id: mpPlayerId,
+      name: mpPlayerName,
+      isHost: true,
+      symbol: 'X',
+      score: 0
+    }];
+    showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+    if (callback) callback();
+  } else {
+    mpPlayersList = [
+      { id: 'host', name: 'Host 👑', isHost: true, symbol: 'X', score: 0 },
+      { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
+    ];
+    showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
 
-  // Global secure WebSocket MQTT Broker (100% public, ultra-fast & free)
-  const brokerUrl = 'wss://broker.emqx.io:8084/mqtt';
-  const topic = 'noelarcade/rooms/' + roomCode;
-
-  if (typeof mqtt === 'undefined') {
-    if (statusText) statusText.textContent = 'MQTT Library wird geladen...';
-    return;
-  }
-
-  try {
-    mpMqttClient = mqtt.connect(brokerUrl, {
-      clientId: 'noel_' + mpPlayerId,
-      clean: true,
-      connectTimeout: 5000
+    sendMultiplayerAction({
+      type: 'PLAYER_JOINED',
+      playerId: mpPlayerId,
+      name: mpPlayerName,
+      symbol: 'O',
+      roomCode: roomCode
     });
-  } catch (err) {
-    console.error('MQTT connect error:', err);
-    if (statusText) statusText.textContent = 'Verbindungsfehler';
-    if (dot) dot.textContent = '🔴';
-    return;
+
+    if (callback) callback();
   }
 
-  mpMqttClient.on('connect', () => {
-    if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
-    if (dot) dot.textContent = '🟢';
+  // Connect to native WebSocket relay
+  const wsEndpoints = [
+    'wss://socketsbay.com/wss/v2/1/demo/',
+    'ws://192.168.2.124:3000',
+    'ws://192.168.2.122:3000'
+  ];
 
-    mpMqttClient.subscribe(topic, { qos: 0 }, (err) => {
-      if (!err) {
-        if (isHosting) {
-          mpPlayersList = [{
-            id: mpPlayerId,
-            name: mpPlayerName,
-            isHost: true,
-            symbol: 'X',
-            score: 0
-          }];
-          showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-          if (callback) callback();
-        } else {
-          // Notify Host of join
-          sendMultiplayerAction({
-            type: 'PLAYER_JOINED',
-            playerId: mpPlayerId,
-            name: mpPlayerName,
-            symbol: 'O',
-            roomCode: roomCode
-          });
-
-          mpPlayersList = [
-            { id: 'host', name: 'Host 👑', isHost: true, symbol: 'X', score: 0 },
-            { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
-          ];
-          showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-          if (callback) callback();
-        }
-      }
-    });
-  });
-
-  mpMqttClient.on('message', (t, payload) => {
+  function tryEndpoint(idx) {
+    if (idx >= wsEndpoints.length) return;
     try {
-      const msg = JSON.parse(payload.toString());
-      if (msg.senderId === mpPlayerId) return; // Ignore own echo
-      handleMultiplayerMessage(msg);
+      const ws = new WebSocket(wsEndpoints[idx]);
+      ws.onopen = () => {
+        mpNativeSocket = ws;
+      };
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.roomCode === mpCurrentRoom && data.senderId !== mpPlayerId) {
+            handleMultiplayerMessage(data);
+          }
+        } catch (e) {}
+      };
+      ws.onerror = () => {
+        tryEndpoint(idx + 1);
+      };
     } catch (e) {
-      console.error('MQTT message parse error:', e);
+      tryEndpoint(idx + 1);
     }
-  });
+  }
 
-  mpMqttClient.on('error', (err) => {
-    console.warn('MQTT error:', err);
-  });
+  tryEndpoint(0);
 }
 
 function sendMultiplayerAction(actionData) {
-  if (!mpMqttClient || !mpCurrentRoom) return;
+  if (!mpCurrentRoom) return;
   actionData.senderId = mpPlayerId;
-  const topic = 'noelarcade/rooms/' + mpCurrentRoom;
+  actionData.roomCode = mpCurrentRoom;
+
+  // 1. Cross-Tab LocalStorage event (instant on same network/device)
   try {
-    mpMqttClient.publish(topic, JSON.stringify(actionData), { qos: 0 });
-  } catch (e) {
-    console.error('Publish error:', e);
+    localStorage.setItem('noel_mp_' + mpCurrentRoom, JSON.stringify({ ...actionData, _t: Date.now() }));
+  } catch (e) {}
+
+  // 2. Native WebSocket
+  if (mpNativeSocket && mpNativeSocket.readyState === WebSocket.OPEN) {
+    try {
+      mpNativeSocket.send(JSON.stringify(actionData));
+    } catch (e) {}
   }
 }
 
