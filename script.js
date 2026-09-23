@@ -2238,6 +2238,17 @@ function resetTicTacToe() {
 }
 
 function handleTttMove(index) {
+  if (mpIsOnlineActive) {
+    if (!mpMyTurn || tttBoard[index] || tttGameOver) return;
+    if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
+      mpSocket.send(JSON.stringify({
+        type: 'TTT_MOVE',
+        index: index
+      }));
+    }
+    return;
+  }
+
   if (tttBoard[index] || tttGameOver) return;
   if (tttMode === 'ai' && tttCurrentPlayer === 'O') return;
 
@@ -4853,7 +4864,366 @@ function initGameGuides() {
 }
 
 /* ==========================================================================
-   21. INITIALIZATION ENTRYPOINT
+   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (2-10 PLAYERS, ROOM CODES)
+   ========================================================================== */
+let mpSocket = null;
+let mpCurrentRoom = null;
+let mpPlayerId = null;
+let mpPlayerName = 'Spieler';
+let mpPlayerSymbol = 'X';
+let mpIsHost = false;
+let mpGameType = 'tictactoe';
+let mpIsOnlineActive = false;
+let mpMyTurn = false;
+
+function getMultiplayerServerUrl() {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return 'ws://localhost:3000';
+  }
+  // Standard WebSocket Port auf dem Raspberry Pi
+  return 'ws://192.168.2.124:3000';
+}
+
+function connectMultiplayerSocket(callback) {
+  const dot = document.getElementById('mp-server-dot');
+  const statusText = document.getElementById('mp-server-status-text');
+
+  if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
+    if (callback) callback();
+    return;
+  }
+
+  const serverUrl = getMultiplayerServerUrl();
+  if (statusText) statusText.textContent = 'Verbinde mit Gameserver...';
+  if (dot) dot.textContent = '🟡';
+
+  try {
+    mpSocket = new WebSocket(serverUrl);
+  } catch (err) {
+    console.warn('Multiplayer Server offline / nicht erreichbar:', err);
+    if (statusText) statusText.textContent = 'Server offline (Lokal spielbar)';
+    if (dot) dot.textContent = '🔴';
+    return;
+  }
+
+  mpSocket.onopen = () => {
+    if (statusText) statusText.textContent = 'Gameserver verbunden • 2 bis 10 Spieler';
+    if (dot) dot.textContent = '🟢';
+    if (callback) callback();
+  };
+
+  mpSocket.onerror = () => {
+    if (statusText) statusText.textContent = 'Server nicht erreichbar';
+    if (dot) dot.textContent = '🔴';
+  };
+
+  mpSocket.onclose = () => {
+    if (statusText) statusText.textContent = 'Verbindung getrennt';
+    if (dot) dot.textContent = '⚪';
+    mpIsOnlineActive = false;
+  };
+
+  mpSocket.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      handleMultiplayerMessage(data);
+    } catch (e) {
+      console.error('Fehler bei MP-Nachricht:', e);
+    }
+  };
+}
+
+function handleMultiplayerMessage(data) {
+  switch (data.type) {
+    case 'ROOM_CREATED':
+      mpCurrentRoom = data.roomCode;
+      mpPlayerId = data.playerId;
+      mpIsHost = true;
+      mpPlayerSymbol = 'X';
+      showLobbyWaitingScreen(data.roomCode, data.players, data.maxPlayers);
+      SFX.success();
+      break;
+
+    case 'ROOM_JOINED':
+      mpCurrentRoom = data.roomCode;
+      mpPlayerId = data.playerId;
+      mpIsHost = false;
+      mpPlayerSymbol = data.symbol;
+      mpGameType = data.gameType;
+      showLobbyWaitingScreen(data.roomCode, data.players, data.maxPlayers);
+      SFX.success();
+      break;
+
+    case 'PLAYER_JOINED':
+      updateLobbyPlayerList(data.players);
+      SFX.pop();
+      break;
+
+    case 'PLAYER_LEFT':
+      updateLobbyPlayerList(data.players);
+      break;
+
+    case 'GAME_START':
+      closeMultiplayerModal();
+      startOnlineMatch(data);
+      break;
+
+    case 'TTT_UPDATE':
+      applyRemoteTicTacToeMove(data);
+      break;
+
+    case 'MEMORY_CARD_FLIPPED':
+      applyRemoteMemoryFlip(data);
+      break;
+
+    case 'MEMORY_MATCH_SCORED':
+      applyRemoteMemoryMatch(data);
+      break;
+
+    case 'ERROR':
+      alert('⚠️ ' + data.message);
+      break;
+  }
+}
+
+function showLobbyWaitingScreen(roomCode, players, maxPlayers) {
+  document.getElementById('mp-pane-create').classList.add('hidden');
+  document.getElementById('mp-pane-join').classList.add('hidden');
+  const waitingPane = document.getElementById('mp-lobby-waiting');
+  waitingPane.classList.remove('hidden');
+
+  document.getElementById('mp-display-code').textContent = roomCode;
+  document.getElementById('mp-total-count').textContent = maxPlayers;
+  updateLobbyPlayerList(players);
+
+  const startBtn = document.getElementById('mp-host-start-btn');
+  if (startBtn) {
+    startBtn.style.display = mpIsHost ? 'block' : 'none';
+  }
+}
+
+function updateLobbyPlayerList(players) {
+  const ul = document.getElementById('mp-players-ul');
+  const currentCount = document.getElementById('mp-current-count');
+  if (!ul) return;
+  ul.innerHTML = '';
+  if (currentCount) currentCount.textContent = players.length;
+
+  players.forEach((p, idx) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span><strong>#${idx + 1}</strong> ${p.name} ${p.id === mpPlayerId ? '(Du)' : ''}</span>
+      <span>${p.isHost ? '<span class="mp-host-badge">👑 Host</span>' : '<span style="color:var(--text-muted)">' + (p.symbol || 'Mitspieler') + '</span>'}</span>
+    `;
+    ul.appendChild(li);
+  });
+}
+
+function openMultiplayerModal(gameType) {
+  mpGameType = gameType || 'tictactoe';
+  const select = document.getElementById('mp-game-select');
+  if (select) select.value = mpGameType;
+
+  const modal = document.getElementById('multiplayer-modal');
+  if (modal) modal.classList.remove('hidden');
+  freezeApp();
+
+  // Reset panes
+  document.getElementById('mp-pane-create').classList.remove('hidden');
+  document.getElementById('mp-pane-join').classList.add('hidden');
+  document.getElementById('mp-lobby-waiting').classList.add('hidden');
+
+  document.querySelectorAll('.mp-mode-btn').forEach(b => b.classList.remove('active-mp-tab'));
+  const createTab = document.getElementById('mp-tab-create');
+  if (createTab) createTab.classList.add('active-mp-tab');
+
+  connectMultiplayerSocket();
+}
+
+function closeMultiplayerModal() {
+  const modal = document.getElementById('multiplayer-modal');
+  if (modal) modal.classList.add('hidden');
+  unfreezeApp();
+}
+
+function startOnlineMatch(data) {
+  mpIsOnlineActive = true;
+  switchGame(mpGameType);
+
+  if (mpGameType === 'tictactoe') {
+    mpMyTurn = (mpPlayerSymbol === 'X');
+    const status = document.getElementById('ttt-status');
+    if (status) {
+      status.textContent = `🌐 Online Raum ${mpCurrentRoom} • Du bist ${mpPlayerSymbol} (${mpMyTurn ? 'Du bist am Zug!' : 'Gegner ist am Zug...'})`;
+      status.style.borderColor = 'var(--accent-secondary)';
+    }
+  }
+}
+
+function applyRemoteTicTacToeMove(data) {
+  const cell = document.querySelector(`.cell[data-index="${data.index}"]`);
+  if (cell) {
+    const symbolSpan = cell.querySelector('.cell-symbol');
+    if (symbolSpan) symbolSpan.textContent = data.symbol;
+    cell.classList.add('taken', data.symbol.toLowerCase());
+  }
+
+  mpMyTurn = (data.nextTurnPlayerId === mpPlayerId);
+  const status = document.getElementById('ttt-status');
+  if (status) {
+    status.textContent = mpMyTurn ? `🎮 Du bist am Zug! (${mpPlayerSymbol})` : `⏳ ${data.nextTurnPlayerName || 'Gegner'} ist am Zug...`;
+  }
+}
+
+function applyRemoteMemoryFlip(data) {
+  // Zeige aufgedeckte Karte für alle
+  const cards = document.querySelectorAll('.memory-card');
+  const card = cards[data.cardIndex];
+  if (card && !card.classList.contains('flipped')) {
+    card.classList.add('flipped');
+    const iconSpan = card.querySelector('.mem-icon');
+    if (iconSpan) iconSpan.textContent = data.icon;
+  }
+}
+
+function applyRemoteMemoryMatch(data) {
+  const cards = document.querySelectorAll('.memory-card');
+  if (data.cardIndices) {
+    data.cardIndices.forEach(idx => {
+      if (cards[idx]) cards[idx].classList.add('matched');
+    });
+  }
+  SFX.score();
+}
+
+function initMultiplayerLobby() {
+  // Trigger Buttons
+  document.querySelectorAll('.mp-open-trigger').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openMultiplayerModal(btn.dataset.gameType || 'tictactoe');
+    });
+  });
+
+  const closeBtn = document.getElementById('close-multiplayer-btn');
+  if (closeBtn) closeBtn.addEventListener('click', closeMultiplayerModal);
+
+  // Mode Selection Tabs
+  const btnOffline = document.getElementById('mp-btn-offline-mode');
+  const tabCreate = document.getElementById('mp-tab-create');
+  const tabJoin = document.getElementById('mp-tab-join');
+
+  if (btnOffline) {
+    btnOffline.addEventListener('click', () => {
+      mpIsOnlineActive = false;
+      closeMultiplayerModal();
+      SFX.click();
+    });
+  }
+
+  if (tabCreate) {
+    tabCreate.addEventListener('click', () => {
+      document.querySelectorAll('.mp-mode-btn').forEach(b => b.classList.remove('active-mp-tab'));
+      tabCreate.classList.add('active-mp-tab');
+      document.getElementById('mp-pane-create').classList.remove('hidden');
+      document.getElementById('mp-pane-join').classList.add('hidden');
+      document.getElementById('mp-lobby-waiting').classList.add('hidden');
+      SFX.click();
+    });
+  }
+
+  if (tabJoin) {
+    tabJoin.addEventListener('click', () => {
+      document.querySelectorAll('.mp-mode-btn').forEach(b => b.classList.remove('active-mp-tab'));
+      tabJoin.classList.add('active-mp-tab');
+      document.getElementById('mp-pane-create').classList.add('hidden');
+      document.getElementById('mp-pane-join').classList.remove('hidden');
+      document.getElementById('mp-lobby-waiting').classList.add('hidden');
+      SFX.click();
+    });
+  }
+
+  // Slider for 2 to 10 players
+  const slider = document.getElementById('mp-max-players-slider');
+  const sliderDisplay = document.getElementById('mp-max-players-val');
+  if (slider && sliderDisplay) {
+    slider.addEventListener('input', () => {
+      sliderDisplay.textContent = slider.value + ' Spieler';
+    });
+  }
+
+  // Create Room Button
+  const createRoomBtn = document.getElementById('mp-create-room-btn');
+  if (createRoomBtn) {
+    createRoomBtn.addEventListener('click', () => {
+      const name = (document.getElementById('mp-host-name').value || 'Noel').trim();
+      const maxPlayers = parseInt(slider.value) || 2;
+      const gameType = document.getElementById('mp-game-select').value || 'tictactoe';
+      mpGameType = gameType;
+
+      connectMultiplayerSocket(() => {
+        if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
+          mpSocket.send(JSON.stringify({
+            type: 'CREATE_ROOM',
+            name: name,
+            maxPlayers: maxPlayers,
+            gameType: gameType
+          }));
+        }
+      });
+    });
+  }
+
+  // Join Room Button
+  const joinRoomBtn = document.getElementById('mp-join-room-btn');
+  if (joinRoomBtn) {
+    joinRoomBtn.addEventListener('click', () => {
+      const name = (document.getElementById('mp-join-name').value || 'Gast').trim();
+      const code = (document.getElementById('mp-room-code-input').value || '').trim();
+
+      if (!code) {
+        alert('Bitte gib einen 4-stelligen Raum-Code ein!');
+        return;
+      }
+
+      connectMultiplayerSocket(() => {
+        if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
+          mpSocket.send(JSON.stringify({
+            type: 'JOIN_ROOM',
+            name: name,
+            roomCode: code
+          }));
+        }
+      });
+    });
+  }
+
+  // Copy Code Button
+  const copyBtn = document.getElementById('mp-copy-code-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const code = document.getElementById('mp-display-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        copyBtn.textContent = '✅ Kopiert!';
+        setTimeout(() => copyBtn.textContent = '📋 Code kopieren', 2000);
+      });
+    });
+  }
+
+  // Host Manual Start Button
+  const hostStartBtn = document.getElementById('mp-host-start-btn');
+  if (hostStartBtn) {
+    hostStartBtn.addEventListener('click', () => {
+      if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
+        mpSocket.send(JSON.stringify({ type: 'START_GAME' }));
+      }
+    });
+  }
+}
+
+/* ==========================================================================
+   22. INITIALIZATION ENTRYPOINT
    ========================================================================== */
 window.addEventListener('DOMContentLoaded', () => {
   loadSavedState();
@@ -4866,6 +5236,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initWelcomeFlow();
   initSettings();
   initGameGuides();
+  initMultiplayerLobby();
   initTicTacToe();
   initMemory();
   initSuperMario();
@@ -4875,3 +5246,4 @@ window.addEventListener('DOMContentLoaded', () => {
   initBrickBreaker();
   initPWA();
 });
+
