@@ -2240,11 +2240,29 @@ function resetTicTacToe() {
 function handleTttMove(index) {
   if (mpIsOnlineActive) {
     if (!mpMyTurn || tttBoard[index] || tttGameOver) return;
+
+    // Apply local move immediately
+    tttBoard[index] = mpPlayerSymbol;
+    const symEl = tttBoardCells[index].querySelector('.cell-symbol') || tttBoardCells[index];
+    symEl.textContent = mpPlayerSymbol;
+    tttBoardCells[index].disabled = true;
+    SFX.move();
+
+    const outcome = checkTttWinner(tttBoard);
+    mpMyTurn = false;
+    tttStatus.textContent = '⏳ Gegner ist am Zug...';
+
     sendMultiplayerAction({
-      type: 'TTT_MOVE',
+      type: 'TTT_UPDATE',
       index: index,
-      symbol: mpPlayerSymbol
+      symbol: mpPlayerSymbol,
+      nextTurnSymbol: mpPlayerSymbol === 'X' ? 'O' : 'X',
+      outcome: outcome
     });
+
+    if (outcome) {
+      finishTttGame(outcome);
+    }
     return;
   }
 
@@ -4876,6 +4894,7 @@ let mpIsOnlineActive = false;
 let mpMyTurn = false;
 let mpPlayersList = [];
 let mpMaxPlayersCount = 2;
+let mpLobbyInterval = null;
 
 // Listen for local storage cross-window events
 window.addEventListener('storage', (e) => {
@@ -4897,6 +4916,11 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   mpIsHost = isHosting;
   mpPlayerSymbol = isHosting ? 'X' : 'O';
 
+  if (mpLobbyInterval) {
+    clearInterval(mpLobbyInterval);
+    mpLobbyInterval = null;
+  }
+
   if (statusText) statusText.textContent = 'Verbinde mit Raum ' + roomCode + '...';
   if (dot) dot.textContent = '🟡';
 
@@ -4908,7 +4932,7 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   const clientId = 'noel_' + mpPlayerId + '_' + Math.random().toString(36).substr(2, 5);
 
   if (typeof Paho === 'undefined' || !Paho.MQTT) {
-    console.warn('Paho MQTT not loaded yet, starting local room');
+    console.warn('Paho MQTT not loaded yet, fallback to local room');
     if (isHosting) {
       mpPlayersList = [{ id: mpPlayerId, name: mpPlayerName, isHost: true, symbol: 'X', score: 0 }];
       showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
@@ -4944,40 +4968,70 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
 
   pahoClient.connect({
     useSSL: true,
-    timeout: 4,
+    timeout: 5,
     onSuccess: () => {
       if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
       if (dot) dot.textContent = '🟢';
 
-      pahoClient.subscribe(topic);
+      // Subscribe with confirmation callback
+      pahoClient.subscribe(topic, {
+        onSuccess: () => {
+          if (isHosting) {
+            mpPlayersList = [{
+              id: mpPlayerId,
+              name: mpPlayerName,
+              isHost: true,
+              symbol: 'X',
+              score: 0
+            }];
+            showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+            if (callback) callback();
 
-      if (isHosting) {
-        mpPlayersList = [{
-          id: mpPlayerId,
-          name: mpPlayerName,
-          isHost: true,
-          symbol: 'X',
-          score: 0
-        }];
-        showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-        if (callback) callback();
-      } else {
-        // Player sends JOIN announcement
-        sendMultiplayerAction({
-          type: 'PLAYER_JOINED',
-          playerId: mpPlayerId,
-          name: mpPlayerName,
-          symbol: 'O',
-          roomCode: roomCode
-        });
+            // Host announces room state every 1.2s to any late/joining players
+            mpLobbyInterval = setInterval(() => {
+              if (mpCurrentRoom && !mpIsOnlineActive) {
+                sendMultiplayerAction({
+                  type: 'ROOM_STATE_SYNC',
+                  players: mpPlayersList,
+                  gameType: mpGameType,
+                  maxPlayers: mpMaxPlayersCount
+                });
+              }
+            }, 1200);
 
-        mpPlayersList = [
-          { id: 'host', name: 'Warte auf Host...', isHost: true, symbol: 'X', score: 0 },
-          { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
-        ];
-        showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-        if (callback) callback();
-      }
+          } else {
+            // Joiner sets waiting UI
+            mpPlayersList = [
+              { id: 'host', name: 'Warte auf Host...', isHost: true, symbol: 'X', score: 0 },
+              { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
+            ];
+            showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+            if (callback) callback();
+
+            // Send JOIN immediately and retry every 1s until accepted by host
+            const sendJoin = () => {
+              sendMultiplayerAction({
+                type: 'PLAYER_JOINED',
+                playerId: mpPlayerId,
+                name: mpPlayerName,
+                symbol: 'O',
+                roomCode: roomCode
+              });
+            };
+            sendJoin();
+
+            mpLobbyInterval = setInterval(() => {
+              if (mpCurrentRoom && !mpIsOnlineActive) {
+                // If not synced yet, keep announcing join
+                const amIInList = mpPlayersList.some(p => p.id === mpPlayerId && p.name !== 'Warte auf Host...');
+                if (!amIInList || mpPlayersList[0].name === 'Warte auf Host...') {
+                  sendJoin();
+                }
+              }
+            }, 1000);
+          }
+        }
+      });
     },
     onFailure: (err) => {
       console.warn('HiveMQ connection failed, fallback to local room:', err);
@@ -5020,7 +5074,7 @@ function handleMultiplayerMessage(data) {
         if (!existing) {
           mpPlayersList.push({
             id: data.playerId,
-            name: data.name,
+            name: data.name || 'Mitspieler',
             symbol: data.symbol || 'O',
             isHost: false,
             score: 0
@@ -5032,30 +5086,32 @@ function handleMultiplayerMessage(data) {
           sendMultiplayerAction({
             type: 'ROOM_STATE_SYNC',
             players: mpPlayersList,
-            gameType: mpGameType
+            gameType: mpGameType,
+            maxPlayers: mpMaxPlayersCount
           });
 
           // If room reached target players, auto-start game!
           if (mpPlayersList.length >= mpMaxPlayersCount) {
-            sendMultiplayerAction({
-              type: 'GAME_START',
-              gameType: mpGameType,
-              players: mpPlayersList
-            });
-            closeMultiplayerModal();
-            startOnlineMatch({ gameType: mpGameType, players: mpPlayersList });
+            triggerGameStartBroadcast();
           }
         }
       }
       break;
 
     case 'ROOM_STATE_SYNC':
-      mpPlayersList = data.players;
-      mpGameType = data.gameType || mpGameType;
-      updateLobbyPlayerList(mpPlayersList);
+      if (data.players && data.players.length > 0) {
+        mpPlayersList = data.players;
+        mpGameType = data.gameType || mpGameType;
+        if (data.maxPlayers) mpMaxPlayersCount = data.maxPlayers;
+        updateLobbyPlayerList(mpPlayersList);
+      }
       break;
 
     case 'GAME_START':
+      if (mpLobbyInterval) {
+        clearInterval(mpLobbyInterval);
+        mpLobbyInterval = null;
+      }
       closeMultiplayerModal();
       startOnlineMatch(data);
       break;
@@ -5076,6 +5132,27 @@ function handleMultiplayerMessage(data) {
       alert('⚠️ ' + data.message);
       break;
   }
+}
+
+function triggerGameStartBroadcast() {
+  if (mpLobbyInterval) {
+    clearInterval(mpLobbyInterval);
+    mpLobbyInterval = null;
+  }
+
+  const payload = {
+    type: 'GAME_START',
+    gameType: mpGameType,
+    players: mpPlayersList
+  };
+
+  // Broadcast multiple bursts to ensure receipt
+  sendMultiplayerAction(payload);
+  setTimeout(() => sendMultiplayerAction(payload), 120);
+  setTimeout(() => sendMultiplayerAction(payload), 300);
+
+  closeMultiplayerModal();
+  startOnlineMatch(payload);
 }
 
 function showLobbyWaitingScreen(roomCode, players, maxPlayers) {
@@ -5146,37 +5223,42 @@ function startOnlineMatch(data) {
   switchGame(mpGameType);
 
   if (mpGameType === 'tictactoe') {
+    resetTicTacToe();
     mpMyTurn = (mpPlayerSymbol === 'X');
     const status = document.getElementById('ttt-status');
     if (status) {
-      status.textContent = `🌐 Online Raum ${mpCurrentRoom} • Du bist ${mpPlayerSymbol} (${mpMyTurn ? 'Du bist am Zug!' : 'Gegner ist am Zug...'})`;
+      status.textContent = `🌐 Online Raum ${mpCurrentRoom} • Du bist ${mpPlayerSymbol} (${mpMyTurn ? '🎮 Du bist am Zug!' : '⏳ Gegner ist am Zug...'})`;
       status.style.borderColor = 'var(--accent-secondary)';
     }
   }
 }
 
 function applyRemoteTicTacToeMove(data) {
-  const cell = document.querySelector(`.cell[data-index="${data.index}"]`);
-  if (cell) {
-    const symbolSpan = cell.querySelector('.cell-symbol');
-    if (symbolSpan) symbolSpan.textContent = data.symbol;
-    cell.classList.add('taken', data.symbol.toLowerCase());
+  if (data.index !== undefined && !tttBoard[data.index]) {
+    tttBoard[data.index] = data.symbol;
+    const symEl = tttBoardCells[data.index].querySelector('.cell-symbol') || tttBoardCells[data.index];
+    symEl.textContent = data.symbol;
+    tttBoardCells[data.index].disabled = true;
+    SFX.move();
   }
 
-  mpMyTurn = (data.nextTurnPlayerId === mpPlayerId || (data.symbol !== mpPlayerSymbol));
-  const status = document.getElementById('ttt-status');
-  if (status) {
-    status.textContent = mpMyTurn ? `🎮 Du bist am Zug! (${mpPlayerSymbol})` : `⏳ Gegner ist am Zug...`;
+  if (data.outcome) {
+    finishTttGame(data.outcome);
+  } else {
+    mpMyTurn = (mpPlayerSymbol === data.nextTurnSymbol);
+    const status = document.getElementById('ttt-status');
+    if (status) {
+      status.textContent = mpMyTurn ? `🎮 Du bist am Zug! (${mpPlayerSymbol})` : `⏳ Gegner ist am Zug...`;
+    }
   }
 }
 
 function applyRemoteMemoryFlip(data) {
   const cards = document.querySelectorAll('.memory-card');
   const card = cards[data.cardIndex];
-  if (card && !card.classList.contains('flipped')) {
-    card.classList.add('flipped');
-    const iconSpan = card.querySelector('.mem-icon');
-    if (iconSpan) iconSpan.textContent = data.icon;
+  if (card && !card.classList.contains('revealed')) {
+    card.classList.add('revealed');
+    card.textContent = data.symbol;
   }
 }
 
@@ -5210,6 +5292,7 @@ function initMultiplayerLobby() {
   if (btnOffline) {
     btnOffline.addEventListener('click', () => {
       mpIsOnlineActive = false;
+      if (mpLobbyInterval) clearInterval(mpLobbyInterval);
       closeMultiplayerModal();
       SFX.click();
     });
@@ -5313,13 +5396,7 @@ function initMultiplayerLobby() {
   const hostStartBtn = document.getElementById('mp-host-start-btn');
   if (hostStartBtn) {
     hostStartBtn.addEventListener('click', () => {
-      sendMultiplayerAction({
-        type: 'GAME_START',
-        gameType: mpGameType,
-        players: mpPlayersList
-      });
-      closeMultiplayerModal();
-      startOnlineMatch({ gameType: mpGameType, players: mpPlayersList });
+      triggerGameStartBroadcast();
     });
   }
 }
