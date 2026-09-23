@@ -21,4 +21,4 @@ Ultra-polished, 100% Offline-First Progressive Web App (PWA) featuring 7 fully l
 
 ## 📄 License & Privacy
 - **Privacy Policy**: [privacy.html](privacy.html)
-- **Version**: `0.0.12 (v0.0.12 • 2026-09-23)`
+- **Version**: `0.0.13 (v0.0.13 • 2026-09-23)`
