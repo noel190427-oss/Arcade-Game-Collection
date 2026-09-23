@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.13-multiplayer-release';
+const CACHE_NAME = 'arcade-collection-v0.0.14-live-multiplayer';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,17 +6,13 @@ const APP_SHELL = [
   './style.css',
   './script.js',
   './manifest.json',
-  './favicon.svg',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-maskable.png'
+  './favicon.svg'
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
   );
 });
 
@@ -31,35 +27,28 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') {
-    return;
-  }
+  if (event.request.method !== 'GET') return;
 
-  const requestUrl = new URL(event.request.url);
-  const isSameOrigin = requestUrl.origin === self.location.origin;
+  const url = new URL(event.request.url);
 
-  if (!isSameOrigin) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request)
+  // Network-First for HTML and JS to ensure instant multiplayer sync
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.js') || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request)
         .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          if (networkResponse && networkResponse.status === 200) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
           }
           return networkResponse;
         })
-        .catch(() => {
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-          return null;
-        });
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
 
-      return cachedResponse || fetchPromise;
-    })
+  // Cache-first for images/styles
+  event.respondWith(
+    caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });
