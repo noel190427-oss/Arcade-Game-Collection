@@ -4884,6 +4884,7 @@ function initGameGuides() {
    21. MULTIPLAYER NETWORKING & LOBBY ENGINE (PAHO HIVEMQ WSS BROKER)
    ========================================================================== */
 let pahoClient = null;
+let nativeWs = null;
 let mpCurrentRoom = null;
 let mpPlayerId = 'p_' + Math.random().toString(36).substr(2, 7);
 let mpPlayerName = 'Spieler';
@@ -4923,6 +4924,59 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
 
   if (statusText) statusText.textContent = 'Verbinde mit Raum ' + roomCode + '...';
   if (dot) dot.textContent = '🟡';
+
+  // 1. Check if running directly on Raspberry Pi (Local LAN HTTP)
+  if (location.protocol === 'http:' && (location.port === '3000' || location.hostname.includes('192.168.') || location.hostname === 'localhost')) {
+    try {
+      if (nativeWs) { try { nativeWs.close(); } catch(e){} }
+      const wsUrl = 'ws://' + location.host;
+      nativeWs = new WebSocket(wsUrl);
+      
+      nativeWs.onopen = () => {
+        if (statusText) statusText.textContent = 'Raspberry Pi Server aktiv 🍓🟢 (Raum ' + roomCode + ')';
+        if (dot) dot.textContent = '🟢';
+        if (isHosting) {
+          nativeWs.send(JSON.stringify({
+            type: 'CREATE_ROOM',
+            name: mpPlayerName,
+            maxPlayers: mpMaxPlayersCount,
+            gameType: mpGameType
+          }));
+        } else {
+          nativeWs.send(JSON.stringify({
+            type: 'JOIN_ROOM',
+            roomCode: roomCode,
+            name: mpPlayerName,
+            playerId: mpPlayerId
+          }));
+        }
+        if (callback) callback();
+      };
+
+      nativeWs.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'ROOM_CREATED') {
+            mpCurrentRoom = msg.roomCode;
+            mpPlayersList = msg.players;
+            showLobbyWaitingScreen(msg.roomCode, mpPlayersList, mpMaxPlayersCount);
+          } else {
+            handleMultiplayerMessage(msg);
+          }
+        } catch (e) {
+          console.error('Pi WS Message error:', e);
+        }
+      };
+
+      nativeWs.onclose = () => {
+        if (statusText) statusText.textContent = 'Pi Server getrennt ⚪';
+        if (dot) dot.textContent = '⚪';
+      };
+      return;
+    } catch (err) {
+      console.warn('Pi direct WS failed, falling back to HiveMQ broker:', err);
+    }
+  }
 
   if (pahoClient) {
     try { pahoClient.disconnect(); } catch (e) {}
@@ -5052,7 +5106,17 @@ function sendMultiplayerAction(actionData) {
     localStorage.setItem('noel_mp_' + mpCurrentRoom, JSON.stringify({ ...actionData, _t: Date.now() }));
   } catch (e) {}
 
-  // 2. Global HiveMQ MQTT WSS broadcast
+  // 2. Native Raspberry Pi WebSocket
+  if (nativeWs && nativeWs.readyState === WebSocket.OPEN) {
+    try {
+      nativeWs.send(JSON.stringify(actionData));
+      return;
+    } catch (e) {
+      console.error('Native WS send error:', e);
+    }
+  }
+
+  // 3. Global HiveMQ MQTT WSS broadcast
   if (pahoClient && pahoClient.isConnected()) {
     try {
       const topic = 'noelarcade/rooms/' + mpCurrentRoom;
