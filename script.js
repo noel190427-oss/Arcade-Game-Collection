@@ -5267,6 +5267,9 @@ function initMultiplayerLobby() {
   const createRoomBtn = document.getElementById('mp-create-room-btn');
   if (createRoomBtn) {
     createRoomBtn.addEventListener('click', () => {
+      createRoomBtn.innerHTML = '<span>⏳ Erstelle Raum...</span>';
+      createRoomBtn.disabled = true;
+
       mpPlayerName = (document.getElementById('mp-host-name').value || 'Noel').trim();
       mpMaxPlayersCount = parseInt(slider.value) || 2;
       mpGameType = document.getElementById('mp-game-select').value || 'tictactoe';
@@ -5278,6 +5281,8 @@ function initMultiplayerLobby() {
       mpCurrentRoom = roomCode;
 
       initPeerMultiplayer(roomCode, true, () => {
+        createRoomBtn.innerHTML = '<span>🚀 Raum erstellen & Code generieren</span>';
+        createRoomBtn.disabled = false;
         SFX.success();
       });
     });
@@ -5287,17 +5292,25 @@ function initMultiplayerLobby() {
   const joinRoomBtn = document.getElementById('mp-join-room-btn');
   if (joinRoomBtn) {
     joinRoomBtn.addEventListener('click', () => {
-      mpPlayerName = (document.getElementById('mp-join-name').value || 'Gast').trim();
-      const code = (document.getElementById('mp-room-code-input').value || '').trim();
+      const codeInput = document.getElementById('mp-room-code-input');
+      const nameInput = document.getElementById('mp-join-name');
+      mpPlayerName = (nameInput?.value || 'Gast').trim();
+      const code = (codeInput?.value || '').trim();
 
       if (!code) {
-        alert('Bitte gib einen 4-stelligen Raum-Code ein!');
+        alert('Bitte gib den 4-stelligen Raum-Code ein!');
         return;
       }
 
+      joinRoomBtn.innerHTML = '<span>⏳ Verbinde mit Raum ' + code + '...</span>';
+      joinRoomBtn.disabled = true;
+
       mpCurrentRoom = code;
       mpIsHost = false;
-      initPeerMultiplayer(code, false);
+      initPeerMultiplayer(code, false, () => {
+        joinRoomBtn.innerHTML = '<span>🔑 Jetzt Raum beitreten</span>';
+        joinRoomBtn.disabled = false;
+      });
     });
   }
 
