@@ -1,10 +1,11 @@
-const CACHE_NAME = 'arcade-collection-v0.0.14-live-multiplayer';
+const CACHE_NAME = 'arcade-collection-v0.0.18-live-paho';
 const APP_SHELL = [
   './',
   './index.html',
   './privacy.html',
   './style.css',
   './script.js',
+  './paho-mqtt.js',
   './manifest.json',
   './favicon.svg'
 ];
