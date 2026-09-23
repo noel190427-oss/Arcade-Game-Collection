@@ -4863,9 +4863,9 @@ function initGameGuides() {
 }
 
 /* ==========================================================================
-   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (100% NATIVE ZERO-DEPENDENCY)
+   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (PAHO HIVEMQ WSS BROKER)
    ========================================================================== */
-let mpNativeSocket = null;
+let pahoClient = null;
 let mpCurrentRoom = null;
 let mpPlayerId = 'p_' + Math.random().toString(36).substr(2, 7);
 let mpPlayerName = 'Spieler';
@@ -4897,68 +4897,95 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   mpIsHost = isHosting;
   mpPlayerSymbol = isHosting ? 'X' : 'O';
 
-  if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
-  if (dot) dot.textContent = '🟢';
+  if (statusText) statusText.textContent = 'Verbinde mit Raum ' + roomCode + '...';
+  if (dot) dot.textContent = '🟡';
 
-  if (isHosting) {
-    mpPlayersList = [{
-      id: mpPlayerId,
-      name: mpPlayerName,
-      isHost: true,
-      symbol: 'X',
-      score: 0
-    }];
-    showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-    if (callback) callback();
-  } else {
-    mpPlayersList = [
-      { id: 'host', name: 'Host 👑', isHost: true, symbol: 'X', score: 0 },
-      { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
-    ];
-    showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-
-    sendMultiplayerAction({
-      type: 'PLAYER_JOINED',
-      playerId: mpPlayerId,
-      name: mpPlayerName,
-      symbol: 'O',
-      roomCode: roomCode
-    });
-
-    if (callback) callback();
+  if (pahoClient) {
+    try { pahoClient.disconnect(); } catch (e) {}
   }
 
-  // Connect to native WebSocket relay
-  const wsEndpoints = [
-    'wss://socketsbay.com/wss/v2/1/demo/',
-    'ws://192.168.2.124:3000',
-    'ws://192.168.2.122:3000'
-  ];
+  const topic = 'noelarcade/rooms/' + roomCode;
+  const clientId = 'noel_' + mpPlayerId + '_' + Math.random().toString(36).substr(2, 5);
 
-  function tryEndpoint(idx) {
-    if (idx >= wsEndpoints.length) return;
-    try {
-      const ws = new WebSocket(wsEndpoints[idx]);
-      ws.onopen = () => {
-        mpNativeSocket = ws;
-      };
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.roomCode === mpCurrentRoom && data.senderId !== mpPlayerId) {
-            handleMultiplayerMessage(data);
-          }
-        } catch (e) {}
-      };
-      ws.onerror = () => {
-        tryEndpoint(idx + 1);
-      };
-    } catch (e) {
-      tryEndpoint(idx + 1);
+  if (typeof Paho === 'undefined' || !Paho.MQTT) {
+    console.warn('Paho MQTT not loaded yet, starting local room');
+    if (isHosting) {
+      mpPlayersList = [{ id: mpPlayerId, name: mpPlayerName, isHost: true, symbol: 'X', score: 0 }];
+      showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+      if (callback) callback();
     }
+    return;
   }
 
-  tryEndpoint(0);
+  try {
+    pahoClient = new Paho.MQTT.Client('broker.hivemq.com', 8884, '/mqtt', clientId);
+  } catch (err) {
+    console.error('Paho init error:', err);
+    if (statusText) statusText.textContent = 'Raum bereit (Lokal)';
+    return;
+  }
+
+  pahoClient.onConnectionLost = (responseObject) => {
+    if (responseObject.errorCode !== 0) {
+      if (statusText) statusText.textContent = 'Verbindung getrennt';
+      if (dot) dot.textContent = '⚪';
+    }
+  };
+
+  pahoClient.onMessageArrived = (message) => {
+    try {
+      const msg = JSON.parse(message.payloadString);
+      if (msg.senderId === mpPlayerId) return; // Ignore own echo
+      handleMultiplayerMessage(msg);
+    } catch (e) {
+      console.error('Message parse error:', e);
+    }
+  };
+
+  pahoClient.connect({
+    useSSL: true,
+    timeout: 4,
+    onSuccess: () => {
+      if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
+      if (dot) dot.textContent = '🟢';
+
+      pahoClient.subscribe(topic);
+
+      if (isHosting) {
+        mpPlayersList = [{
+          id: mpPlayerId,
+          name: mpPlayerName,
+          isHost: true,
+          symbol: 'X',
+          score: 0
+        }];
+        showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+        if (callback) callback();
+      } else {
+        // Player sends JOIN announcement
+        sendMultiplayerAction({
+          type: 'PLAYER_JOINED',
+          playerId: mpPlayerId,
+          name: mpPlayerName,
+          symbol: 'O',
+          roomCode: roomCode
+        });
+
+        mpPlayersList = [
+          { id: 'host', name: 'Warte auf Host...', isHost: true, symbol: 'X', score: 0 },
+          { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
+        ];
+        showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+        if (callback) callback();
+      }
+    },
+    onFailure: (err) => {
+      console.warn('HiveMQ connection failed, fallback to local room:', err);
+      if (statusText) statusText.textContent = 'Raum ' + roomCode + ' (Lokal aktiv)';
+      if (dot) dot.textContent = '🟢';
+      if (callback) callback();
+    }
+  });
 }
 
 function sendMultiplayerAction(actionData) {
@@ -4966,16 +4993,22 @@ function sendMultiplayerAction(actionData) {
   actionData.senderId = mpPlayerId;
   actionData.roomCode = mpCurrentRoom;
 
-  // 1. Cross-Tab LocalStorage event (instant on same network/device)
+  // 1. Cross-Tab LocalStorage event (instant for same machine)
   try {
     localStorage.setItem('noel_mp_' + mpCurrentRoom, JSON.stringify({ ...actionData, _t: Date.now() }));
   } catch (e) {}
 
-  // 2. Native WebSocket
-  if (mpNativeSocket && mpNativeSocket.readyState === WebSocket.OPEN) {
+  // 2. Global HiveMQ MQTT WSS broadcast
+  if (pahoClient && pahoClient.isConnected()) {
     try {
-      mpNativeSocket.send(JSON.stringify(actionData));
-    } catch (e) {}
+      const topic = 'noelarcade/rooms/' + mpCurrentRoom;
+      const message = new Paho.MQTT.Message(JSON.stringify(actionData));
+      message.destinationName = topic;
+      message.qos = 0;
+      pahoClient.send(message);
+    } catch (e) {
+      console.error('Paho send error:', e);
+    }
   }
 }
 
