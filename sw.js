@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.19-live-resilient';
+const CACHE_NAME = 'arcade-collection-v0.0.20-live-connected';
 const APP_SHELL = [
   './',
   './index.html',
