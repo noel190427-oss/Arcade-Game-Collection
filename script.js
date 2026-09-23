@@ -2240,12 +2240,11 @@ function resetTicTacToe() {
 function handleTttMove(index) {
   if (mpIsOnlineActive) {
     if (!mpMyTurn || tttBoard[index] || tttGameOver) return;
-    if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
-      mpSocket.send(JSON.stringify({
-        type: 'TTT_MOVE',
-        index: index
-      }));
-    }
+    sendMultiplayerAction({
+      type: 'TTT_MOVE',
+      index: index,
+      symbol: mpPlayerSymbol
+    });
     return;
   }
 
@@ -4864,9 +4863,10 @@ function initGameGuides() {
 }
 
 /* ==========================================================================
-   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (2-10 PLAYERS, ROOM CODES)
+   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (HYBRID WEBRTC P2P & WEBSOCKET)
    ========================================================================== */
-let mpSocket = null;
+let mpPeer = null;
+let mpPeerConnections = [];
 let mpCurrentRoom = null;
 let mpPlayerId = null;
 let mpPlayerName = 'Spieler';
@@ -4875,63 +4875,171 @@ let mpIsHost = false;
 let mpGameType = 'tictactoe';
 let mpIsOnlineActive = false;
 let mpMyTurn = false;
+let mpPlayersList = [];
+let mpMaxPlayersCount = 2;
 
-function getMultiplayerServerUrl() {
-  const host = window.location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1') {
-    return 'ws://localhost:3000';
-  }
-  // Standard WebSocket Port auf dem Raspberry Pi
-  return 'ws://192.168.2.124:3000';
-}
-
-function connectMultiplayerSocket(callback) {
+function initPeerMultiplayer(roomCode, isHosting, callback) {
   const dot = document.getElementById('mp-server-dot');
   const statusText = document.getElementById('mp-server-status-text');
 
-  if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
-    if (callback) callback();
+  if (typeof Peer === 'undefined') {
+    console.warn('PeerJS nicht geladen, fallback auf WebSocket');
+    connectMultiplayerSocket(callback);
     return;
   }
 
-  const serverUrl = getMultiplayerServerUrl();
-  if (statusText) statusText.textContent = 'Verbinde mit Gameserver...';
+  if (statusText) statusText.textContent = 'Verbinde mit Peer-Netzwerk (Weltweit)...';
   if (dot) dot.textContent = '🟡';
 
+  if (mpPeer) {
+    try { mpPeer.destroy(); } catch (e) {}
+  }
+
+  const peerId = isHosting ? ('noel-arcade-' + roomCode) : ('noel-player-' + Math.random().toString(36).substr(2, 7));
+  mpPlayerId = peerId;
+
   try {
-    mpSocket = new WebSocket(serverUrl);
+    mpPeer = new Peer(peerId, {
+      debug: 1,
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:global.stun.twilio.com:3478' }
+        ]
+      }
+    });
   } catch (err) {
-    console.warn('Multiplayer Server offline / nicht erreichbar:', err);
-    if (statusText) statusText.textContent = 'Server offline (Lokal spielbar)';
-    if (dot) dot.textContent = '🔴';
+    console.error('Peer creation error:', err);
+    connectMultiplayerSocket(callback);
     return;
   }
 
-  mpSocket.onopen = () => {
-    if (statusText) statusText.textContent = 'Gameserver verbunden • 2 bis 10 Spieler';
+  mpPeer.on('open', (id) => {
+    if (statusText) statusText.textContent = 'Multiplayer Netzwerk aktiv 🟢';
     if (dot) dot.textContent = '🟢';
-    if (callback) callback();
-  };
 
-  mpSocket.onerror = () => {
-    if (statusText) statusText.textContent = 'Server nicht erreichbar';
-    if (dot) dot.textContent = '🔴';
-  };
+    if (isHosting) {
+      mpPlayersList = [{
+        id: mpPlayerId,
+        name: mpPlayerName,
+        isHost: true,
+        symbol: 'X',
+        score: 0
+      }];
+      showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+      if (callback) callback();
+    } else {
+      // Connect to host
+      const hostPeerId = 'noel-arcade-' + roomCode;
+      const conn = mpPeer.connect(hostPeerId, { reliable: true });
 
-  mpSocket.onclose = () => {
-    if (statusText) statusText.textContent = 'Verbindung getrennt';
-    if (dot) dot.textContent = '⚪';
-    mpIsOnlineActive = false;
-  };
+      conn.on('open', () => {
+        mpPeerConnections = [conn];
+        conn.send({
+          type: 'JOIN_REQUEST',
+          name: mpPlayerName,
+          playerId: mpPlayerId
+        });
+      });
 
-  mpSocket.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      handleMultiplayerMessage(data);
-    } catch (e) {
-      console.error('Fehler bei MP-Nachricht:', e);
+      conn.on('data', (data) => {
+        handleMultiplayerMessage(data);
+      });
+
+      conn.on('error', (e) => {
+        alert('⚠️ Verbindung zum Raum fehlgeschlagen: ' + e);
+      });
     }
-  };
+  });
+
+  if (isHosting) {
+    mpPeer.on('connection', (conn) => {
+      conn.on('open', () => {
+        mpPeerConnections.push(conn);
+      });
+
+      conn.on('data', (msg) => {
+        if (msg.type === 'JOIN_REQUEST') {
+          if (mpPlayersList.length >= mpMaxPlayersCount) {
+            conn.send({ type: 'ERROR', message: 'Raum ist bereits voll (max. ' + mpMaxPlayersCount + ' Spieler)!' });
+            return;
+          }
+
+          const symbol = mpPlayersList.length === 1 ? 'O' : (mpPlayersList.length === 0 ? 'X' : 'Zuschauer');
+          const newPlayer = {
+            id: msg.playerId,
+            name: msg.name || 'Gast',
+            isHost: false,
+            symbol: symbol,
+            score: 0
+          };
+
+          mpPlayersList.push(newPlayer);
+
+          // Bestätigung an den neuen Spieler
+          conn.send({
+            type: 'ROOM_JOINED',
+            roomCode: mpCurrentRoom,
+            playerId: msg.playerId,
+            gameType: mpGameType,
+            maxPlayers: mpMaxPlayersCount,
+            symbol: symbol,
+            players: mpPlayersList
+          });
+
+          // An alle anderen Spieler broadcasten
+          broadcastP2P({
+            type: 'PLAYER_JOINED',
+            players: mpPlayersList,
+            newPlayer: newPlayer
+          });
+
+          updateLobbyPlayerList(mpPlayersList);
+          SFX.pop();
+
+          if (mpPlayersList.length === mpMaxPlayersCount) {
+            broadcastP2P({
+              type: 'GAME_START',
+              gameType: mpGameType,
+              players: mpPlayersList
+            });
+            closeMultiplayerModal();
+            startOnlineMatch({ gameType: mpGameType, players: mpPlayersList });
+          }
+        } else {
+          // Forward move or game actions to all peers
+          broadcastP2P(msg);
+          handleMultiplayerMessage(msg);
+        }
+      });
+
+      conn.on('close', () => {
+        mpPeerConnections = mpPeerConnections.filter(c => c !== conn);
+      });
+    });
+  }
+
+  mpPeer.on('error', (err) => {
+    console.warn('Peer error:', err);
+    if (err.type === 'unavailable-id') {
+      alert('⚠️ Dieser Raum-Code wird bereits verwendet. Bitte erstelle einen neuen Raum!');
+    }
+  });
+}
+
+function broadcastP2P(data) {
+  mpPeerConnections.forEach(conn => {
+    if (conn.open) conn.send(data);
+  });
+}
+
+function sendMultiplayerAction(actionData) {
+  if (mpPeer && mpPeerConnections.length > 0) {
+    broadcastP2P(actionData);
+    handleMultiplayerMessage(actionData);
+  } else if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
+    mpSocket.send(JSON.stringify(actionData));
+  }
 }
 
 function handleMultiplayerMessage(data) {
@@ -5038,7 +5146,10 @@ function openMultiplayerModal(gameType) {
   const createTab = document.getElementById('mp-tab-create');
   if (createTab) createTab.classList.add('active-mp-tab');
 
-  connectMultiplayerSocket();
+  const dot = document.getElementById('mp-server-dot');
+  const statusText = document.getElementById('mp-server-status-text');
+  if (statusText) statusText.textContent = 'Multiplayer Netzwerk bereit • Bis zu 10 Spieler';
+  if (dot) dot.textContent = '🟢';
 }
 
 function closeMultiplayerModal() {
@@ -5069,15 +5180,14 @@ function applyRemoteTicTacToeMove(data) {
     cell.classList.add('taken', data.symbol.toLowerCase());
   }
 
-  mpMyTurn = (data.nextTurnPlayerId === mpPlayerId);
+  mpMyTurn = (data.nextTurnPlayerId === mpPlayerId || (data.symbol !== mpPlayerSymbol));
   const status = document.getElementById('ttt-status');
   if (status) {
-    status.textContent = mpMyTurn ? `🎮 Du bist am Zug! (${mpPlayerSymbol})` : `⏳ ${data.nextTurnPlayerName || 'Gegner'} ist am Zug...`;
+    status.textContent = mpMyTurn ? `🎮 Du bist am Zug! (${mpPlayerSymbol})` : `⏳ Gegner ist am Zug...`;
   }
 }
 
 function applyRemoteMemoryFlip(data) {
-  // Zeige aufgedeckte Karte für alle
   const cards = document.querySelectorAll('.memory-card');
   const card = cards[data.cardIndex];
   if (card && !card.classList.contains('flipped')) {
@@ -5157,20 +5267,18 @@ function initMultiplayerLobby() {
   const createRoomBtn = document.getElementById('mp-create-room-btn');
   if (createRoomBtn) {
     createRoomBtn.addEventListener('click', () => {
-      const name = (document.getElementById('mp-host-name').value || 'Noel').trim();
-      const maxPlayers = parseInt(slider.value) || 2;
-      const gameType = document.getElementById('mp-game-select').value || 'tictactoe';
-      mpGameType = gameType;
+      mpPlayerName = (document.getElementById('mp-host-name').value || 'Noel').trim();
+      mpMaxPlayersCount = parseInt(slider.value) || 2;
+      mpGameType = document.getElementById('mp-game-select').value || 'tictactoe';
+      mpIsHost = true;
+      mpPlayerSymbol = 'X';
 
-      connectMultiplayerSocket(() => {
-        if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
-          mpSocket.send(JSON.stringify({
-            type: 'CREATE_ROOM',
-            name: name,
-            maxPlayers: maxPlayers,
-            gameType: gameType
-          }));
-        }
+      // 4-stelligen Code generieren (z. B. 4829)
+      const roomCode = Math.floor(1000 + Math.random() * 9000).toString();
+      mpCurrentRoom = roomCode;
+
+      initPeerMultiplayer(roomCode, true, () => {
+        SFX.success();
       });
     });
   }
@@ -5179,7 +5287,7 @@ function initMultiplayerLobby() {
   const joinRoomBtn = document.getElementById('mp-join-room-btn');
   if (joinRoomBtn) {
     joinRoomBtn.addEventListener('click', () => {
-      const name = (document.getElementById('mp-join-name').value || 'Gast').trim();
+      mpPlayerName = (document.getElementById('mp-join-name').value || 'Gast').trim();
       const code = (document.getElementById('mp-room-code-input').value || '').trim();
 
       if (!code) {
@@ -5187,15 +5295,9 @@ function initMultiplayerLobby() {
         return;
       }
 
-      connectMultiplayerSocket(() => {
-        if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
-          mpSocket.send(JSON.stringify({
-            type: 'JOIN_ROOM',
-            name: name,
-            roomCode: code
-          }));
-        }
-      });
+      mpCurrentRoom = code;
+      mpIsHost = false;
+      initPeerMultiplayer(code, false);
     });
   }
 
@@ -5215,9 +5317,13 @@ function initMultiplayerLobby() {
   const hostStartBtn = document.getElementById('mp-host-start-btn');
   if (hostStartBtn) {
     hostStartBtn.addEventListener('click', () => {
-      if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
-        mpSocket.send(JSON.stringify({ type: 'START_GAME' }));
-      }
+      broadcastP2P({
+        type: 'GAME_START',
+        gameType: mpGameType,
+        players: mpPlayersList
+      });
+      closeMultiplayerModal();
+      startOnlineMatch({ gameType: mpGameType, players: mpPlayersList });
     });
   }
 }
