@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.12-release';
+const CACHE_NAME = 'arcade-collection-v0.0.13-multiplayer-release';
 const APP_SHELL = [
   './',
   './index.html',
