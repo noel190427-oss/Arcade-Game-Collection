@@ -4863,12 +4863,11 @@ function initGameGuides() {
 }
 
 /* ==========================================================================
-   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (HYBRID WEBRTC P2P & WEBSOCKET)
+   21. MULTIPLAYER NETWORKING & LOBBY ENGINE (INSTANT GLOBAL MQTT BROKER)
    ========================================================================== */
-let mpPeer = null;
-let mpPeerConnections = [];
+let mpMqttClient = null;
 let mpCurrentRoom = null;
-let mpPlayerId = null;
+let mpPlayerId = 'p_' + Math.random().toString(36).substr(2, 7);
 let mpPlayerName = 'Spieler';
 let mpPlayerSymbol = 'X';
 let mpIsHost = false;
@@ -4878,127 +4877,132 @@ let mpMyTurn = false;
 let mpPlayersList = [];
 let mpMaxPlayersCount = 2;
 
-function initPeerMultiplayer(roomCode, isHosting, callback) {
+function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   const dot = document.getElementById('mp-server-dot');
   const statusText = document.getElementById('mp-server-status-text');
 
-  if (typeof Peer === 'undefined') {
-    console.warn('PeerJS nicht geladen, fallback auf WebSocket');
-    connectMultiplayerSocket(callback);
-    return;
-  }
+  mpCurrentRoom = roomCode;
+  mpIsHost = isHosting;
+  mpPlayerSymbol = isHosting ? 'X' : 'O';
 
-  if (statusText) statusText.textContent = 'Verbinde mit Peer-Netzwerk (Weltweit)...';
+  if (statusText) statusText.textContent = 'Verbinde mit Raum ' + roomCode + '...';
   if (dot) dot.textContent = '🟡';
 
-  if (mpPeer) {
-    try { mpPeer.destroy(); } catch (e) {}
+  if (mpMqttClient) {
+    try { mpMqttClient.end(); } catch (e) {}
   }
 
-  const peerId = isHosting ? ('noel-arcade-' + roomCode) : ('noel-player-' + Math.random().toString(36).substr(2, 7));
-  mpPlayerId = peerId;
+  // Global secure WebSocket MQTT Broker (100% public, ultra-fast & free)
+  const brokerUrl = 'wss://broker.emqx.io:8084/mqtt';
+  const topic = 'noelarcade/rooms/' + roomCode;
 
-  try {
-    mpPeer = new Peer(peerId, {
-      debug: 1,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:global.stun.twilio.com:3478' }
-        ]
-      }
-    });
-  } catch (err) {
-    console.error('Peer creation error:', err);
-    connectMultiplayerSocket(callback);
+  if (typeof mqtt === 'undefined') {
+    if (statusText) statusText.textContent = 'MQTT Library wird geladen...';
     return;
   }
 
-  mpPeer.on('open', (id) => {
-    if (statusText) statusText.textContent = 'Multiplayer Netzwerk aktiv 🟢';
+  try {
+    mpMqttClient = mqtt.connect(brokerUrl, {
+      clientId: 'noel_' + mpPlayerId,
+      clean: true,
+      connectTimeout: 5000
+    });
+  } catch (err) {
+    console.error('MQTT connect error:', err);
+    if (statusText) statusText.textContent = 'Verbindungsfehler';
+    if (dot) dot.textContent = '🔴';
+    return;
+  }
+
+  mpMqttClient.on('connect', () => {
+    if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
     if (dot) dot.textContent = '🟢';
 
-    if (isHosting) {
-      mpPlayersList = [{
-        id: mpPlayerId,
-        name: mpPlayerName,
-        isHost: true,
-        symbol: 'X',
-        score: 0
-      }];
-      showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-      if (callback) callback();
-    } else {
-      // Connect to host
-      const hostPeerId = 'noel-arcade-' + roomCode;
-      const conn = mpPeer.connect(hostPeerId, { reliable: true });
+    mpMqttClient.subscribe(topic, { qos: 0 }, (err) => {
+      if (!err) {
+        if (isHosting) {
+          mpPlayersList = [{
+            id: mpPlayerId,
+            name: mpPlayerName,
+            isHost: true,
+            symbol: 'X',
+            score: 0
+          }];
+          showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+          if (callback) callback();
+        } else {
+          // Notify Host of join
+          sendMultiplayerAction({
+            type: 'PLAYER_JOINED',
+            playerId: mpPlayerId,
+            name: mpPlayerName,
+            symbol: 'O',
+            roomCode: roomCode
+          });
 
-      conn.on('open', () => {
-        mpPeerConnections = [conn];
-        conn.send({
-          type: 'JOIN_REQUEST',
-          name: mpPlayerName,
-          playerId: mpPlayerId
-        });
-      });
+          mpPlayersList = [
+            { id: 'host', name: 'Host 👑', isHost: true, symbol: 'X', score: 0 },
+            { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
+          ];
+          showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+          if (callback) callback();
+        }
+      }
+    });
+  });
 
-      conn.on('data', (data) => {
-        handleMultiplayerMessage(data);
-      });
-
-      conn.on('error', (e) => {
-        alert('⚠️ Verbindung zum Raum fehlgeschlagen: ' + e);
-      });
+  mpMqttClient.on('message', (t, payload) => {
+    try {
+      const msg = JSON.parse(payload.toString());
+      if (msg.senderId === mpPlayerId) return; // Ignore own echo
+      handleMultiplayerMessage(msg);
+    } catch (e) {
+      console.error('MQTT message parse error:', e);
     }
   });
 
-  if (isHosting) {
-    mpPeer.on('connection', (conn) => {
-      conn.on('open', () => {
-        mpPeerConnections.push(conn);
-      });
+  mpMqttClient.on('error', (err) => {
+    console.warn('MQTT error:', err);
+  });
+}
 
-      conn.on('data', (msg) => {
-        if (msg.type === 'JOIN_REQUEST') {
-          if (mpPlayersList.length >= mpMaxPlayersCount) {
-            conn.send({ type: 'ERROR', message: 'Raum ist bereits voll (max. ' + mpMaxPlayersCount + ' Spieler)!' });
-            return;
-          }
+function sendMultiplayerAction(actionData) {
+  if (!mpMqttClient || !mpCurrentRoom) return;
+  actionData.senderId = mpPlayerId;
+  const topic = 'noelarcade/rooms/' + mpCurrentRoom;
+  try {
+    mpMqttClient.publish(topic, JSON.stringify(actionData), { qos: 0 });
+  } catch (e) {
+    console.error('Publish error:', e);
+  }
+}
 
-          const symbol = mpPlayersList.length === 1 ? 'O' : (mpPlayersList.length === 0 ? 'X' : 'Zuschauer');
-          const newPlayer = {
-            id: msg.playerId,
-            name: msg.name || 'Gast',
+function handleMultiplayerMessage(data) {
+  switch (data.type) {
+    case 'PLAYER_JOINED':
+      if (mpIsHost) {
+        const existing = mpPlayersList.find(p => p.id === data.playerId);
+        if (!existing) {
+          mpPlayersList.push({
+            id: data.playerId,
+            name: data.name,
+            symbol: data.symbol || 'O',
             isHost: false,
-            symbol: symbol,
             score: 0
-          };
-
-          mpPlayersList.push(newPlayer);
-
-          // Bestätigung an den neuen Spieler
-          conn.send({
-            type: 'ROOM_JOINED',
-            roomCode: mpCurrentRoom,
-            playerId: msg.playerId,
-            gameType: mpGameType,
-            maxPlayers: mpMaxPlayersCount,
-            symbol: symbol,
-            players: mpPlayersList
           });
-
-          // An alle anderen Spieler broadcasten
-          broadcastP2P({
-            type: 'PLAYER_JOINED',
-            players: mpPlayersList,
-            newPlayer: newPlayer
-          });
-
           updateLobbyPlayerList(mpPlayersList);
           SFX.pop();
 
-          if (mpPlayersList.length === mpMaxPlayersCount) {
-            broadcastP2P({
+          // Broadcast updated player list to all joined players
+          sendMultiplayerAction({
+            type: 'ROOM_STATE_SYNC',
+            players: mpPlayersList,
+            gameType: mpGameType
+          });
+
+          // If room reached target players, auto-start game!
+          if (mpPlayersList.length >= mpMaxPlayersCount) {
+            sendMultiplayerAction({
               type: 'GAME_START',
               gameType: mpGameType,
               players: mpPlayersList
@@ -5006,70 +5010,14 @@ function initPeerMultiplayer(roomCode, isHosting, callback) {
             closeMultiplayerModal();
             startOnlineMatch({ gameType: mpGameType, players: mpPlayersList });
           }
-        } else {
-          // Forward move or game actions to all peers
-          broadcastP2P(msg);
-          handleMultiplayerMessage(msg);
         }
-      });
-
-      conn.on('close', () => {
-        mpPeerConnections = mpPeerConnections.filter(c => c !== conn);
-      });
-    });
-  }
-
-  mpPeer.on('error', (err) => {
-    console.warn('Peer error:', err);
-    if (err.type === 'unavailable-id') {
-      alert('⚠️ Dieser Raum-Code wird bereits verwendet. Bitte erstelle einen neuen Raum!');
-    }
-  });
-}
-
-function broadcastP2P(data) {
-  mpPeerConnections.forEach(conn => {
-    if (conn.open) conn.send(data);
-  });
-}
-
-function sendMultiplayerAction(actionData) {
-  if (mpPeer && mpPeerConnections.length > 0) {
-    broadcastP2P(actionData);
-    handleMultiplayerMessage(actionData);
-  } else if (mpSocket && mpSocket.readyState === WebSocket.OPEN) {
-    mpSocket.send(JSON.stringify(actionData));
-  }
-}
-
-function handleMultiplayerMessage(data) {
-  switch (data.type) {
-    case 'ROOM_CREATED':
-      mpCurrentRoom = data.roomCode;
-      mpPlayerId = data.playerId;
-      mpIsHost = true;
-      mpPlayerSymbol = 'X';
-      showLobbyWaitingScreen(data.roomCode, data.players, data.maxPlayers);
-      SFX.success();
+      }
       break;
 
-    case 'ROOM_JOINED':
-      mpCurrentRoom = data.roomCode;
-      mpPlayerId = data.playerId;
-      mpIsHost = false;
-      mpPlayerSymbol = data.symbol;
-      mpGameType = data.gameType;
-      showLobbyWaitingScreen(data.roomCode, data.players, data.maxPlayers);
-      SFX.success();
-      break;
-
-    case 'PLAYER_JOINED':
-      updateLobbyPlayerList(data.players);
-      SFX.pop();
-      break;
-
-    case 'PLAYER_LEFT':
-      updateLobbyPlayerList(data.players);
+    case 'ROOM_STATE_SYNC':
+      mpPlayersList = data.players;
+      mpGameType = data.gameType || mpGameType;
+      updateLobbyPlayerList(mpPlayersList);
       break;
 
     case 'GAME_START':
@@ -5280,7 +5228,7 @@ function initMultiplayerLobby() {
       const roomCode = Math.floor(1000 + Math.random() * 9000).toString();
       mpCurrentRoom = roomCode;
 
-      initPeerMultiplayer(roomCode, true, () => {
+      connectRealtimeMultiplayer(roomCode, true, () => {
         createRoomBtn.innerHTML = '<span>🚀 Raum erstellen & Code generieren</span>';
         createRoomBtn.disabled = false;
         SFX.success();
@@ -5307,7 +5255,7 @@ function initMultiplayerLobby() {
 
       mpCurrentRoom = code;
       mpIsHost = false;
-      initPeerMultiplayer(code, false, () => {
+      connectRealtimeMultiplayer(code, false, () => {
         joinRoomBtn.innerHTML = '<span>🔑 Jetzt Raum beitreten</span>';
         joinRoomBtn.disabled = false;
       });
@@ -5330,7 +5278,7 @@ function initMultiplayerLobby() {
   const hostStartBtn = document.getElementById('mp-host-start-btn');
   if (hostStartBtn) {
     hostStartBtn.addEventListener('click', () => {
-      broadcastP2P({
+      sendMultiplayerAction({
         type: 'GAME_START',
         gameType: mpGameType,
         players: mpPlayersList
