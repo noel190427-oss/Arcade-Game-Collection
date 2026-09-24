@@ -130,7 +130,7 @@ const I18N_DATA = {
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.32?',
+    whats_new_title: 'Was ist neu in v0.0.34?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
@@ -242,7 +242,7 @@ const I18N_DATA = {
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.32?",
+    whats_new_title: "What's new in v0.0.34?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
@@ -354,7 +354,7 @@ const I18N_DATA = {
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.32?',
+    whats_new_title: 'Was ist neu in v0.0.34?',
     privacy_title: 'Politique de confidentialité'
   },
   pt: {
@@ -466,7 +466,7 @@ const I18N_DATA = {
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.32?',
+    whats_new_title: 'Was ist neu in v0.0.34?',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
@@ -578,7 +578,7 @@ const I18N_DATA = {
     created_by: 'Hazırlayan',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.32?',
+    whats_new_title: 'Was ist neu in v0.0.34?',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
@@ -690,7 +690,7 @@ const I18N_DATA = {
     created_by: 'Creado por',
     whats_new: '¿Qué hay de nuevo?',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.32?',
+    whats_new_title: 'Was ist neu in v0.0.34?',
     privacy_title: 'Política de Privacidad'
   }
 };
@@ -832,10 +832,10 @@ function handleNotificationNotSupported() {
 }
 
 /* ==========================================================================
-   2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS)
+   2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.33';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.33 ist da! Automatische Update-Benachrichtigungen mit passendem Text sind ab jetzt aktiv!';
+const CURRENT_APP_VERSION = 'v0.0.34';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.34: Vorab-Update-Benachrichtigung vor jedem Upload, Live-Update Ankündigungen & automatische Update-Warnung!';
 
 function checkForNewAppUpdate(isManualTest = false) {
   const lastSeenVersion = localStorage.getItem('arcade_last_seen_version');
@@ -855,6 +855,101 @@ function checkForNewAppUpdate(isManualTest = false) {
   } else if (!lastSeenVersion) {
     localStorage.setItem('arcade_last_seen_version', CURRENT_APP_VERSION);
   }
+}
+
+function broadcastPreUpdateAlert(targetVersion = 'v0.0.34', customMsg = '') {
+  const versionStr = targetVersion || 'v0.0.34';
+  const title = '⚡ Update-Ankündigung: Neues Update ' + versionStr + ' steht bevor!';
+  const body = customMsg || 'Achtung: Gleich wird ein neues Update hochgeladen! Freut euch auf neue Features. Bitte sichert euren Spielstand!';
+
+  const packet = {
+    id: 'pre_upd_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+    timestamp: Date.now(),
+    type: 'pre_update',
+    version: versionStr,
+    title: title,
+    body: body,
+    sender: '👑 Admin Noel'
+  };
+
+  // 1. Send via MQTT to all devices worldwide
+  if (globalBroadcastMqtt && globalBroadcastMqtt.isConnected()) {
+    try {
+      const msg = new Paho.MQTT.Message(JSON.stringify(packet));
+      msg.destinationName = 'noelarcade/broadcast/all';
+      msg.qos = 0;
+      globalBroadcastMqtt.send(msg);
+    } catch (e) {
+      console.warn('MQTT pre-update broadcast send error:', e);
+    }
+  }
+
+  // 2. BroadcastChannel locally
+  if (globalBroadcastChannel) {
+    try {
+      globalBroadcastChannel.postMessage(packet);
+    } catch (e) {}
+  }
+
+  // 3. localStorage for cross-tabs
+  try {
+    localStorage.setItem('noel_global_broadcast_signal', JSON.stringify(packet));
+  } catch (e) {}
+
+  // 4. Trigger on sending device
+  handleIncomingBroadcast(packet);
+
+  return packet;
+}
+
+function showPreUpdateBannerToast(version = 'v0.0.34', summary = '') {
+  const existing = document.getElementById('pre-update-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'pre-update-toast';
+  toast.className = 'install-toast';
+  toast.style.borderColor = '#f59e0b';
+  toast.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.45), rgba(239, 68, 68, 0.4))';
+  toast.style.boxShadow = '0 8px 32px rgba(245, 158, 11, 0.6)';
+  toast.innerHTML = `
+    <div class="install-toast-content">
+      <span style="font-size: 2.2rem; filter: drop-shadow(0 0 10px #f59e0b);">⚡</span>
+      <div>
+        <strong style="color: #fbbf24; font-size: 0.98rem;">⚡ Vorab-Update Ankündigung: ${version}!</strong>
+        <p style="margin: 3px 0 0; color: #fff; font-size: 0.88rem; line-height: 1.4;">${summary || 'Ein neues Update wird gleich aufgespielt! Freu dich auf neue Features.'}</p>
+        <div style="display: flex; gap: 6px; margin-top: 8px;">
+          <button id="toast-pre-reload-btn" class="primary-button btn-small" style="font-size: 0.8rem; padding: 4px 10px; background: linear-gradient(135deg, #f59e0b, #ef4444); border: none;">
+            🔄 Jetzt neu laden
+          </button>
+          <button id="toast-pre-whats-new-btn" class="secondary-button btn-small" style="font-size: 0.8rem; padding: 4px 10px; background: rgba(0,0,0,0.3); border: 1px solid #f59e0b; color: #fff;">
+            📄 Was ist neu?
+          </button>
+        </div>
+      </div>
+    </div>
+    <button class="ghost-button btn-small" id="dismiss-pre-update-toast-btn" style="margin-left: 8px;">✕</button>
+  `;
+  document.body.appendChild(toast);
+  SFX.powerup();
+
+  toast.querySelector('#toast-pre-reload-btn')?.addEventListener('click', () => {
+    window.location.reload();
+  });
+  toast.querySelector('#toast-pre-whats-new-btn')?.addEventListener('click', () => {
+    document.getElementById('whats-new-modal')?.classList.remove('hidden');
+    toast.remove();
+  });
+  toast.querySelector('#dismiss-pre-update-toast-btn')?.addEventListener('click', () => toast.remove());
+
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(20px)';
+      toast.style.transition = 'all 0.4s ease';
+      setTimeout(() => toast.remove(), 400);
+    }
+  }, 16000);
 }
 
 function showUpdateBannerToast(version, summary) {
@@ -1050,7 +1145,11 @@ function handleIncomingBroadcast(packet) {
   sendArcadeNotification(title, body, 'icon-192.png', 'broadcast-' + packet.id);
 
   // 2. Trigger In-App UI Toast & Celebratory SFX
-  showBroadcastToast(title, body, sender);
+  if (packet.type === 'pre_update') {
+    showPreUpdateBannerToast(packet.version || 'v0.0.34', body);
+  } else {
+    showBroadcastToast(title, body, sender);
+  }
 }
 
 function initGlobalBroadcastSystem() {
@@ -2300,6 +2399,14 @@ function initSettings() {
     });
   }
 
+  const settingsTestPreUpdateBtn = document.getElementById('settings-test-pre-update-btn');
+  if (settingsTestPreUpdateBtn) {
+    settingsTestPreUpdateBtn.addEventListener('click', () => {
+      SFX.powerup();
+      broadcastPreUpdateAlert('v0.0.34');
+    });
+  }
+
   const settingsTestUpdateBtn = document.getElementById('settings-test-update-btn');
   if (settingsTestUpdateBtn) {
     settingsTestUpdateBtn.addEventListener('click', () => {
@@ -2688,6 +2795,14 @@ function initAdminConsole() {
     });
   }
 
+  const testPreUpdateBtn = document.getElementById('admin-test-pre-update-btn');
+  if (testPreUpdateBtn) {
+    testPreUpdateBtn.addEventListener('click', () => {
+      SFX.powerup();
+      broadcastPreUpdateAlert('v0.0.34');
+    });
+  }
+
   const testUpdateNotifBtn = document.getElementById('admin-test-update-btn');
   if (testUpdateNotifBtn) {
     testUpdateNotifBtn.addEventListener('click', () => {
@@ -2708,13 +2823,30 @@ function initAdminConsole() {
     }
   };
 
+  setupPreset('preset-broadcast-pre-update', '⚡ Vorab-Ankündigung: Neues Update v0.0.34 wird gleich hochgeladen! Bitte Spielstand sichern.');
   setupPreset('preset-broadcast-tournament', '🏎️ Großes Mario-Kart Turnier gestartet! Wer holt Platz 1?');
   setupPreset('preset-broadcast-coins', '🪙 Doppel-Münzen Event aktiv! Hol dir 2x Bonus-Gold in allen Spielen!');
   setupPreset('preset-broadcast-boss', '👑 Admin Noel hat einen neuen Highscore aufgestellt! Schaffst du mehr?');
   setupPreset('preset-broadcast-ttt', '🤖 Minimax Challenge: Wer knackt die unbesiegbare Meister-KI?');
 
-  const adminSendBroadcastBtn = document.getElementById('admin-send-global-broadcast-btn');
+  const broadcastPreUpdateBtn = document.getElementById('admin-broadcast-pre-update-btn');
   const broadcastStatusEl = document.getElementById('admin-broadcast-status');
+  if (broadcastPreUpdateBtn) {
+    broadcastPreUpdateBtn.addEventListener('click', () => {
+      SFX.powerup();
+      const input = document.getElementById('admin-broadcast-custom-text');
+      const customText = (input?.value || '').trim();
+      broadcastPreUpdateAlert('v0.0.34', customText || undefined);
+      if (broadcastStatusEl) {
+        broadcastStatusEl.textContent = '⚡ Vorab-Update Ankündigung an alle Geräte gesendet!';
+        setTimeout(() => {
+          if (broadcastStatusEl) broadcastStatusEl.textContent = '';
+        }, 4500);
+      }
+    });
+  }
+
+  const adminSendBroadcastBtn = document.getElementById('admin-send-global-broadcast-btn');
   if (adminSendBroadcastBtn) {
     adminSendBroadcastBtn.addEventListener('click', () => {
       const input = document.getElementById('admin-broadcast-custom-text');
@@ -4780,6 +4912,15 @@ function initPWA() {
         reg.onupdatefound = () => {
           const installingWorker = reg.installing;
           if (installingWorker) {
+            // Trigger pre-update notification immediately when update discovery starts
+            sendArcadeNotification(
+              '⚡ Neues Update ' + CURRENT_APP_VERSION + ' wird vorbereitet...',
+              'Ein neues Update wird gerade geladen und in Kürze aktiviert!',
+              'icon-192.png',
+              'pre-update-downloading'
+            );
+            showPreUpdateBannerToast(CURRENT_APP_VERSION, 'Ein neues Update wird gerade im Hintergrund geladen und vorbereitet!');
+
             installingWorker.onstatechange = () => {
               if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 // New update is ready and waiting
