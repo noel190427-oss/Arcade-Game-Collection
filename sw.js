@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.35-lockscreen-push';
+const CACHE_NAME = 'arcade-collection-v0.0.36-swipe-support';
 const APP_SHELL = [
   './',
   './index.html',
