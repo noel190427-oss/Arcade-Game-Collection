@@ -4058,39 +4058,40 @@ function initPWA() {
 /* ==========================================================================
    20.5 UNIVERSAL GAME INSTRUCTIONS & HOW-TO-PLAY MODAL SYSTEM
    ========================================================================== */
-const GAME_GUIDES = {
   tictactoe: {
     icon: '❌⭕',
     title: {
-      de: 'Tic-Tac-Toe Minimax',
-      en: 'Tic-Tac-Toe Minimax',
-      fr: 'Morpion Minimax',
-      pt: 'Jogo da Velha Minimax',
-      tr: 'Tic-Tac-Toe Minimax',
-      es: 'Tres en Línea Minimax'
+      de: 'Tic-Tac-Toe Minimax & Online Multiplayer',
+      en: 'Tic-Tac-Toe Minimax & Online Multiplayer',
+      fr: 'Morpion Minimax & Multijoueur en Ligne',
+      pt: 'Jogo da Velha Minimax & Multijogador Online',
+      tr: 'Tic-Tac-Toe Minimax & Çevrimiçi Çok Oyunculu',
+      es: 'Tres en Línea Minimax & Multijugador Online'
     },
     sections: {
       de: [
         {
           title: '🎯 Ziel des Spiels',
           items: [
-            'Bringe 3 deiner Symbole (<span class="guide-key-tag">X</span>) in eine ununterbrochene Reihe – horizontal, vertikal oder diagonal.',
+            'Bringe 3 deiner Symbole (<span class="guide-key-tag">X</span> oder <span class="guide-key-tag">O</span>) in eine ununterbrochene Reihe – horizontal, vertikal oder diagonal.',
             'Blockiere gleichzeitig deinen Gegner, bevor er seine Dreierreihe vollenden kann.'
           ]
         },
         {
-          title: '🎮 Steuerung & Modi',
+          title: '🌐 Online Multiplayer Lobby (2 bis 10 Spieler)',
           items: [
-            'Klicke oder tippe einfach auf ein beliebiges freies Feld auf dem 3x3 Raster.',
-            'Wähle zwischen <strong>Mensch vs Mensch</strong> (lokales Duell) oder <strong>Mensch vs KI</strong>.'
+            '<strong>➕ Raum erstellen:</strong> Klicke auf <em>🌐 Multiplayer Lobby</em>, wähle deinen Spielernamen, stelle die Spieleranzahl (2 bis 10) ein und generiere deinen persönlichen 4-stelligen Raumcode (z. B. <span class="guide-key-tag">4829</span>).',
+            '<strong>🔑 Raum beitreten:</strong> Klicke auf <em>🔑 Raum beitreten</em>, gib deinen Namen und den 4-stelligen Code deines Freundes ein.',
+            '<strong>📱 Weltweit & Mobilfunk:</strong> Funktioniert in Echtzeit (<50ms) – egal ob am PC, zu Hause im WLAN oder unterwegs auf dem Spielplatz mit mobilen Daten (LTE/4G/5G).',
+            '<strong>👑 Host-Start:</strong> Sobald Mitspieler der Lobby beitreten, erscheinen ihre Namen live auf der Liste. Der Host startet das Match für alle!'
           ]
         },
         {
-          title: '🤖 KI-Schwierigkeitsgrade',
+          title: '🤖 Offline & Unbesiegbare Minimax KI',
           items: [
-            '<strong>Leicht:</strong> Zufällige Züge – ideal für Einsteiger.',
-            '<strong>Mittel:</strong> Erkennt Bedrohungen und nutzt direkte Gewinnchancen.',
-            '<strong>Meister (Minimax):</strong> Ein echter mathematischer Spielbaum-Algorithmus. Bei fehlerfreiem Spiel ist das bestmögliche Ergebnis ein Unentschieden!'
+            '<strong>Leicht:</strong> Zufällige Züge – ideal zum Entspannen.',
+            '<strong>Mittel:</strong> Erkennt direkte Bedrohungen und nutzt Gewinnchancen.',
+            '<strong>Meister (Minimax):</strong> Mathematisch perfekter Spielbaum-Algorithmus. Bei fehlerfreiem Spiel ist das bestmögliche Ergebnis ein Unentschieden!'
           ]
         }
       ],
@@ -4098,23 +4099,24 @@ const GAME_GUIDES = {
         {
           title: '🎯 Objective',
           items: [
-            'Align 3 of your symbols (<span class="guide-key-tag">X</span>) horizontally, vertically, or diagonally.',
+            'Align 3 of your symbols (<span class="guide-key-tag">X</span> or <span class="guide-key-tag">O</span>) horizontally, vertically, or diagonally.',
             'Block your opponent from completing their 3-in-a-row first.'
           ]
         },
         {
-          title: '🎮 Controls & Modes',
+          title: '🌐 Online Multiplayer Lobby (2 to 10 Players)',
           items: [
-            'Tap or click on any empty square on the 3x3 board.',
-            'Switch between <strong>Human vs Human</strong> and <strong>Human vs AI</strong>.'
+            '<strong>➕ Create Room:</strong> Open the lobby, choose your player count (2-10), and get a 4-digit room code (e.g. <span class="guide-key-tag">4829</span>) to share.',
+            '<strong>🔑 Join Room:</strong> Enter your friend\'s 4-digit room code and tap <em>Join Room</em>.',
+            '<strong>📱 Cellular & Anywhere:</strong> Seamless real-time sync across PCs, WiFi, and mobile cellular data (4G/5G) on the playground.'
           ]
         },
         {
-          title: '🤖 AI Modes',
+          title: '🤖 Offline AI Modes',
           items: [
-            '<strong>Easy:</strong> Random casual moves.',
+            '<strong>Easy:</strong> Casual random moves.',
             '<strong>Medium:</strong> Defends against immediate threats.',
-            '<strong>Master (Minimax):</strong> Mathematically optimal AI. Best possible result is a draw!'
+            '<strong>Master (Minimax):</strong> Mathematically optimal AI tree. Best possible result is a draw!'
           ]
         }
       ],
@@ -4122,15 +4124,21 @@ const GAME_GUIDES = {
         {
           title: '🎯 But du jeu',
           items: [
-            'Alignez 3 symboles (<span class="guide-key-tag">X</span>) horizontalement, verticalement ou en diagonale.',
-            'Empêchez votre adversaire de compléter sa ligne en premier.'
+            'Alignez 3 symboles horizontalement, verticalement ou en diagonale.',
+            'Bloquez votre adversaire avant qu\'il ne gagne !'
           ]
         },
         {
-          title: '🎮 Contrôles & IA',
+          title: '🌐 Multijoueur en Ligne (2 à 10 joueurs)',
           items: [
-            'Touchez une case vide de la grille 3x3.',
-            'Le mode <strong>Maître (Minimax)</strong> utilise un algorithme d\'arbre imbattable !'
+            '<strong>➕ Créer un salon:</strong> Générez un code à 4 chiffres (ex. <span class="guide-key-tag">4829</span>) et partagez-le.',
+            '<strong>🔑 Rejoindre:</strong> Entrez le code à 4 chiffres de votre ami pour jouer ensemble en temps réel sur mobile ou PC.'
+          ]
+        },
+        {
+          title: '🤖 Mode IA Hors-ligne',
+          items: [
+            'Affrontez l\'IA Minimax imbattable même sans connexion Internet !'
           ]
         }
       ],
@@ -4138,15 +4146,21 @@ const GAME_GUIDES = {
         {
           title: '🎯 Objetivo',
           items: [
-            'Alinhe 3 símbolos (<span class="guide-key-tag">X</span>) na horizontal, vertical ou diagonal.',
+            'Alinhe 3 símbolos na horizontal, vertical ou diagonal.',
             'Bloqueie o adversário para impedi-lo de vencer.'
           ]
         },
         {
-          title: '🎮 Controles & IA',
+          title: '🌐 Multijogador Online (2 a 10 Jogadores)',
           items: [
-            'Toque em qualquer casa vazia do tabuleiro 3x3.',
-            'O modo <strong>Mestre (Minimax)</strong> é matematicamente imbatível!'
+            '<strong>➕ Criar Sala:</strong> Gere um código de 4 dígitos (ex. <span class="guide-key-tag">4829</span>) e convide amigos.',
+            '<strong>🔑 Entrar na Sala:</strong> Digite o código de 4 dígitos para jogar em tempo real no celular (4G/5G) ou PC.'
+          ]
+        },
+        {
+          title: '🤖 Modo IA Offline',
+          items: [
+            'Jogue contra a IA Minimax matemática mesmo sem internet!'
           ]
         }
       ],
@@ -4154,15 +4168,21 @@ const GAME_GUIDES = {
         {
           title: '🎯 Oyunun Amacı',
           items: [
-            '3 sembolünüzü (<span class="guide-key-tag">X</span>) yatay, dikey veya çapraz olarak hizalayın.',
+            '3 sembolünüzü yatay, dikey veya çapraz olarak hizalayın.',
             'Rakibinizin 3lü seri yapmasını engelleyin.'
           ]
         },
         {
-          title: '🎮 Kontroller & YZ',
+          title: '🌐 Çevrimiçi Çok Oyunculu (2 - 10 Oyuncu)',
           items: [
-            'Boş kareye tıklayın veya dokunun.',
-            '<strong>Usta (Minimax)</strong> modu matematiksel olarak yenilmezdir!'
+            '<strong>➕ Oda Oluştur:</strong> 4 haneli oda kodu (örn. <span class="guide-key-tag">4829</span>) oluşturun ve arkadaşlarınızla paylaşın.',
+            '<strong>🔑 Odaya Katıl:</strong> 4 haneli kodu girerek mobil veri (4G/5G) veya PC üzerinden anında bağlanın.'
+          ]
+        },
+        {
+          title: '🤖 Çevrimdışı Yapay Zeka',
+          items: [
+            'İnternet olmadan Minimax yapay zekasına meydan okuyun!'
           ]
         }
       ],
@@ -4170,37 +4190,43 @@ const GAME_GUIDES = {
         {
           title: '🎯 Objetivo',
           items: [
-            'Alinea 3 de tus símbolos (<span class="guide-key-tag">X</span>) en horizontal, vertical o diagonal.',
+            'Alinea 3 de tus símbolos en horizontal, vertical o diagonal.',
             'Bloquea a tu rival antes de que forme una línea.'
           ]
         },
         {
-          title: '🎮 Controles & IA',
+          title: '🌐 Multijugador Online (2 a 10 Jugadores)',
           items: [
-            'Toca cualquier casilla vacía del tablero 3x3.',
-            '¡El modo <strong>Maestro (Minimax)</strong> es matemáticamente invencible!'
+            '<strong>➕ Crear Sala:</strong> Genera un código de 4 dígitos (ej. <span class="guide-key-tag">4829</span>) para compartir con amigos.',
+            '<strong>🔑 Unirse a Sala:</strong> Introduce el código de 4 dígitos para jugar en tiempo real desde el móvil (4G/5G) o PC.'
+          ]
+        },
+        {
+          title: '🤖 Modo IA Offline',
+          items: [
+            '¡Compite contra la IA Minimax invencible incluso sin conexión a Internet!'
           ]
         }
       ]
     },
     tip: {
-      de: '💡 <strong>Profi-Tipp:</strong> Sichere dir im ersten Zug das Zentrum oder eine Ecke, um dir zwei parallele Gewinnwege aufzubauen!',
-      en: '💡 <strong>Pro Tip:</strong> Claim the center or a corner on your first turn to open up dual winning paths!',
-      fr: '💡 <strong>Astuce Pro:</strong> Prenez le centre ou un coin dès le premier coup !',
-      pt: '💡 <strong>Dica Pro:</strong> Ocupe o centro ou um canto na primeira jogada!',
-      tr: '💡 <strong>Usta İpucu:</strong> İlk hamlede merkezi veya bir köşeyi kaparak çift kazanma yolu açın!',
-      es: '💡 <strong>Consejo Pro:</strong> ¡Toma el centro o una esquina en tu primer turno!'
+      de: '💡 <strong>Profi-Tipp:</strong> Im Online-Multiplayer sieht dein Gegner deine Züge in Echtzeit! Sichere dir im 1. Zug das Zentrum oder eine Ecke für zwei parallele Gewinnwege.',
+      en: '💡 <strong>Pro Tip:</strong> In online multiplayer, moves sync instantly! Claim the center or a corner on your first turn to open up dual winning paths.',
+      fr: '💡 <strong>Astuce Pro:</strong> En multijoueur en ligne, prenez le centre dès le début pour multiplier vos chances de victoire !',
+      pt: '💡 <strong>Dica Pro:</strong> No modo online, ocupe o centro ou um canto na primeira jogada!',
+      tr: '💡 <strong>Usta İpucu:</strong> Çevrimiçi modda ilk hamlede merkezi veya bir köşeyi kaparak çift kazanma yolu açın!',
+      es: '💡 <strong>Consejo Pro:</strong> ¡En multijugador online, toma el centro o una esquina en tu primer turno!'
     }
   },
   memory: {
     icon: '🧠',
     title: {
-      de: 'Memory Matrix',
-      en: 'Memory Matrix',
-      fr: 'Memory Matrix',
-      pt: 'Jogo da Memória',
-      tr: 'Hafıza Kartları',
-      es: 'Matrix de Memoria'
+      de: 'Memory Matrix & Online Multiplayer',
+      en: 'Memory Matrix & Online Multiplayer',
+      fr: 'Memory Matrix & Multijoueur en Ligne',
+      pt: 'Jogo da Memória & Multijogador Online',
+      tr: 'Hafıza Kartları & Çevrimiçi Çok Oyunculu',
+      es: 'Matrix de Memoria & Multijugador Online'
     },
     sections: {
       de: [
@@ -4208,7 +4234,16 @@ const GAME_GUIDES = {
           title: '🎯 Ziel des Spiels',
           items: [
             'Finde alle zusammengehörenden Bildpaare auf dem Spielfeld.',
-            'Schaffe das Raster mit möglichst wenigen Fehlversuchen und in Bestzeit!'
+            'Decke im Duell mehr Paare als deine Mitspieler auf oder schaffe das Raster im Solo-Modus in Bestzeit!'
+          ]
+        },
+        {
+          title: '🌐 Online Multiplayer Lobby (2 bis 10 Spieler)',
+          items: [
+            '<strong>➕ Raum erstellen:</strong> Klicke auf <em>🌐 Multiplayer Lobby</em>, wähle Raster & Kartenthema und erstelle einen 4-stelligen Raumcode (z. B. <span class="guide-key-tag">4829</span>).',
+            '<strong>🔑 Raum beitreten:</strong> Gib den 4-stelligen Code deines Freundes ein, um der Live-Lobby beizutreten.',
+            '<strong>⚡ Synchronisiertes Kartendeck:</strong> Alle verbundenen Spieler spielen auf exakt demselben gemischten Kartendeck in Echtzeit.',
+            '<strong>📱 Überall spielbar:</strong> Funktioniert nahtlos auf Handys (WLAN & mobile Daten 4G/5G) und PCs.'
           ]
         },
         {
@@ -4222,8 +4257,7 @@ const GAME_GUIDES = {
         {
           title: '🔥 Combo-Streak Multiplikator',
           items: [
-            'Jedes gefundene Paar ohne zwischenzeitlichen Fehlversuch erhöht deinen Combo-Multiplikator!',
-            'Hohe Combos belohnen dich mit Konfetti, Chiptune-Jingles und Trophäen.'
+            'Jedes gefundene Paar ohne Fehlversuch erhöht deinen Combo-Multiplikator und bringt Bonusmünzen & Konfetti!'
           ]
         }
       ],
@@ -4232,14 +4266,22 @@ const GAME_GUIDES = {
           title: '🎯 Objective',
           items: [
             'Flip cards and match all identical symbol pairs.',
-            'Clear the board in the fewest moves and fastest time.'
+            'Score more pairs than your opponents in online multiplayer or achieve the fastest solo time!'
+          ]
+        },
+        {
+          title: '🌐 Online Multiplayer Lobby (2 to 10 Players)',
+          items: [
+            '<strong>➕ Create Room:</strong> Create a room with a 4-digit code (e.g. <span class="guide-key-tag">4829</span>) and choose your deck theme.',
+            '<strong>🔑 Join Room:</strong> Enter the 4-digit code to connect live with friends on mobile or PC.',
+            '<strong>⚡ Shared Deck:</strong> All players share the exact same card layout in real-time.'
           ]
         },
         {
           title: '🎮 Controls & Themes',
           items: [
-            'Tap 2 cards to reveal them. Matching cards remain turned face up.',
-            'Choose from 5 themes including Arcade, Animals, Food, Space, and VIP Diamond.'
+            'Tap 2 cards to reveal them. Matching cards remain face up.',
+            '5 themes available: Arcade, Animals, Food, Space, and VIP Diamond.'
           ]
         }
       ],
@@ -4248,7 +4290,13 @@ const GAME_GUIDES = {
           title: '🎯 But du jeu',
           items: [
             'Retournez les cartes et trouvez toutes les paires identiques.',
-            'Enchaînez les paires sans erreur pour monter votre multiplicateur de combo !'
+            'En multijoueur en ligne, trouvez plus de paires que vos amis sur la même grille synchronisée !'
+          ]
+        },
+        {
+          title: '🌐 Multijoueur en Ligne (2 à 10 Joueurs)',
+          items: [
+            'Créez un salon avec un code à 4 chiffres (ex. <span class="guide-key-tag">4829</span>) pour jouer ensemble en direct sur smartphone et PC.'
           ]
         }
       ],
@@ -4256,8 +4304,14 @@ const GAME_GUIDES = {
         {
           title: '🎯 Objetivo',
           items: [
-            'Vire as cartas e encontre todos os pares no menor tempo possível.',
-            'Faça combos consecutivos para ganhar recompensas extras!'
+            'Encontre todos os pares de cartas idênticas no menor tempo.',
+            'No modo multijogador online, vença seus amigos encontrando mais pares no mesmo tabuleiro!'
+          ]
+        },
+        {
+          title: '🌐 Multijogador Online (2 a 10 Jogadores)',
+          items: [
+            'Crie ou entre em salas com código de 4 dígitos (ex. <span class="guide-key-tag">4829</span>) para jogar em tempo real.'
           ]
         }
       ],
@@ -4265,8 +4319,14 @@ const GAME_GUIDES = {
         {
           title: '🎯 Oyunun Amacı',
           items: [
-            'Kartları çevirin ve tüm eşleşen çiftleri en az denemeyle bulun.',
-            'Seri yakalayarak kombo puanınızı katlayın!'
+            'Tüm eşleşen kart çiftlerini bulun.',
+            'Çevrimiçi çok oyunculu modda arkadaşlarınızdan daha fazla çift bularak kazanın!'
+          ]
+        },
+        {
+          title: '🌐 Çevrimiçi Çok Oyunculu (2 - 10 Oyuncu)',
+          items: [
+            '4 haneli kodla (örn. <span class="guide-key-tag">4829</span>) oda açın veya katılın; mobil veri ve PC üzerinden aynı kart destesinde yarışın.'
           ]
         }
       ],
@@ -4274,19 +4334,25 @@ const GAME_GUIDES = {
         {
           title: '🎯 Objetivo',
           items: [
-            'Voltea las cartas y encuentra todas las parejas idénticas.',
-            '¡Encadena aciertos para multiplicar tus puntos de combo!'
+            'Encuentra todas las parejas de cartas idénticas.',
+            '¡En el modo multijogador online, supera a tus amigos encontrando más parejas en el mismo tablero sincronizado!'
+          ]
+        },
+        {
+          title: '🌐 Multijugador Online (2 a 10 Jugadores)',
+          items: [
+            'Crea una sala con un código de 4 dígitos (ej. <span class="guide-key-tag">4829</span>) o únete para competir en tiempo real desde cualquier dispositivo.'
           ]
         }
       ]
     },
     tip: {
-      de: '💡 <strong>Profi-Tipp:</strong> Präge dir die Eckkarten zuerst ein – das erleichtert das gedankliche Raster ungemein!',
-      en: '💡 <strong>Pro Tip:</strong> Memorize the corners first to create mental anchor points across the grid.',
-      fr: '💡 <strong>Astuce Pro:</strong> Mémorisez les coins pour structurer votre mémoire visuelle.',
-      pt: '💡 <strong>Dica Pro:</strong> Memorize primeiro os cantos do tabuleiro.',
-      tr: '💡 <strong>Usta İpucu:</strong> Önce köşelerdeki kartları ezberleyin.',
-      es: '💡 <strong>Consejo Pro:</strong> ¡Memoriza primero las esquinas para ubicar las parejas!'
+      de: '💡 <strong>Profi-Tipp:</strong> Präge dir im Multiplayer auch die Karten ein, die dein Gegner aufdeckt – so kannst du im nächsten Zug sofort zuschlagen!',
+      en: '💡 <strong>Pro Tip:</strong> In multiplayer, memorize the cards your opponent reveals on their turn so you can steal the match immediately!',
+      fr: '💡 <strong>Astuce Pro:</strong> En multijoueur, mémorisez les cartes révélées par votre adversaire pour les voler à votre tour !',
+      pt: '💡 <strong>Dica Pro:</strong> Memorize as cartas que seu adversário vira para roubar o par na sua vez!',
+      tr: '💡 <strong>Usta İpucu:</strong> Rakibinizin açtığı kartları da ezberleyerek sıranız geldiğinde çiftleri anında kapın!',
+      es: '💡 <strong>Consejo Pro:</strong> ¡Memoriza también las cartas que tu oponente voltea para emparejarlas en tu turno!'
     }
   },
   supermario: {
