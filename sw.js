@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.22-guides-updated';
+const CACHE_NAME = 'arcade-collection-v0.0.23-hotfix';
 const APP_SHELL = [
   './',
   './index.html',
