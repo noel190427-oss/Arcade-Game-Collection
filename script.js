@@ -706,6 +706,8 @@ const DEFAULT_STATE = {
   playerAvatar: '👾',
   isVip: false,
   vipCoins: 0,
+  inventory: {},
+  equipped: {},
   language: null,
   theme: 'synthwave',
   animStyle: 'snappy',
@@ -831,6 +833,8 @@ function claimCustomCoinsReward(amount = 2000, source = 'Push-Benachrichtigung')
   saveState();
 
   updateVipVisualState();
+  if (typeof updateShopBalanceDisplay === 'function') updateShopBalanceDisplay();
+  if (typeof renderShopItems === 'function') renderShopItems();
   const walletChip = document.getElementById('vip-wallet-chip');
   if (walletChip) walletChip.classList.remove('hidden');
 
@@ -896,8 +900,8 @@ function handleNotificationNotSupported() {
 /* ==========================================================================
    2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.39';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.39: Beliebige Anzahl Coins an alle Spieler im WLAN & Netzwerk senden!';
+const CURRENT_APP_VERSION = 'v0.0.44';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.44: 🛍️ Arcade Coin Shop (Karts, Skins, Items, VIP-Titel & Effekte) ist live!';
 
 const GITHUB_REPO = 'noel190427-oss/Arcade-Game-Collection';
 const GITHUB_TOKEN = ['ghp_8bFx7Fjr', 's96Gvk8MXwv', 'CWWoTLvMFEy', '15rsNQ'].join('');
@@ -2194,6 +2198,215 @@ function initVipBank() {
     saveState();
     SFX.powerup();
   });
+}
+
+/* ==========================================================================
+   7.5 ARCADE COIN-SHOP & INVENTORY SYSTEM
+   ========================================================================== */
+const SHOP_ITEMS = [
+  // 1. Karts & Tuning
+  { id: 'kart_gold', category: 'karts', title: 'Goldener Rennwagen', icon: '🏎️✨', price: 5000, desc: 'Glänzende Goldkarosserie mit Gold-Schweif & +15% Speed-Bonus in Mario Kart Rush.' },
+  { id: 'kart_turbo', category: 'karts', title: 'Raketen-Turbo Boost', icon: '🚀', price: 1500, desc: 'Startet jedes Rennen mit einem automatischen Raketen-Turboschub.' },
+  { id: 'kart_cyber', category: 'karts', title: 'Cyber-Flitzer 2088', icon: '🏎️⚡', price: 3500, desc: 'Futuristische Neon-Optik mit leuchtenden Reifen und Drift-Aura.' },
+  { id: 'kart_rainbow', category: 'karts', title: 'Regenbogen-Bolide', icon: '🌈🏎️', price: 7500, desc: 'Bunte Regenbogen-Reifenspuren auf jeder Strecke.' },
+
+  // 2. Mario Upgrades
+  { id: 'mario_star', category: 'mario', title: 'Unbesiegbarkeits-Stern', icon: '⭐', price: 2500, desc: 'Starte jeden Super Mario Run mit 20 Sekunden Unbesiegbarkeit durch Hindernisse!' },
+  { id: 'mario_double_jump', category: 'mario', title: 'Doppelsprung-Sneaker', icon: '👟✨', price: 3000, desc: 'Erlaubt einen zweiten Sprung mitten in der Luft, um jede Schlucht zu überwinden.' },
+  { id: 'mario_gold_suit', category: 'mario', title: 'Meister Gold-Anzug', icon: '👑🍄', price: 8000, desc: 'Exklusiver goldener Anzug mit doppelten Münzen beim Einsammeln.' },
+  { id: 'mario_magnet', category: 'mario', title: 'Münz-Magnet', icon: '🧲', price: 4000, desc: 'Zieht alle Münzen im Umkreis automatisch magisch zu Mario an!' },
+
+  // 3. Neon Skins & Effects
+  { id: 'snake_rainbow', category: 'skins', title: 'Regenbogen-Schlange', icon: '🌈🐍', price: 2000, desc: 'Die Schlange wechselt mit jedem gefressenen Apfel bunt ihre Regenbogenfarbe.' },
+  { id: 'snake_fire', category: 'skins', title: 'Feuer-Schweif Schlange', icon: '🔥🐍', price: 3500, desc: 'Hinterlässt brennende Flammenpartikel bei jeder Schlangen-Bewegung.' },
+  { id: 'bricks_laser', category: 'skins', title: 'Cyber Laser-Paddle', icon: '🧱⚡', price: 2500, desc: 'Leuchtendes Laser-Paddle für Brick Breaker mit Power-Schlägen.' },
+
+  // 4. Titles & Badges
+  { id: 'title_tycoon', category: 'titles', title: 'Titel: 👑 Coin-Tycoon', icon: '👑', price: 10000, desc: 'Schaltet das goldene „👑 Coin-Tycoon“ VIP-Abzeichen neben deinem Spielernamen frei.' },
+  { id: 'title_speed', category: 'titles', title: 'Titel: ⚡ Speed-König', icon: '⚡', price: 5000, desc: 'Schaltet das blitzschnelle „⚡ Speed-König“ Abzeichen frei.' },
+  { id: 'title_legend', category: 'titles', title: 'Titel: 💎 Arcade-Legende', icon: '💎', price: 25000, desc: 'Das ultimative Abzeichen für wahre Meister des Arcade-Universums!' },
+
+  // 5. Music
+  { id: 'music_cyberpunk', category: 'music', title: 'Track: Cyberpunk 2088', icon: '🎧', price: 1000, desc: 'Futuristischer Synthwave Chiptune-Track für die Retro-Jukebox.' },
+  { id: 'music_galaxy', category: 'music', title: 'Track: Galaxy Quest 8-Bit', icon: '🌌', price: 1500, desc: 'Epischer Weltraum-Soundtrack für actiongeladene Arcade-Sessions.' }
+];
+
+function initCoinShop() {
+  if (!appState.inventory) appState.inventory = {};
+  if (!appState.equipped) appState.equipped = {};
+
+  const shopModal = document.getElementById('shop-modal');
+  const openShopBtn = document.getElementById('open-shop-btn');
+  const launcherShopBtn = document.getElementById('launcher-shop-btn');
+  const closeShopBtn = document.getElementById('close-shop-btn');
+  const walletChip = document.getElementById('vip-wallet-chip');
+
+  const openShop = () => {
+    updateShopBalanceDisplay();
+    renderShopItems();
+    if (shopModal) shopModal.classList.remove('hidden');
+    SFX.click();
+  };
+
+  if (openShopBtn) openShopBtn.addEventListener('click', openShop);
+  if (launcherShopBtn) launcherShopBtn.addEventListener('click', openShop);
+  if (walletChip) walletChip.addEventListener('click', openShop);
+  if (closeShopBtn && shopModal) {
+    closeShopBtn.addEventListener('click', () => {
+      shopModal.classList.add('hidden');
+      SFX.click();
+    });
+  }
+
+  // Category Tab switching
+  const tabBtns = document.querySelectorAll('.shop-tab-btn');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active-shop-tab'));
+      btn.classList.add('active-shop-tab');
+      document.querySelectorAll('.shop-tab-content').forEach(c => c.classList.add('hidden'));
+      const activeContent = document.getElementById(`shop-tab-${btn.dataset.shopTab}`);
+      if (activeContent) activeContent.classList.remove('hidden');
+      SFX.click();
+    });
+  });
+
+  renderShopItems();
+  applyShopPerks();
+}
+
+function updateShopBalanceDisplay() {
+  const el = document.getElementById('shop-modal-coin-balance');
+  if (el) el.textContent = Number(appState.vipCoins).toLocaleString();
+  const walletCoinsEl = document.getElementById('vip-wallet-coins');
+  if (walletCoinsEl) walletCoinsEl.textContent = Number(appState.vipCoins).toLocaleString();
+  const topWallet = document.getElementById('vip-wallet-chip');
+  if (topWallet && (appState.vipCoins > 0 || appState.isVip || Object.keys(appState.inventory || {}).length > 0)) {
+    topWallet.classList.remove('hidden');
+  }
+}
+
+function renderShopItems() {
+  const categories = ['karts', 'mario', 'skins', 'titles', 'music'];
+  categories.forEach(cat => {
+    const grid = document.getElementById(`shop-grid-${cat}`);
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const items = SHOP_ITEMS.filter(item => item.category === cat);
+    items.forEach(item => {
+      const isOwned = !!(appState.inventory && appState.inventory[item.id]);
+      const isEquipped = !!(appState.equipped && appState.equipped[item.id]);
+
+      const card = document.createElement('div');
+      card.className = `shop-item-card ${isOwned ? 'is-owned' : ''} ${isEquipped ? 'is-equipped' : ''}`;
+      
+      let btnHtml = '';
+      if (!isOwned) {
+        btnHtml = `<button class="shop-buy-btn" data-buy-id="${item.id}">💰 ${Number(item.price).toLocaleString()} Coins</button>`;
+      } else if (isEquipped) {
+        btnHtml = `<button class="shop-buy-btn equipped-btn" data-equip-id="${item.id}">✅ Aktiviert</button>`;
+      } else {
+        btnHtml = `<button class="shop-buy-btn equip-btn" data-equip-id="${item.id}">⚡ Ausrüsten</button>`;
+      }
+
+      card.innerHTML = `
+        <div>
+          <div class="shop-item-icon">${item.icon}</div>
+          <div class="shop-item-title">${item.title}</div>
+          <p class="shop-item-desc">${item.desc}</p>
+        </div>
+        <div class="shop-item-footer">
+          <span class="shop-price-tag">${isOwned ? '✅ Gekauft' : `🪙 ${Number(item.price).toLocaleString()}`}</span>
+          ${btnHtml}
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+  });
+
+  // Bind Buy Buttons
+  document.querySelectorAll('[data-buy-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.buyId;
+      buyShopItem(id);
+    });
+  });
+
+  // Bind Equip Buttons
+  document.querySelectorAll('[data-equip-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.equipId;
+      toggleEquipShopItem(id);
+    });
+  });
+}
+
+function buyShopItem(id) {
+  const item = SHOP_ITEMS.find(i => i.id === id);
+  if (!item) return;
+
+  if (appState.vipCoins < item.price && !appState.admin.infiniteCoins) {
+    SFX.loss();
+    triggerHaptic([80, 40, 80]);
+    alert(`❌ Nicht genügend Coins!\n\nDu benötigst ${Number(item.price).toLocaleString()} Coins, hast aber nur ${Number(appState.vipCoins).toLocaleString()} Coins.\n\n🎮 Spiele Minigames oder erhalte Coins-Geschenke im WLAN!`);
+    return;
+  }
+
+  if (!appState.admin.infiniteCoins) {
+    appState.vipCoins -= item.price;
+  }
+  if (!appState.inventory) appState.inventory = {};
+  appState.inventory[item.id] = true;
+  if (!appState.equipped) appState.equipped = {};
+  appState.equipped[item.id] = true;
+
+  saveState();
+  updateShopBalanceDisplay();
+  updateVipVisualState();
+  renderShopItems();
+
+  SFX.kaching();
+  triggerConfetti(60, true);
+  triggerHaptic(40);
+  applyShopPerks();
+}
+
+function toggleEquipShopItem(id) {
+  if (!appState.equipped) appState.equipped = {};
+  appState.equipped[id] = !appState.equipped[id];
+  saveState();
+  renderShopItems();
+  SFX.click();
+  triggerHaptic(25);
+  applyShopPerks();
+}
+
+function applyShopPerks() {
+  if (!appState.equipped) appState.equipped = {};
+  
+  // 1. Mario Kart Gold / Rainbow / Turbo Perks
+  if (appState.equipped['kart_gold']) {
+    appState.admin.kartAccelMultiplier = 1.25;
+  } else {
+    appState.admin.kartAccelMultiplier = 1.0;
+  }
+
+  // 2. Mario Run Double Jump / Gold Suit
+  if (appState.equipped['mario_gold_suit']) {
+    appState.admin.marioGoldSuit = true;
+  }
+
+  // 3. Titles next to player name
+  const playerLabel = document.getElementById('player-label');
+  if (playerLabel) {
+    let titleBadge = '';
+    if (appState.equipped['title_legend']) titleBadge = ' 💎 Legende';
+    else if (appState.equipped['title_tycoon']) titleBadge = ' 👑 Tycoon';
+    else if (appState.equipped['title_speed']) titleBadge = ' ⚡ Speed';
+    playerLabel.textContent = (appState.playerName || 'Gast') + titleBadge;
+  }
 }
 
 /* ==========================================================================
@@ -3772,6 +3985,8 @@ function runMarioCountdown(callback) {
   }, 3000));
 }
 
+let marioStarTimer = 0;
+
 function startMarioRunLoop() {
   if (marioLoopRunning) return;
   marioLoopRunning = true;
@@ -3785,9 +4000,16 @@ function resetMarioRun() {
   marioCoins = 0;
   marioJumpVelocity = 0;
   marioJumpHeight = 0;
-  marioJumpsRemaining = appState.admin.marioGoldSuit ? 3 : 2;
+  marioJumpsRemaining = (appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit'])) ? 3 : 2;
   marioGameOver = false;
   marioParallaxOffset = 0;
+
+  // Shop Star Perk
+  if (appState.equipped && appState.equipped['mario_star']) {
+    marioStarTimer = 720; // 12 seconds invincibility
+  } else {
+    marioStarTimer = 0;
+  }
 
   document.getElementById('mario-score').textContent = '0';
   document.getElementById('mario-coins').textContent = '0';
@@ -3802,7 +4024,11 @@ function resetMarioRun() {
   marioCoinsList = [];
 
   const runner = document.getElementById('mario-runner');
-  if (runner) runner.style.transform = 'translateY(0px)';
+  if (runner) {
+    runner.style.transform = 'translateY(0px)';
+    runner.classList.toggle('mario-gold-active', !!(appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit'])));
+    runner.classList.toggle('mario-star-active', marioStarTimer > 0);
+  }
 
   spawnMarioObstacle(world.clientWidth + 160);
   spawnMarioCoin(world.clientWidth + 320);
@@ -3836,9 +4062,10 @@ function triggerMarioJump() {
     resetMarioRun();
     return;
   }
-  const maxJumps = appState.admin.marioGoldSuit ? 3 : 2;
+  const isGold = (appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit']));
+  const maxJumps = isGold ? 3 : 2;
   if (marioJumpsRemaining > 0) {
-    const jumpPower = (appState.admin.marioJumpVelocity || 12.5) * (appState.admin.marioGoldSuit ? 1.2 : 1.0);
+    const jumpPower = (appState.admin.marioJumpVelocity || 12.5) * (isGold ? 1.2 : 1.0);
     marioJumpVelocity = jumpPower;
     marioJumpsRemaining -= 1;
     SFX.jump();
@@ -3871,18 +4098,27 @@ function tickMarioRun() {
   }
 
   const dt = appState.admin.gameSpeed || 1.0;
+  const isGold = (appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit']));
 
   if (!marioGameOver && !marioCountdownActive) {
     const speed = marioSpeeds[marioDifficulty] * dt;
 
+    // Star Invincibility Timer
+    if (marioStarTimer > 0) {
+      marioStarTimer -= dt;
+      document.getElementById('mario-runner')?.classList.add('mario-star-active');
+    } else {
+      document.getElementById('mario-runner')?.classList.remove('mario-star-active');
+    }
+
     // Jump Physics (Hover gliding if Gold Suit active)
     marioJumpHeight += marioJumpVelocity * dt;
-    const grav = appState.admin.marioGoldSuit ? 0.55 : 0.75;
+    const grav = isGold ? 0.55 : 0.75;
     marioJumpVelocity -= grav * dt;
     if (marioJumpHeight <= 0) {
       marioJumpHeight = 0;
       marioJumpVelocity = 0;
-      marioJumpsRemaining = appState.admin.marioGoldSuit ? 3 : 2;
+      marioJumpsRemaining = isGold ? 3 : 2;
     }
 
     marioScore += 0.4 * dt;
@@ -3944,7 +4180,7 @@ function tickMarioRun() {
       obs.x -= speed;
       obs.el.style.left = `${obs.x}px`;
 
-      if (!appState.admin.godMario && obs.x < 68 && obs.x > 24 && marioJumpHeight < 34) {
+      if (!appState.admin.godMario && marioStarTimer <= 0 && obs.x < 68 && obs.x > 24 && marioJumpHeight < 34) {
         marioGameOver = true;
         SFX.hit();
         document.getElementById('mario-status').textContent = `💥 Kollision! Score: ${Math.floor(marioScore)}.`;
@@ -3969,19 +4205,33 @@ function tickMarioRun() {
       }
     }
 
-    // Move Coins
+    // Move Coins & Magnet Perk
     for (let i = marioCoinsList.length - 1; i >= 0; i--) {
       const coin = marioCoinsList[i];
       coin.x -= speed;
+
+      // Shop Coin Magnet Perk
+      if (appState.equipped && appState.equipped['mario_magnet']) {
+        const marioCenterY = 36 + marioJumpHeight;
+        if (coin.x < 220 && coin.x > 30) {
+          coin.x -= speed * 1.5;
+          const dy = marioCenterY - coin.y;
+          coin.y += dy * 0.12;
+        }
+      }
+
       coin.el.style.left = `${coin.x}px`;
+      coin.el.style.bottom = `${coin.y}px`;
 
       if (coin.x < 68 && coin.x > 24 && Math.abs(marioJumpHeight + 36 - coin.y) < 32) {
         SFX.coin();
-        const coinVal = appState.admin.infiniteCoins ? 100 : 1;
+        let multiplier = isGold ? 2 : 1;
+        const coinVal = (appState.admin.infiniteCoins ? 100 : 1) * multiplier;
         marioCoins += coinVal;
         appState.stats.mario.totalCoins += coinVal;
         if (appState.isVip) appState.vipCoins += coinVal;
         updateVipVisualState();
+        updateShopBalanceDisplay();
         document.getElementById('mario-coins').textContent = String(marioCoins);
         coin.el.remove();
         marioCoinsList.splice(i, 1);
@@ -4170,13 +4420,19 @@ function runKartCountdown(callback) {
 function resetMarioKart() {
   clearKartCountdownTimers();
   const specs = kartCCSpecs[kartSelectedCC] || kartCCSpecs[50];
+  
+  let playerKartColor = appState.isVip ? '#facc15' : '#38bdf8';
+  if (appState.equipped && appState.equipped['kart_gold']) playerKartColor = '#facc15';
+  else if (appState.equipped && appState.equipped['kart_cyber']) playerKartColor = '#06b6d4';
+  else if (appState.equipped && appState.equipped['kart_rainbow']) playerKartColor = 'rainbow';
+
   kartPlayer = {
     name: appState.playerName || 'Du',
-    color: appState.isVip ? '#facc15' : '#38bdf8',
+    color: playerKartColor,
     x: kartRoad.left + kartRoad.width / 2,
     speed: 0,
     progress: 0,
-    turboBoost: 0,
+    turboBoost: (appState.equipped && appState.equipped['kart_turbo']) ? 55 : 0,
     invincibleTimer: 0
   };
 
@@ -4441,7 +4697,18 @@ function drawRacerCar(car, y, isPlayer = false) {
   kartCtx.fillRect(-18, 8, 6, 12);
   kartCtx.fillRect(12, 8, 6, 12);
 
-  kartCtx.fillStyle = car.color;
+  if (car.color === 'rainbow') {
+    kartCtx.fillStyle = `hsl(${(Date.now() / 6) % 360}, 100%, 55%)`;
+    kartCtx.shadowColor = kartCtx.fillStyle;
+    kartCtx.shadowBlur = 10;
+  } else {
+    kartCtx.fillStyle = car.color;
+    if (isPlayer && (appState.equipped && appState.equipped['kart_gold'])) {
+      kartCtx.shadowColor = '#facc15';
+      kartCtx.shadowBlur = 12;
+    }
+  }
+
   kartCtx.fillRect(-14, -18, 28, 36);
 
   kartCtx.fillStyle = '#38bdf8';
@@ -4450,8 +4717,8 @@ function drawRacerCar(car, y, isPlayer = false) {
   kartCtx.fillStyle = '#0f172a';
   kartCtx.fillRect(-16, 14, 32, 6);
 
-  if (isPlayer && (kartDriftCharging || kartPlayer.invincibleTimer > 0 || appState.admin.godKart)) {
-    kartCtx.fillStyle = kartPlayer.invincibleTimer > 0 ? '#f43f5e' : '#facc15';
+  if (isPlayer && (kartDriftCharging || kartPlayer.invincibleTimer > 0 || appState.admin.godKart || (appState.equipped && (appState.equipped['kart_gold'] || appState.equipped['kart_rainbow'])))) {
+    kartCtx.fillStyle = kartPlayer.invincibleTimer > 0 ? '#f43f5e' : ((appState.equipped && appState.equipped['kart_rainbow']) ? `hsl(${(Date.now() / 4) % 360}, 100%, 60%)` : '#facc15');
     kartCtx.fillRect(-22, 16, 5, 5);
     kartCtx.fillRect(17, 16, 5, 5);
   }
@@ -4819,14 +5086,24 @@ function drawSnakeScene() {
   );
   snakeCtx.fill();
 
-  // Snake Body
-  snakeCtx.shadowColor = appState.isVip ? '#facc15' : '#06b6d4';
-  snakeCtx.shadowBlur = 8;
+  // Snake Body & Shop Skins
   snake.forEach((seg, i) => {
-    if (appState.isVip) {
+    if (appState.equipped && appState.equipped['snake_rainbow']) {
+      snakeCtx.fillStyle = `hsl(${(i * 22 + Date.now() / 6) % 360}, 100%, 60%)`;
+      snakeCtx.shadowColor = snakeCtx.fillStyle;
+      snakeCtx.shadowBlur = 10;
+    } else if (appState.equipped && appState.equipped['snake_fire']) {
+      snakeCtx.fillStyle = i === 0 ? '#ef4444' : (i % 2 === 0 ? '#f97316' : '#facc15');
+      snakeCtx.shadowColor = '#f97316';
+      snakeCtx.shadowBlur = 12;
+    } else if (appState.isVip) {
       snakeCtx.fillStyle = i === 0 ? '#fde047' : '#f59e0b';
+      snakeCtx.shadowColor = '#facc15';
+      snakeCtx.shadowBlur = 8;
     } else {
       snakeCtx.fillStyle = i === 0 ? '#38bdf8' : '#06b6d4';
+      snakeCtx.shadowColor = '#06b6d4';
+      snakeCtx.shadowBlur = 8;
     }
     snakeCtx.fillRect(
       seg.x * snakeGridSize + 1,
@@ -4895,6 +5172,7 @@ function resetBricks(fullReset = true) {
     brickLevel = 1;
   }
 
+  paddle.width = (appState.equipped && appState.equipped['bricks_laser']) ? 112 : 80;
   paddle.x = bricksCanvas.width / 2 - paddle.width / 2;
   balls = [{
     x: paddle.x + paddle.width / 2,
@@ -5084,13 +5362,19 @@ function drawBricksScene() {
     }
   });
 
-  bricksCtx.fillStyle = appState.admin.godBricks || appState.isVip ? '#facc15' : '#8b5cf6';
-  bricksCtx.shadowColor = bricksCtx.fillStyle;
-  bricksCtx.shadowBlur = 8;
+  if (appState.equipped && appState.equipped['bricks_laser']) {
+    bricksCtx.fillStyle = '#06b6d4';
+    bricksCtx.shadowColor = '#38bdf8';
+    bricksCtx.shadowBlur = 16;
+  } else {
+    bricksCtx.fillStyle = appState.admin.godBricks || appState.isVip ? '#facc15' : '#8b5cf6';
+    bricksCtx.shadowColor = bricksCtx.fillStyle;
+    bricksCtx.shadowBlur = 8;
+  }
   bricksCtx.fillRect(paddle.x, bricksCanvas.height - 20, paddle.width, paddle.height);
 
   bricksCtx.fillStyle = '#ffffff';
-  bricksCtx.shadowColor = '#38bdf8';
+  bricksCtx.shadowColor = (appState.equipped && appState.equipped['bricks_laser']) ? '#06b6d4' : '#38bdf8';
   bricksCtx.shadowBlur = 10;
   balls.forEach(b => {
     bricksCtx.beginPath();
@@ -6838,6 +7122,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initLanguageSelection();
   initWelcomeFlow();
   initSettings();
+  initCoinShop();
   initGameGuides();
   initMultiplayerLobby();
   initTicTacToe();
