@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.21-pin-secured';
+const CACHE_NAME = 'arcade-collection-v0.0.22-guides-updated';
 const APP_SHELL = [
   './',
   './index.html',
