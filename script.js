@@ -783,18 +783,20 @@ function saveState() {
 /* ==========================================================================
    2.1 PUSH & BROWSER NOTIFICATIONS ENGINE
    ========================================================================== */
-function sendArcadeNotification(title, body, icon = 'favicon.svg', tag = null) {
+function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null) {
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
   if (appState.notificationsEnabled === false) return;
 
   const options = {
     body: body,
-    icon: icon || 'favicon.svg',
-    badge: 'favicon.svg',
-    vibrate: [100, 50, 100],
+    icon: icon || 'icon-192.png',
+    badge: 'icon-192.png',
+    vibrate: [150, 75, 150],
     tag: tag || 'arcade-' + Date.now(),
-    renotify: true
+    renotify: true,
+    requireInteraction: false,
+    silent: false
   };
 
   try {
@@ -826,7 +828,7 @@ function checkDailyBonus() {
     sendArcadeNotification(
       '🎁 Täglicher Arcade-Bonus!',
       'Du hast +500 Arcade-Münzen erhalten! Schau vorbei und knacke neue Highscores!',
-      'favicon.svg',
+      'icon-192.png',
       'daily-bonus'
     );
   }
@@ -868,7 +870,7 @@ const ARCADE_REMINDERS = [
 
 function sendRandomReminderNotification() {
   const reminder = ARCADE_REMINDERS[Math.floor(Math.random() * ARCADE_REMINDERS.length)];
-  sendArcadeNotification(reminder.title, reminder.body, 'favicon.svg', 'arcade-reminder');
+  sendArcadeNotification(reminder.title, reminder.body, 'icon-192.png', 'arcade-reminder');
 }
 
 let userInactivityTimer = null;
@@ -1559,7 +1561,7 @@ function unlockTrophy(key) {
     sendArcadeNotification(
       '🏆 Neue Trophäe freigeschaltet!',
       (appState.trophies[key].icon || '🏆') + ' ' + (appState.trophies[key].title || '') + ': ' + (appState.trophies[key].desc || ''),
-      'favicon.svg',
+      'icon-192.png',
       'trophy-' + key
     );
   }
@@ -1920,13 +1922,13 @@ function initSettings() {
           if (Notification.permission === 'granted') {
             appState.notificationsEnabled = true;
             saveState();
-            sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'favicon.svg');
+            sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'icon-192.png');
           } else if (Notification.permission !== 'denied') {
             Notification.requestPermission().then((perm) => {
               if (perm === 'granted') {
                 appState.notificationsEnabled = true;
                 saveState();
-                sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'favicon.svg');
+                sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'icon-192.png');
               } else {
                 e.target.checked = false;
                 appState.notificationsEnabled = false;
@@ -2267,7 +2269,7 @@ function initAdminConsole() {
             sendArcadeNotification(
               '👑 VIP Admin Test-Benachrichtigung',
               'Hallo Noel! Dein Benachrichtigungssystem funktioniert zu 100% perfekt!',
-              'favicon.svg',
+              'icon-192.png',
               'admin-test'
             );
           } else {
@@ -2278,7 +2280,7 @@ function initAdminConsole() {
         sendArcadeNotification(
           '👑 VIP Admin Test-Benachrichtigung',
           'Hallo Noel! Dein Benachrichtigungssystem funktioniert zu 100% perfekt!',
-          'favicon.svg',
+          'icon-192.png',
           'admin-test'
         );
       }
@@ -2300,7 +2302,7 @@ function initAdminConsole() {
       sendArcadeNotification(
         '🏆 Errungenschaft freigeschaltet!',
         '👑 VIP Administrator: Öffne die geheime VIP & Admin Konsole mit Quanten-Key',
-        'favicon.svg',
+        'icon-192.png',
         'admin-trophy-test'
       );
     });
@@ -3065,7 +3067,7 @@ function tickMarioRun() {
         if (marioScore > appState.stats.mario.highscore) {
           appState.stats.mario.highscore = marioScore;
           saveState();
-          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Super Mario Run: ${Math.floor(marioScore)} Punkte!`, 'favicon.svg', 'mario-highscore');
+          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Super Mario Run: ${Math.floor(marioScore)} Punkte!`, 'icon-192.png', 'mario-highscore');
         }
         if (marioScore >= 500) unlockTrophy('mario_runner');
 
@@ -3882,7 +3884,7 @@ function tickSnake(timestamp) {
         if (snakeScore > appState.stats.snake.highscore) {
           appState.stats.snake.highscore = snakeScore;
           saveState();
-          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Neon Snake: ${snakeScore} Punkte!`, 'favicon.svg', 'snake-highscore');
+          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Neon Snake: ${snakeScore} Punkte!`, 'icon-192.png', 'snake-highscore');
         }
         if (snakeScore >= 100) unlockTrophy('snake_length');
 
@@ -4148,7 +4150,7 @@ function tickBricks() {
               if (brickScore > appState.stats.bricks.highscore) {
                 appState.stats.bricks.highscore = brickScore;
                 saveState();
-                sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Cyber Bricks: ${brickScore} Punkte!`, 'favicon.svg', 'bricks-highscore');
+                sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Cyber Bricks: ${brickScore} Punkte!`, 'icon-192.png', 'bricks-highscore');
               }
             }
           }
@@ -5575,7 +5577,7 @@ function handleMultiplayerMessage(data) {
           });
           updateLobbyPlayerList(mpPlayersList);
           SFX.pop();
-          sendArcadeNotification('🎮 Spieler beigetreten!', (data.name || 'Ein Mitspieler') + ' ist deiner Multiplayer-Lobby beigetreten!', 'favicon.svg', 'mp-player-join');
+          sendArcadeNotification('🎮 Spieler beigetreten!', (data.name || 'Ein Mitspieler') + ' ist deiner Multiplayer-Lobby beigetreten!', 'icon-192.png', 'mp-player-join');
 
           // Broadcast updated player list to all joined players
           sendMultiplayerAction({
@@ -5609,7 +5611,7 @@ function handleMultiplayerMessage(data) {
       }
       closeMultiplayerModal();
       startOnlineMatch(data);
-      sendArcadeNotification('🚀 Match startet jetzt!', 'Das Multiplayer-Spiel (' + (data.gameType === 'memory' ? 'Memory Matrix' : 'Tic-Tac-Toe') + ') beginnt!', 'favicon.svg', 'mp-match-start');
+      sendArcadeNotification('🚀 Match startet jetzt!', 'Das Multiplayer-Spiel (' + (data.gameType === 'memory' ? 'Memory Matrix' : 'Tic-Tac-Toe') + ') beginnt!', 'icon-192.png', 'mp-match-start');
       break;
 
     case 'TTT_UPDATE':
