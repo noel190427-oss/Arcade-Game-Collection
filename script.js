@@ -2725,6 +2725,13 @@ function initSettings() {
     settingsModal.classList.remove('hidden');
     SFX.click();
   });
+  const launcherSettingsBtn = document.getElementById('launcher-settings-btn');
+  if (launcherSettingsBtn) {
+    launcherSettingsBtn.addEventListener('click', () => {
+      settingsModal.classList.remove('hidden');
+      SFX.click();
+    });
+  }
   const footerSettingsBtn = document.getElementById('footer-settings-btn');
   if (footerSettingsBtn) {
     footerSettingsBtn.addEventListener('click', () => {
@@ -2832,6 +2839,10 @@ function initAdminConsole() {
 
   openVipBtn.addEventListener('click', () => openVipTrigger());
   footerVipBtn.addEventListener('click', () => openVipTrigger());
+  const launcherVipBtn = document.getElementById('launcher-vip-btn');
+  if (launcherVipBtn) {
+    launcherVipBtn.addEventListener('click', () => openVipTrigger());
+  }
   closeAdminBtn.addEventListener('click', () => {
     adminModal.classList.add('hidden');
     SFX.click();
