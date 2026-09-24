@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.33-update-notifications';
+const CACHE_NAME = 'arcade-collection-v0.0.34-pre-update-notifications';
 const APP_SHELL = [
   './',
   './index.html',
