@@ -228,6 +228,9 @@
           <button id="toggle-sound-btn" class="icon-button" title="Sound umschalten" aria-label="Sound">
             <span id="sound-icon">🔊</span>
           </button>
+          <button id="open-shop-btn" class="icon-button" title="🛍️ Coin-Shop & Upgrades" aria-label="Shop" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(234, 179, 8, 0.4)); border: 1px solid var(--accent-gold); color: #fef08a;">
+            🛍️ <span style="font-size:0.75rem; font-weight:bold;">Shop</span>
+          </button>
           <button id="open-settings-btn" class="icon-button" title="Einstellungen & Themes" aria-label="Einstellungen">
             ⚙️
           </button>
@@ -264,11 +267,14 @@
 
       <!-- QUICK NAV BAR -->
       <div class="quick-nav-bar" style="display:flex; gap:8px; margin: 8px 12px 10px 12px; flex-wrap:wrap; justify-content:space-between;">
-        <button id="launcher-settings-btn" class="primary-button btn-small" style="flex:1; min-width:140px; background:linear-gradient(135deg, #0284c7, #06b6d4); font-weight:bold;">
+        <button id="launcher-shop-btn" class="primary-button btn-small" style="flex:1; min-width:140px; background:linear-gradient(135deg, #f59e0b, #eab308); color:#000; font-weight:bold;">
+          <span>🛍️</span> Coin-Shop (Skins & Upgrades)
+        </button>
+        <button id="launcher-settings-btn" class="secondary-button btn-small" style="flex:1; min-width:140px; background:linear-gradient(135deg, #0284c7, #06b6d4); font-weight:bold; color:#fff;">
           <span>⚙️</span> Einstellungen (Frei für alle)
         </button>
         <button id="launcher-vip-btn" class="ghost-button btn-small" style="flex:1; min-width:140px; border:1px solid #facc15; color:#facc15; font-weight:bold;">
-          <span>👑</span> VIP Admin (Passwort-Bereich)
+          <span>👑</span> VIP Admin (Passwort)
         </button>
       </div>
 
@@ -1401,6 +1407,60 @@
           </div>
         </div>
       </div>
+    <!-- ARCADE COIN SHOP MODAL -->
+    <div id="shop-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Arcade Coin Shop">
+      <div class="modal-card" style="max-width: 820px; width: 95%;">
+        <div class="modal-header">
+          <div class="shop-header-row">
+            <div class="admin-title-row">
+              <span style="font-size: 1.8rem;">🛍️</span>
+              <div>
+                <h2>Arcade Coin-Shop</h2>
+                <small>Kaufe Karts, Super Mario Upgrades, Neon Skins & VIP Titel!</small>
+              </div>
+            </div>
+            <div class="shop-balance-chip">
+              <span>💰 Dein Guthaben:</span>
+              <strong id="shop-modal-coin-balance">0</strong>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="close-shop-btn" aria-label="Schließen">✕</button>
+        </div>
+
+        <!-- Shop Category Navigation Tabs -->
+        <div class="shop-nav-tabs" id="shop-nav-tabs">
+          <button class="shop-tab-btn active-shop-tab" data-shop-tab="karts">🏎️ Karts & Tuning</button>
+          <button class="shop-tab-btn" data-shop-tab="mario">🍄 Mario Upgrades</button>
+          <button class="shop-tab-btn" data-shop-tab="skins">🐍 Neon Skins</button>
+          <button class="shop-tab-btn" data-shop-tab="titles">👑 Titel & Ränge</button>
+          <button class="shop-tab-btn" data-shop-tab="music">🎶 Jukebox Tracks</button>
+        </div>
+
+        <!-- Tab 1: Karts & Tuning -->
+        <div class="shop-tab-content" id="shop-tab-karts">
+          <div class="shop-grid" id="shop-grid-karts"></div>
+        </div>
+
+        <!-- Tab 2: Mario Upgrades -->
+        <div class="shop-tab-content hidden" id="shop-tab-mario">
+          <div class="shop-grid" id="shop-grid-mario"></div>
+        </div>
+
+        <!-- Tab 3: Neon Skins -->
+        <div class="shop-tab-content hidden" id="shop-tab-skins">
+          <div class="shop-grid" id="shop-grid-skins"></div>
+        </div>
+
+        <!-- Tab 4: Titles -->
+        <div class="shop-tab-content hidden" id="shop-tab-titles">
+          <div class="shop-grid" id="shop-grid-titles"></div>
+        </div>
+
+        <!-- Tab 5: Jukebox Music -->
+        <div class="shop-tab-content hidden" id="shop-tab-music">
+          <div class="shop-grid" id="shop-grid-music"></div>
+        </div>
+      </div>
     </div>
 
     <!-- TROPHIES & ACHIEVEMENTS MODAL -->
@@ -1448,17 +1508,27 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">🎉</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.43?</h2>
-              <small>Noel Arcade Universe • WLAN & Netzwerk Coins-Geschenk Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.44?</h2>
+              <small>Noel Arcade Universe • 🛍️ Arcade Coin Shop Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
-          <div class="changelog-item" style="border: 2px solid #facc15; background: rgba(250, 204, 21, 0.12);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🎁 NEU: COINS-GESCHENK AN ALLE SPIELER IM WLAN</div>
+          <div class="changelog-item" style="border: 2px solid #ec4899; background: rgba(236, 72, 153, 0.12);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; font-weight: bold;">🛍️ NEU: DER GROSSE ARCADE COIN SHOP</div>
+            <strong>Verwende deine gesammelten Coins, um coole Karts, Skins, Items & VIP-Titel zu kaufen!</strong>
+            <p>Endlich haben alle deine Coins einen echten Nutzen! Im neuen Shop kannst du dir <strong>Gold-Karts</strong>, <strong>Cyber-Boliden</strong>, <strong>Super Mario Unbesiegbarkeits-Sterne</strong>, <strong>Münz-Magneten</strong>, <strong>Regenbogen-Schlangen</strong>, <strong>Laser-Paddles</strong> und exklusive <strong>VIP Titel-Abzeichen</strong> (z.B. 👑 Tycoon, 💎 Legende) freischalten!</p>
+          </div>
+          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🏎️ SPÜRBARE GAMEPLAY-BOOSTS & VISUELLE EFFEKTE</div>
+            <strong>Gekaufte Items verleihen dir echte Vorteile in allen Minispielen!</strong>
+            <p>Der Münz-Magnet saugt automatisch alle Münzen in Mario Run an, der Raketen-Boost katapultiert dich in Mario Kart sofort nach vorne, und Regenbogen-Skins verpassen deinen Spielen lebendige Farbeffekte!</p>
+          </div>
+          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🎁 COINS-GESCHENK AN ALLE SPIELER IM WLAN</div>
             <strong>Gib eine beliebige Anzahl Coins ein und verteile sie sofort an alle Spieler im WLAN!</strong>
-            <p>Über das neue Eingabefeld exklusiv in der 👑 <strong>VIP Admin-Konsole</strong> kannst du einen beliebigen Betrag (z.B. 500, 2.000, 10.000 oder mehr) eingeben. Sobald du auf <strong>„Coins an alle senden“</strong> drückst, empfangen alle Handys und PCs im WLAN die Münzen in Echtzeit inklusive Belohnungs-Feuerwerk und Push-Benachrichtigung!</p>
+            <p>Über das Eingabefeld in der 👑 <strong>VIP Admin-Konsole (PIN 145785)</strong> kannst du beliebig viele Münzen an alle Mitspieler verschenken!</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🔘 2.000 COINS BENACHRICHTIGUNGS-BUTTON</div>
