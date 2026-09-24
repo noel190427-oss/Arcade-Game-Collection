@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.23-hotfix';
+const CACHE_NAME = 'arcade-collection-v0.0.24-notifications';
 const APP_SHELL = [
   './',
   './index.html',
@@ -32,7 +32,7 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Network-First for HTML and JS to ensure instant multiplayer sync
+  // Network-First for HTML and JS to ensure instant multiplayer sync and updates
   if (event.request.mode === 'navigate' || url.pathname.endsWith('.js') || url.pathname.endsWith('.html')) {
     event.respondWith(
       fetch(event.request)
@@ -51,5 +51,22 @@ self.addEventListener('fetch', (event) => {
   // Cache-first for images/styles
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
+  );
+});
+
+// Push & Local Notification Click Handling
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('./');
+      }
+    })
   );
 });
