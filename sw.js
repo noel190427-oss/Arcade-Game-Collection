@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.41-clean-settings-vip-coins';
+const CACHE_NAME = 'arcade-collection-v0.0.42-clean-settings';
 const APP_SHELL = [
   './',
   './index.html',
