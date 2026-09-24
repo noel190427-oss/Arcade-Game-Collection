@@ -4058,6 +4058,7 @@ function initPWA() {
 /* ==========================================================================
    20.5 UNIVERSAL GAME INSTRUCTIONS & HOW-TO-PLAY MODAL SYSTEM
    ========================================================================== */
+const GAME_GUIDES = {
   tictactoe: {
     icon: '❌⭕',
     title: {
