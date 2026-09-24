@@ -900,8 +900,8 @@ function handleNotificationNotSupported() {
 /* ==========================================================================
    2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.44';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.44: 🛍️ Arcade Coin Shop (Karts, Skins, Items, VIP-Titel & Effekte) ist live!';
+const CURRENT_APP_VERSION = 'v0.0.45';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.45: 🛍️ Arcade Coin Shop (Karts, Skins, Items, VIP-Titel & Effekte) ist live!';
 
 const GITHUB_REPO = 'noel190427-oss/Arcade-Game-Collection';
 const GITHUB_TOKEN = ['ghp_8bFx7Fjr', 's96Gvk8MXwv', 'CWWoTLvMFEy', '15rsNQ'].join('');
@@ -2231,6 +2231,26 @@ const SHOP_ITEMS = [
   { id: 'music_galaxy', category: 'music', title: 'Track: Galaxy Quest 8-Bit', icon: '🌌', price: 1500, desc: 'Epischer Weltraum-Soundtrack für actiongeladene Arcade-Sessions.' }
 ];
 
+function openCoinShop() {
+  if (!appState.inventory) appState.inventory = {};
+  if (!appState.equipped) appState.equipped = {};
+  updateShopBalanceDisplay();
+  renderShopItems();
+  const shopModal = document.getElementById('shop-modal');
+  if (shopModal) {
+    shopModal.classList.remove('hidden');
+    SFX.click();
+  }
+}
+
+function closeCoinShop() {
+  const shopModal = document.getElementById('shop-modal');
+  if (shopModal) {
+    shopModal.classList.add('hidden');
+    SFX.click();
+  }
+}
+
 function initCoinShop() {
   if (!appState.inventory) appState.inventory = {};
   if (!appState.equipped) appState.equipped = {};
@@ -2241,22 +2261,20 @@ function initCoinShop() {
   const closeShopBtn = document.getElementById('close-shop-btn');
   const walletChip = document.getElementById('vip-wallet-chip');
 
-  const openShop = () => {
-    updateShopBalanceDisplay();
-    renderShopItems();
-    if (shopModal) shopModal.classList.remove('hidden');
-    SFX.click();
-  };
+  if (openShopBtn) openShopBtn.addEventListener('click', openCoinShop);
+  if (launcherShopBtn) launcherShopBtn.addEventListener('click', openCoinShop);
+  if (walletChip) walletChip.addEventListener('click', openCoinShop);
+  if (closeShopBtn) closeShopBtn.addEventListener('click', closeCoinShop);
 
-  if (openShopBtn) openShopBtn.addEventListener('click', openShop);
-  if (launcherShopBtn) launcherShopBtn.addEventListener('click', openShop);
-  if (walletChip) walletChip.addEventListener('click', openShop);
-  if (closeShopBtn && shopModal) {
-    closeShopBtn.addEventListener('click', () => {
-      shopModal.classList.add('hidden');
-      SFX.click();
+  if (shopModal) {
+    shopModal.addEventListener('click', (e) => {
+      if (e.target === shopModal) closeCoinShop();
     });
   }
+
+  document.querySelectorAll('[data-open-shop]').forEach(el => {
+    el.addEventListener('click', openCoinShop);
+  });
 
   // Category Tab switching
   const tabBtns = document.querySelectorAll('.shop-tab-btn');
