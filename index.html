@@ -1166,12 +1166,29 @@
                 <span>🎁</span> <strong>Stufe 4: 24 Std. (Schatz)</strong>
               </button>
             </div>
-            <button class="primary-button full-width btn-small" id="admin-test-coins-notif-btn" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; margin-top: 10px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
-              <span>🎁</span> <strong>+2.000 Coins Push an ALLE Geräte weltweit senden (Mit Abhol-Button!)</strong>
+          <!-- WLAN / NETWORK CUSTOM COINS GIFT CARD (SEND ANY COIN AMOUNT TO ALL PLAYERS) -->
+          <div class="admin-box" style="margin-top: 14px; border: 2px solid #facc15; background: rgba(250, 204, 21, 0.08); box-shadow: 0 0 20px rgba(250, 204, 21, 0.25);">
+            <h3 style="color: #facc15;">🎁 WLAN / Netzwerk Münzen-Geschenk (Anzahl eingeben & senden)</h3>
+            <p class="admin-desc">Gib eine beliebige Anzahl Coins ein. Sobald du auf Senden drückst, erhalten alle Spieler in eurem WLAN / Netzwerk die Coins sofort als Geschenk gutgeschrieben!</p>
+            
+            <div style="display: flex; gap: 8px; align-items: center; margin: 10px 0;">
+              <input type="number" id="admin-custom-gift-coins-input" value="2000" min="1" max="1000000" step="100" style="flex: 1; padding: 10px 14px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; border: 1px solid #facc15; background: rgba(0,0,0,0.5); color: #fde047; text-align: center;" placeholder="Anzahl Coins (z.B. 2000)" />
+              <span style="font-size: 1.2rem; font-weight: bold; color: #facc15;">🪙 Coins</span>
+            </div>
+
+            <div class="admin-btn-row" style="margin-bottom: 10px; gap: 4px; flex-wrap: wrap;">
+              <button type="button" class="secondary-button btn-small gift-coin-preset-btn" data-coins="500">+500</button>
+              <button type="button" class="secondary-button btn-small gift-coin-preset-btn" data-coins="1000">+1.000</button>
+              <button type="button" class="secondary-button btn-small gift-coin-preset-btn" data-coins="2000">+2.000</button>
+              <button type="button" class="secondary-button btn-small gift-coin-preset-btn" data-coins="5000">+5.000</button>
+              <button type="button" class="secondary-button btn-small gift-coin-preset-btn" data-coins="10000">+10.000</button>
+              <button type="button" class="secondary-button btn-small gift-coin-preset-btn" data-coins="50000">+50.000</button>
+            </div>
+
+            <button class="primary-button full-width" id="admin-send-custom-gift-coins-btn" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: 900; font-size: 1.05rem; padding: 12px; border: none; cursor: pointer; box-shadow: 0 4px 18px rgba(245, 158, 11, 0.45);">
+              <span>🚀</span> <strong>Coins an alle Spieler im WLAN senden</strong>
             </button>
-            <button class="primary-button full-width btn-small" id="admin-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 8px; font-weight: bold; border: none; cursor: pointer;">
-              <span>📱</span> <strong>10s Sperrbildschirm-Test (iPhone 11 wegswipen)</strong>
-            </button>
+            <div id="admin-gift-status-msg" style="margin-top: 8px; font-size: 0.88rem; font-weight: bold; color: #10b981; text-align: center;"></div>
           </div>
 
           <!-- Apple & Windows Info Card in Admin -->
@@ -1340,7 +1357,17 @@
               </button>
             </div>
 
-            <!-- Global Broadcast, 2000 Coins Test & Delayed Swipe Test Buttons directly in Settings -->
+            <!-- Global Broadcast, Custom Coins Gift & Delayed Swipe Test Buttons directly in Settings -->
+            <div style="background: rgba(250, 204, 21, 0.1); border: 1px solid #facc15; border-radius: 8px; padding: 10px; margin-top: 8px;">
+              <div style="font-weight: bold; color: #facc15; font-size: 0.88rem; margin-bottom: 6px;">🎁 Coins an alle Spieler im WLAN / Netzwerk senden:</div>
+              <div style="display: flex; gap: 6px;">
+                <input type="number" id="settings-gift-coins-input" value="2000" min="1" max="1000000" step="100" style="width: 110px; padding: 8px; font-weight: bold; font-size: 1rem; border-radius: 6px; border: 1px solid #facc15; background: rgba(0,0,0,0.5); color: #fde047; text-align: center;" placeholder="Anzahl" />
+                <button class="primary-button btn-small" id="settings-send-custom-gift-coins-btn" style="flex: 1; background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold; border: none; cursor: pointer;">
+                  <span>🚀</span> <strong>Coins an alle senden</strong>
+                </button>
+              </div>
+            </div>
+
             <button class="primary-button full-width btn-small" id="settings-test-coins-notif-btn" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; margin-top: 8px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
               <span>🎁</span> <strong>+2.000 Coins Benachrichtigung testen (Mit Abhol-Button!)</strong>
             </button>
@@ -1426,17 +1453,22 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">🎉</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.38?</h2>
-              <small>Noel Arcade Universe • 2.000 Coins Benachrichtigungs-Button Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.39?</h2>
+              <small>Noel Arcade Universe • WLAN & Netzwerk Coins-Geschenk Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
-          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.1);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🎁 NEU: +2.000 COINS BENACHRICHTIGUNGS-BUTTON</div>
+          <div class="changelog-item" style="border: 2px solid #facc15; background: rgba(250, 204, 21, 0.12);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🎁 NEU: COINS-GESCHENK AN ALLE SPIELER IM WLAN</div>
+            <strong>Gib eine beliebige Anzahl Coins ein und verteile sie sofort an alle Spieler im WLAN!</strong>
+            <p>Über das neue Eingabefeld in den Einstellungen und in der VIP Admin-Konsole kannst du einen beliebigen Betrag (z.B. 500, 2.000, 10.000 oder mehr) eingeben. Sobald du auf <strong>„Coins an alle senden“</strong> drückst, empfangen alle Handys und PCs im WLAN die Münzen in Echtzeit inklusive Belohnungs-Feuerwerk und Push-Benachrichtigung!</p>
+          </div>
+          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🔘 2.000 COINS BENACHRICHTIGUNGS-BUTTON</div>
             <strong>Erhalte +2.000 Gratis-Coins direkt aus jeder Push-Benachrichtigung!</strong>
-            <p>Jede Benachrichtigung hat jetzt einen interaktiven Button <strong>„🎁 +2.000 Coins abholen“</strong>. Sobald du auf den Button oder die Benachrichtigung tippst, öffnet sich das Spiel und schreibt dir sofort <strong>+2.000 Coins</strong> auf dein Konto gut inklusive Gold-Konfetti und Belohnungs-Feuerwerk!</p>
+            <p>Jede Benachrichtigung hat jetzt einen interaktiven Button <strong>„🎁 +2.000 Coins abholen“</strong>. Sobald du auf den Button oder die Benachrichtigung tippst, öffnet sich das Spiel und schreibt dir sofort <strong>+2.000 Coins</strong> auf dein Konto gut!</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">🆓 100% KOSTENLOS FÜR ALLE SPIELER (OHNE VIP!)</div>
@@ -1452,11 +1484,6 @@
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(59, 130, 246, 0.5)); border-color: #06b6d4; color: #38bdf8;">☁️ AUTOMATISCHER 24/7 GITHUB CLOUD PUSH SERVER</div>
             <strong>Stündliche automatische Erinnerungen direkt aus der Cloud</strong>
             <p>Ein automatischer Cloud-Dienst sendet stündliche Erinnerungen (nach 1h, 2h, 3h, 24h & Updates) an alle registrierten Geräte weltweit.</p>
-          </div>
-          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(250, 204, 21, 0.5), rgba(245, 158, 11, 0.5)); border-color: #facc15; color: #fde047;">🍏 APPLE IPHONE SCHNELL-ANLEITUNG</div>
-            <strong>So empfängt dein iPhone Push-Nachrichten bei gesperrtem Bildschirm:</strong>
-            <p>Auf Apple iOS ist es ganz einfach: Öffne die Arcade in Safari ➔ Tippe unten auf Teilen [ 📤 ] ➔ Wähle „Zum Home-Bildschirm“ ➕ ➔ Öffne die App vom Home-Bildschirm und erlaube Benachrichtigungen in den ⚙️ Einstellungen! Schon empfängt dein iPhone alle Sperrbildschirm-Pushes.</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.5), rgba(239, 68, 68, 0.5)); border-color: #f59e0b; color: #fbbf24;">⚡ VORAB-UPDATE BENACHRICHTIGUNG (VOR DEM UPLOAD)</div>
@@ -1532,7 +1559,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.38"></script>
-    <script src="script.js?v=0.0.38"></script>
+    <script src="paho-mqtt.js?v=0.0.39"></script>
+    <script src="script.js?v=0.0.39"></script>
   </body>
 </html>
