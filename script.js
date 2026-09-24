@@ -20,6 +20,8 @@
    ========================================================================== */
 const I18N_DATA = {
   de: {
+    notifications_title: 'Push-Benachrichtigungen',
+    notifications_desc: 'Erhalte automatische Benachrichtigungen bei Trophäen, Multiplayer und Tages-Belohnungen.',
     confirm_language: 'Sprache bestätigen',
     arcade_edition: 'Noel Arcade Universe',
     game_lounge_title: 'Game Lounge',
@@ -697,6 +699,8 @@ const I18N_DATA = {
    2. APP STATE & PERSISTENCE
    ========================================================================== */
 const DEFAULT_STATE = {
+  notificationsEnabled: true,
+  lastDailyBonus: 0,
   playerName: 'Gast',
   playerAvatar: '👾',
   isVip: false,
@@ -773,6 +777,58 @@ function saveState() {
     localStorage.setItem('arcade_ultra_state', JSON.stringify(appState));
   } catch (e) {
     console.warn('Could not save state to localStorage', e);
+  }
+}
+
+/* ==========================================================================
+   2.1 PUSH & BROWSER NOTIFICATIONS ENGINE
+   ========================================================================== */
+function sendArcadeNotification(title, body, icon = 'favicon.svg', tag = null) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  if (appState.notificationsEnabled === false) return;
+
+  const options = {
+    body: body,
+    icon: icon || 'favicon.svg',
+    badge: 'favicon.svg',
+    vibrate: [100, 50, 100],
+    tag: tag || 'arcade-' + Date.now(),
+    renotify: true
+  };
+
+  try {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.showNotification(title, options).catch(() => {
+          try { new Notification(title, options); } catch(e){}
+        });
+      }).catch(() => {
+        try { new Notification(title, options); } catch(e){}
+      });
+    } else {
+      new Notification(title, options);
+    }
+  } catch (e) {
+    console.log('Notification dispatch fallback:', e);
+  }
+}
+
+function checkDailyBonus() {
+  const now = Date.now();
+  const ONE_DAY = 24 * 60 * 60 * 1000;
+  if (!appState.lastDailyBonus || (now - appState.lastDailyBonus) > ONE_DAY) {
+    appState.lastDailyBonus = now;
+    const bonusCoins = 500;
+    appState.vipCoins = (appState.vipCoins || 0) + bonusCoins;
+    saveState();
+    updateVipWalletDisplay();
+    sendArcadeNotification(
+      '🎁 Täglicher Arcade-Bonus!',
+      'Du hast +500 Arcade-Münzen erhalten! Schau vorbei und knacke neue Highscores!',
+      'favicon.svg',
+      'daily-bonus'
+    );
   }
 }
 
@@ -1437,6 +1493,12 @@ function unlockTrophy(key) {
     updateTrophyCountBadge();
     SFX.achievement();
     showTrophyToast(appState.trophies[key]);
+    sendArcadeNotification(
+      '🏆 Neue Trophäe freigeschaltet!',
+      (appState.trophies[key].icon || '🏆') + ' ' + (appState.trophies[key].title || '') + ': ' + (appState.trophies[key].desc || ''),
+      'favicon.svg',
+      'trophy-' + key
+    );
   }
 }
 
@@ -1783,6 +1845,47 @@ function initSettings() {
     saveState();
     SFX.click();
   });
+
+  const notifToggle = document.getElementById('notifications-toggle');
+  if (notifToggle) {
+    const isPermGranted = ('Notification' in window && Notification.permission === 'granted');
+    notifToggle.checked = isPermGranted && appState.notificationsEnabled !== false;
+
+    notifToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        if ('Notification' in window) {
+          if (Notification.permission === 'granted') {
+            appState.notificationsEnabled = true;
+            saveState();
+            sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'favicon.svg');
+          } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then((perm) => {
+              if (perm === 'granted') {
+                appState.notificationsEnabled = true;
+                saveState();
+                sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'favicon.svg');
+              } else {
+                e.target.checked = false;
+                appState.notificationsEnabled = false;
+                saveState();
+              }
+            });
+          } else {
+            alert('Benachrichtigungen sind im Browser blockiert. Bitte aktiviere sie in den Google Chrome / Website-Einstellungen.');
+            e.target.checked = false;
+            appState.notificationsEnabled = false;
+            saveState();
+          }
+        } else {
+          e.target.checked = false;
+        }
+      } else {
+        appState.notificationsEnabled = false;
+        saveState();
+      }
+      SFX.click();
+    });
+  }
 
   sparkleToggle.addEventListener('change', (e) => {
     if (!appState.isVip) {
@@ -2822,6 +2925,7 @@ function tickMarioRun() {
         if (marioScore > appState.stats.mario.highscore) {
           appState.stats.mario.highscore = marioScore;
           saveState();
+          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Super Mario Run: ${Math.floor(marioScore)} Punkte!`, 'favicon.svg', 'mario-highscore');
         }
         if (marioScore >= 500) unlockTrophy('mario_runner');
 
@@ -3638,6 +3742,7 @@ function tickSnake(timestamp) {
         if (snakeScore > appState.stats.snake.highscore) {
           appState.stats.snake.highscore = snakeScore;
           saveState();
+          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Neon Snake: ${snakeScore} Punkte!`, 'favicon.svg', 'snake-highscore');
         }
         if (snakeScore >= 100) unlockTrophy('snake_length');
 
@@ -3903,6 +4008,7 @@ function tickBricks() {
               if (brickScore > appState.stats.bricks.highscore) {
                 appState.stats.bricks.highscore = brickScore;
                 saveState();
+                sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Cyber Bricks: ${brickScore} Punkte!`, 'favicon.svg', 'bricks-highscore');
               }
             }
           }
@@ -3967,6 +4073,97 @@ function drawBricksScene() {
 
   bricksCtx.shadowBlur = 0;
 }
+
+
+/* ==========================================================================
+   65% KEYBOARD MASTER CONTROLLER (OPTIMIZED FOR NOEL'S 65% COMPACT KEYBOARD)
+   ========================================================================== */
+window.addEventListener('keydown', (e) => {
+  // If typing in input, don't intercept
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+
+  // ESC closes any open modal
+  const openModal = document.querySelector('.modal-overlay:not(.hidden)');
+  if (openModal) {
+    if (e.key === 'Escape') {
+      openModal.classList.add('hidden');
+      SFX.click();
+    }
+    return;
+  }
+
+  // 1. TIC-TAC-TOE 65% Number Row Direct Input (1-9)
+  if (activeGameId === 'tictactoe') {
+    if (e.key >= '1' && e.key <= '9') {
+      const idx = parseInt(e.key, 10) - 1;
+      handleTttMove(idx);
+      return;
+    }
+    if (e.key === 'r' || e.key === 'R') {
+      resetTicTacToe();
+      return;
+    }
+  }
+
+  // 2. RPSLS 65% Quick Selection (1=Rock, 2=Paper, 3=Scissors, 4=Lizard, 5=Spock)
+  if (activeGameId === 'rps') {
+    const rpsKeyMap = {
+      '1': 'Stein', 'r': 'Stein', 'R': 'Stein',
+      '2': 'Papier', 'p': 'Papier', 'P': 'Papier',
+      '3': 'Schere', 's': 'Schere', 'S': 'Schere',
+      '4': 'Echse', 'l': 'Echse', 'L': 'Echse',
+      '5': 'Spock', 'k': 'Spock', 'K': 'Spock'
+    };
+    if (rpsKeyMap[e.key]) {
+      playRPS(rpsKeyMap[e.key]);
+      return;
+    }
+  }
+
+  // 3. GLOBAL LOUNGE SHORTCUTS (1-7 game launch, M=Mute, J=Jukebox, T=Trophies, S=Settings)
+  if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+    const quickLaunch = {
+      '1': 'tictactoe',
+      '2': 'memory',
+      '3': 'supermario',
+      '4': 'mariokart',
+      '5': 'rps',
+      '6': 'snake',
+      '7': 'brickbreaker'
+    };
+    if (e.target === document.body && quickLaunch[e.key] && !['tictactoe', 'rps'].includes(activeGameId)) {
+      switchGame(quickLaunch[e.key]);
+      return;
+    }
+
+    if (e.key === 'm' || e.key === 'M') {
+      appState.soundMuted = !appState.soundMuted;
+      const soundIcon = document.getElementById('sound-icon');
+      if (soundIcon) soundIcon.textContent = appState.soundMuted ? '🔇' : '🔊';
+      saveState();
+      if (!appState.soundMuted) SFX.click();
+      return;
+    }
+
+    if (e.key === 'j' || e.key === 'J') {
+      toggleJukebox();
+      return;
+    }
+
+    if (e.key === 't' || e.key === 'T') {
+      renderTrophiesModal();
+      document.getElementById('trophies-modal')?.classList.remove('hidden');
+      SFX.click();
+      return;
+    }
+
+    if (e.key === 's' || e.key === 'S') {
+      document.getElementById('settings-modal')?.classList.remove('hidden');
+      SFX.click();
+      return;
+    }
+  }
+});
 
 function initBrickBreaker() {
   bricksCanvas.addEventListener('mousemove', (e) => {
@@ -5238,6 +5435,7 @@ function handleMultiplayerMessage(data) {
           });
           updateLobbyPlayerList(mpPlayersList);
           SFX.pop();
+          sendArcadeNotification('🎮 Spieler beigetreten!', (data.name || 'Ein Mitspieler') + ' ist deiner Multiplayer-Lobby beigetreten!', 'favicon.svg', 'mp-player-join');
 
           // Broadcast updated player list to all joined players
           sendMultiplayerAction({
@@ -5271,6 +5469,7 @@ function handleMultiplayerMessage(data) {
       }
       closeMultiplayerModal();
       startOnlineMatch(data);
+      sendArcadeNotification('🚀 Match startet jetzt!', 'Das Multiplayer-Spiel (' + (data.gameType === 'memory' ? 'Memory Matrix' : 'Tic-Tac-Toe') + ') beginnt!', 'favicon.svg', 'mp-match-start');
       break;
 
     case 'TTT_UPDATE':
@@ -5581,5 +5780,11 @@ window.addEventListener('DOMContentLoaded', () => {
   initSnake();
   initBrickBreaker();
   initPWA();
+
+  // Auto-detect browser notification permission & check daily bonus
+  if ('Notification' in window && Notification.permission === 'granted') {
+    if (appState.notificationsEnabled !== false) appState.notificationsEnabled = true;
+  }
+  checkDailyBonus();
 });
 
