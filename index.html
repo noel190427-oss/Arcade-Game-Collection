@@ -17,7 +17,7 @@
     <meta name="msapplication-TileColor" content="#0a0d17" />
 
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=0.0.42" />
   </head>
   <body>
     <!-- Confetti & Fireworks Particle Canvas -->
@@ -260,6 +260,16 @@
           </div>
           <span class="jukebox-track-name" id="jukebox-track-label">🎶 Chiptune Jukebox: Aus</span>
         </div>
+      </div>
+
+      <!-- QUICK NAV BAR -->
+      <div class="quick-nav-bar" style="display:flex; gap:8px; margin: 8px 12px 10px 12px; flex-wrap:wrap; justify-content:space-between;">
+        <button id="launcher-settings-btn" class="primary-button btn-small" style="flex:1; min-width:140px; background:linear-gradient(135deg, #0284c7, #06b6d4); font-weight:bold;">
+          <span>⚙️</span> Einstellungen (Frei für alle)
+        </button>
+        <button id="launcher-vip-btn" class="ghost-button btn-small" style="flex:1; min-width:140px; border:1px solid #facc15; color:#facc15; font-weight:bold;">
+          <span>👑</span> VIP Admin (Passwort-Bereich)
+        </button>
       </div>
 
       <!-- GAME LAUNCHER SELECTOR -->
@@ -1438,7 +1448,7 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">🎉</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.41?</h2>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.42?</h2>
               <small>Noel Arcade Universe • WLAN & Netzwerk Coins-Geschenk Edition</small>
             </div>
           </div>
@@ -1544,7 +1554,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.39"></script>
-    <script src="script.js?v=0.0.39"></script>
+    <script src="paho-mqtt.js?v=0.0.42"></script>
+    <script src="script.js?v=0.0.42"></script>
   </body>
 </html>
