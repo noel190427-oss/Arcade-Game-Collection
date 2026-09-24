@@ -130,7 +130,7 @@ const I18N_DATA = {
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.36?',
+    whats_new_title: 'Was ist neu in v0.0.38?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
@@ -242,7 +242,7 @@ const I18N_DATA = {
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.36?",
+    whats_new_title: "What's new in v0.0.38?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
@@ -354,7 +354,7 @@ const I18N_DATA = {
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.36?',
+    whats_new_title: 'Was ist neu in v0.0.38?',
     privacy_title: 'Politique de confidentialité'
   },
   pt: {
@@ -466,7 +466,7 @@ const I18N_DATA = {
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.36?',
+    whats_new_title: 'Was ist neu in v0.0.38?',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
@@ -578,7 +578,7 @@ const I18N_DATA = {
     created_by: 'Hazırlayan',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.36?',
+    whats_new_title: 'Was ist neu in v0.0.38?',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
@@ -690,7 +690,7 @@ const I18N_DATA = {
     created_by: 'Creado por',
     whats_new: '¿Qué hay de nuevo?',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.36?',
+    whats_new_title: 'Was ist neu in v0.0.38?',
     privacy_title: 'Política de Privacidad'
   }
 };
@@ -784,20 +784,26 @@ function saveState() {
 /* ==========================================================================
    2.1 PUSH & BROWSER NOTIFICATIONS ENGINE
    ========================================================================== */
-function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null) {
+function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null, actions = null, data = null) {
   if (!('Notification' in window)) return;
   if (Notification.permission !== 'granted') return;
   if (appState.notificationsEnabled === false) return;
+
+  const defaultActions = [
+    { action: 'claim_2000_coins', title: '🎁 +2.000 Coins abholen' }
+  ];
 
   const options = {
     body: body,
     icon: icon || 'icon-192.png',
     badge: 'icon-192.png',
-    vibrate: [150, 75, 150],
+    vibrate: [250, 100, 250, 100, 350],
     tag: tag || 'arcade-' + Date.now(),
     renotify: true,
-    requireInteraction: false,
-    silent: false
+    requireInteraction: true,
+    silent: false,
+    actions: actions || defaultActions,
+    data: data || { url: './?claim=2000_coins', reward: 2000 }
   };
 
   try {
@@ -817,6 +823,54 @@ function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null) 
   }
 }
 
+function claim2000CoinsReward(source = 'Push-Benachrichtigung') {
+  const amount = 2000;
+  appState.vipCoins = (appState.vipCoins || 0) + amount;
+  if (!appState.stats.mario.totalCoins) appState.stats.mario.totalCoins = 0;
+  appState.stats.mario.totalCoins += amount;
+  saveState();
+
+  updateVipVisualState();
+  const walletChip = document.getElementById('vip-wallet-chip');
+  if (walletChip) walletChip.classList.remove('hidden');
+
+  SFX.kaching();
+  SFX.powerup();
+  triggerConfetti(90, true);
+
+  const modal = document.getElementById('reward-coins-modal');
+  const descEl = document.getElementById('reward-coins-modal-desc');
+  const balanceEl = document.getElementById('reward-coins-modal-balance');
+  if (descEl) {
+    descEl.innerHTML = `Du hast erfolgreich <strong>+2.000 Bonus-Coins</strong> aus der Benachrichtigung (<em>${source}</em>) abgeholt!`;
+  }
+  if (balanceEl) {
+    balanceEl.textContent = `🪙 ${Number(appState.vipCoins).toLocaleString()} Coins`;
+  }
+  if (modal) {
+    modal.classList.remove('hidden');
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'install-toast';
+  toast.style.borderColor = '#facc15';
+  toast.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(234, 179, 8, 0.4))';
+  toast.style.boxShadow = '0 8px 32px rgba(250, 204, 21, 0.5)';
+  toast.innerHTML = `
+    <div class="install-toast-content">
+      <span style="font-size: 2.2rem; filter: drop-shadow(0 0 10px #facc15);">💰</span>
+      <div>
+        <strong style="color: #fde047; font-size: 1rem;">+2.000 COINS GUTGESCHRIEBEN!</strong>
+        <p style="margin: 3px 0 0; color: #fff; font-size: 0.88rem;">Neuer Kontostand: <strong>🪙 ${Number(appState.vipCoins).toLocaleString()} Coins</strong></p>
+      </div>
+    </div>
+    <button class="ghost-button btn-small" id="dismiss-coins-toast-btn" style="margin-left: 8px;">✕</button>
+  `;
+  document.body.appendChild(toast);
+  toast.querySelector('#dismiss-coins-toast-btn')?.addEventListener('click', () => toast.remove());
+  setTimeout(() => { if (toast.parentElement) toast.remove(); }, 7000);
+}
+
 function handleNotificationNotSupported() {
   const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
@@ -834,8 +888,8 @@ function handleNotificationNotSupported() {
 /* ==========================================================================
    2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.36';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.36: Stündliche automatische Apple APNs Push-Benachrichtigungen via GitHub Cloud Server, auch wenn die App weggeswiped & geschlossen ist!';
+const CURRENT_APP_VERSION = 'v0.0.38';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.38: Neuer 2.000 Coins Button in jeder Benachrichtigung! Hol dir sofort +2.000 Coins auf dein Konto!';
 
 const GITHUB_REPO = 'noel190427-oss/Arcade-Game-Collection';
 const GITHUB_TOKEN = ['ghp_8bFx7Fjr', 's96Gvk8MXwv', 'CWWoTLvMFEy', '15rsNQ'].join('');
@@ -2539,6 +2593,19 @@ function initSettings() {
     });
   }
 
+  const settingsTestCoinsBtn = document.getElementById('settings-test-coins-notif-btn');
+  if (settingsTestCoinsBtn) {
+    settingsTestCoinsBtn.addEventListener('click', () => {
+      SFX.powerup();
+      sendArcadeNotification(
+        '🎁 2.000 Coins Geschenk für dich!',
+        'Tippe auf den Button „🎁 +2.000 Coins abholen“ oder öffne die Nachricht, um deine Belohnung abzuholen!',
+        'icon-192.png',
+        'coins-reward-test'
+      );
+    });
+  }
+
   const settingsTestDelayedSwipeBtn = document.getElementById('settings-test-delayed-swipe-btn');
   if (settingsTestDelayedSwipeBtn) {
     settingsTestDelayedSwipeBtn.addEventListener('click', () => {
@@ -2938,6 +3005,18 @@ function initAdminConsole() {
         '👑 VIP Administrator: Öffne die geheime VIP & Admin Konsole mit Quanten-Key',
         'icon-192.png',
         'admin-trophy-test'
+      );
+    });
+  }
+
+  const adminTestCoinsBtn = document.getElementById('admin-test-coins-notif-btn');
+  if (adminTestCoinsBtn) {
+    adminTestCoinsBtn.addEventListener('click', () => {
+      SFX.win();
+      triggerConfetti(90, true);
+      broadcastNotificationToAll(
+        '🎁 +2.000 Bonus-Coins Geschenk!',
+        '👑 Admin Noel schenkt allen Spielern +2.000 Coins! Tippe auf den Button und hol sie dir ab!'
       );
     });
   }
@@ -6680,5 +6759,41 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   checkDailyBonus();
   checkForNewAppUpdate();
+
+  // Listen for Service Worker Notification 2000 Coins Claim events
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data && (event.data.type === 'CLAIM_2000_COINS' || event.data.type === 'NOTIFICATION_REWARD')) {
+        claim2000CoinsReward(event.data.title || 'Push-Benachrichtigung');
+      }
+    });
+  }
+
+  // Check URL parameters for 2000 coins claim from opened push notifications
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('claim') === '2000_coins' || urlParams.get('reward') === '2000coins') {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setTimeout(() => {
+        claim2000CoinsReward('Push-Benachrichtigung');
+      }, 700);
+    }
+  } catch (e) {}
+
+  // Close Reward Celebration Modal
+  const closeRewardBtn = document.getElementById('close-reward-coins-btn');
+  const rewardModal = document.getElementById('reward-coins-modal');
+  if (closeRewardBtn && rewardModal) {
+    closeRewardBtn.addEventListener('click', () => {
+      rewardModal.classList.add('hidden');
+      SFX.click();
+    });
+  }
+
+  // Show coins wallet chip if player has coins
+  if (appState.vipCoins > 0 || appState.isVip) {
+    const walletChip = document.getElementById('vip-wallet-chip');
+    if (walletChip) walletChip.classList.remove('hidden');
+  }
 });
 
