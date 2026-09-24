@@ -850,84 +850,85 @@ function checkDailyBonus() {
 }
 
 /* ==========================================================================
-   2.2 AUTOMATIC HOURLY GAME REMINDER NOTIFICATIONS ENGINE
+   2.2 SMART MULTI-TIER AUTOMATION ENGINE (1h, 2h, 3h, 24h AUTOMATISMS)
    ========================================================================== */
-const ARCADE_REMINDERS = [
-  {
-    title: '🎮 Es wird mal wieder Zeit zu spielen!',
-    body: 'Die Arcade vermisst dich – knacke jetzt den nächsten Highscore!'
-  },
-  {
-    title: '🏎️ Mario Kart GP wartet auf dich!',
-    body: 'Deine Rivalen trainieren heimlich auf der Strecke... Zeit für dein Comeback!'
-  },
-  {
-    title: '👑 VIP Bonus-Alarm!',
-    body: 'Deine VIP-Schatzkammer hat neue Münzen für dich bereitgelegt. Hol sie dir ab!'
-  },
-  {
-    title: '🧠 Memory-Training!',
-    body: 'Bist du bereit für die 10-Paare Meister-Herausforderung? Teste jetzt dein Gedächtnis!'
-  },
-  {
-    title: '🤖 Minimax will eine Revanche!',
-    body: 'Die unbesiegbare Minimax KI wartet auf dich im Tic-Tac-Toe!'
-  },
-  {
-    title: '⚡ Neon Snake Speed-Run!',
-    body: 'Kannst du heute die 100-Punkte-Marke knacken und die goldene Schlange freischalten?'
-  },
-  {
-    title: '🧱 Cyber Bricks Laser-Show!',
-    body: 'Neue Laser-Kanonen & Power-ups warten auf dich im Breakout-Modus!'
-  },
-  {
-    title: '🍄 Super Mario Run ruft!',
-    body: 'Der Münzen-Magnet und der Hover-Sprung warten auf deinen nächsten Run!'
-  },
-  {
-    title: '✊🖐️✌️ Markov KI Duell!',
-    body: 'Die Vorhersage-KI analysiert deine Züge... Schaffst du eine 5er-Serie in RPSLS?'
-  },
-  {
-    title: '🏆 Trophäen-Jagd!',
-    body: 'Schau vorbei und schalte noch heute die nächste Arcade-Errungenschaft frei!'
-  }
-];
+const TIER_NOTIFICATIONS = {
+  tier1: [
+    { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Schnapp dir ein schnelles Duell in Mario Kart oder Snake.' },
+    { title: '⚡ Quick-Match Bereit!', body: 'Kurze Pause? Knacke jetzt den nächsten Highscore in Neon Snake!' },
+    { title: '🤖 Minimax KI wartet!', body: 'Traust du dich an eine schnelle Runde Tic-Tac-Toe auf Meister-Stufe?' }
+  ],
+  tier2: [
+    { title: '🔋 Arcade-Energie wieder 100%!', body: 'Deine Energie ist voll aufgeladen! Zeit für eine Runde Super Mario Run.' },
+    { title: '🧠 Gehirnjogging-Zeit!', body: 'Trainiere dein Gedächtnis: Schaffst du das 10-Paare Memory Matrix in unter 15 Zügen?' },
+    { title: '🧱 Laser-Power freigeschaltet!', body: 'In Cyber Bricks wartet der 3x Multi-Ball & Laser-Modus auf deinen Einsatz!' }
+  ],
+  tier3: [
+    { title: '🏎️ Rivalen-Alarm auf der Rennstrecke!', body: 'Deine Gegner trainieren heimlich in Mario Kart... Zeig ihnen, wer der Champion ist!' },
+    { title: '🍄 Lucky Drop & Gold-Pilz!', body: 'In Super Mario Run sind gerade goldene Bonus-Münzen aktiviert! Hol sie dir!' },
+    { title: '🔮 Markov KI fordert dich heraus!', body: 'Die KI glaubt, deine nächsten Züge zu kennen... Schaffst du eine 5er-Serie in RPSLS?' }
+  ],
+  tier24: [
+    { title: '🎁 Täglicher Schatzkammer-Bonus!', body: 'Deine +500 Gratis-Münzen stehen bereit! Komm vorbei und hol dir deine Belohnung ab.' },
+    { title: '👑 VIP-Tresor Zinsen sind da!', body: 'Dein Arcade-Konto hat neue Zinsen erwirtschaftet. Jetzt abholen und Bestleistungen aufstellen!' },
+    { title: '🔥 Tages-Streak halten!', body: 'Spiele heute deine tägliche Runde, um deine Siegesserie und Trophäen zu sichern!' }
+  ]
+};
 
-function sendRandomReminderNotification() {
-  const reminder = ARCADE_REMINDERS[Math.floor(Math.random() * ARCADE_REMINDERS.length)];
-  sendArcadeNotification(reminder.title, reminder.body, 'icon-192.png', 'arcade-reminder');
+function triggerTierNotification(tierKey) {
+  const list = TIER_NOTIFICATIONS[tierKey] || TIER_NOTIFICATIONS.tier1;
+  const item = list[Math.floor(Math.random() * list.length)];
+  sendArcadeNotification(item.title, item.body, 'icon-192.png', 'arcade-' + tierKey);
 }
 
-const ONE_HOUR_MS = 60 * 60 * 1000;
+function sendRandomReminderNotification() {
+  triggerTierNotification('tier1');
+}
 
-function checkHourlyNotification() {
+function checkDynamicAutomations() {
   const now = Date.now();
+  const ONE_HOUR = 60 * 60 * 1000;
+  const TWO_HOURS = 2 * ONE_HOUR;
+  const THREE_HOURS = 3 * ONE_HOUR;
+  const ONE_DAY = 24 * ONE_HOUR;
+
   if (!appState.lastHourlyReminder) {
     appState.lastHourlyReminder = now;
     saveState();
     return;
   }
 
-  // If 1 full hour has passed since the last reminder, send an automatic reminder
-  if (now - appState.lastHourlyReminder >= ONE_HOUR_MS) {
+  const elapsed = now - appState.lastHourlyReminder;
+
+  if (elapsed >= ONE_DAY) {
     appState.lastHourlyReminder = now;
     saveState();
-    sendRandomReminderNotification();
+    triggerTierNotification('tier24');
+  } else if (elapsed >= THREE_HOURS) {
+    appState.lastHourlyReminder = now;
+    saveState();
+    triggerTierNotification('tier3');
+  } else if (elapsed >= TWO_HOURS) {
+    appState.lastHourlyReminder = now;
+    saveState();
+    triggerTierNotification('tier2');
+  } else if (elapsed >= ONE_HOUR) {
+    appState.lastHourlyReminder = now;
+    saveState();
+    triggerTierNotification('tier1');
   }
 }
 
 // Background & foreground check: runs every 30 seconds
-setInterval(checkHourlyNotification, 30 * 1000);
+setInterval(checkDynamicAutomations, 30 * 1000);
 
 // Check immediately on tab focus / wake up
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
-    checkHourlyNotification();
+    checkDynamicAutomations();
   }
 });
-window.addEventListener('focus', checkHourlyNotification);
+window.addEventListener('focus', checkDynamicAutomations);
 
 /* ==========================================================================
    3. 3D PHYSICS CONFETTI & MONEY SHOWER ENGINE
@@ -2020,6 +2021,21 @@ function initSettings() {
     });
   }
 
+  const bindTierBtn = (id, tierKey) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', () => {
+        SFX.powerup();
+        triggerTierNotification(tierKey);
+      });
+    }
+  };
+
+  bindTierBtn('settings-test-tier1-btn', 'tier1');
+  bindTierBtn('settings-test-tier2-btn', 'tier2');
+  bindTierBtn('settings-test-tier3-btn', 'tier3');
+  bindTierBtn('settings-test-tier24-btn', 'tier24');
+
   const settingsTestReminderBtn = document.getElementById('settings-test-reminder-btn');
   if (settingsTestReminderBtn) {
     settingsTestReminderBtn.addEventListener('click', () => {
@@ -2371,6 +2387,21 @@ function initAdminConsole() {
       }
     });
   }
+
+  const bindAdminTierBtn = (id, tierKey) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', () => {
+        SFX.powerup();
+        triggerTierNotification(tierKey);
+      });
+    }
+  };
+
+  bindAdminTierBtn('admin-test-tier1-btn', 'tier1');
+  bindAdminTierBtn('admin-test-tier2-btn', 'tier2');
+  bindAdminTierBtn('admin-test-tier3-btn', 'tier3');
+  bindAdminTierBtn('admin-test-tier24-btn', 'tier24');
 
   const testReminderBtn = document.getElementById('admin-test-reminder-btn');
   if (testReminderBtn) {
