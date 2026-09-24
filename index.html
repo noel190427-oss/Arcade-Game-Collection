@@ -1115,6 +1115,7 @@
             <div style="margin-bottom: 10px;">
               <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">⚡ Schnell-Vorlagen (Presets):</label>
               <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="secondary-button btn-small" id="preset-broadcast-pre-update" style="font-size: 0.75rem; border-color: #f59e0b; color: #fbbf24;">⚡ Vorab-Update Ankündigung</button>
                 <button class="secondary-button btn-small" id="preset-broadcast-tournament" style="font-size: 0.75rem;">🏎️ Mario-Kart Turnier</button>
                 <button class="secondary-button btn-small" id="preset-broadcast-coins" style="font-size: 0.75rem;">🪙 Doppel-Münzen Event</button>
                 <button class="secondary-button btn-small" id="preset-broadcast-boss" style="font-size: 0.75rem;">👑 Noel Highscore-Alarm</button>
@@ -1126,6 +1127,10 @@
               <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">✍️ Eigene Nachricht eingeben:</label>
               <input type="text" id="admin-broadcast-custom-text" class="custom-text-input" placeholder="👑 Admin Noel ruft zum großen Turnier auf!" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--accent-primary); background: rgba(0,0,0,0.4); color: #fff; box-sizing: border-box;" />
             </div>
+
+            <button class="primary-button full-width" id="admin-broadcast-pre-update-btn" style="background: linear-gradient(135deg, #f59e0b, #ef4444); font-size: 1rem; padding: 12px; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); border: none; cursor: pointer;">
+              <span>⚡</span> <strong>Vorab-Update Ankündigung an ALLE Geräte senden (Vor dem Upload)</strong>
+            </button>
 
             <button class="primary-button full-width" id="admin-send-global-broadcast-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); font-size: 1rem; padding: 12px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4); border: none; cursor: pointer;">
               <span>📢</span> <strong>Test-Benachrichtigung an ALLE Geräte senden</strong>
@@ -1140,11 +1145,14 @@
               <button class="primary-button vip-gold-btn" id="admin-test-notif-btn">
                 <span>🔔</span> <strong>Direkter VIP Test-Push</strong>
               </button>
+              <button class="secondary-button" id="admin-test-pre-update-btn" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.3)); border-color: #f59e0b; color: #fbbf24;">
+                <span>⚡</span> <strong>Vorab-Push</strong>
+              </button>
               <button class="secondary-button" id="admin-test-update-btn" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(139, 92, 246, 0.3)); border-color: #38bdf8; color: #fff;">
-                <span>🚀</span> <strong>Update-Push simulieren</strong>
+                <span>🚀</span> <strong>Update-Push</strong>
               </button>
               <button class="secondary-button" id="admin-test-tier1-btn">
-                <span>⏰</span> <strong>Stufe 1: 1 Std. (Pause)</strong>
+                <span>⏰</span> <strong>1 Std. (Pause)</strong>
               </button>
             </div>
             <div class="admin-btn-row">
@@ -1306,6 +1314,9 @@
               <button class="primary-button vip-gold-btn btn-small" id="settings-test-notif-btn" style="flex: 1; min-width: 110px;">
                 <span>🔔</span> <strong>Test-Push</strong>
               </button>
+              <button class="secondary-button btn-small" id="settings-test-pre-update-btn" style="flex: 1; min-width: 110px; background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fbbf24;">
+                <span>⚡</span> <strong>Vorab-Update</strong>
+              </button>
               <button class="secondary-button btn-small" id="settings-test-update-btn" style="flex: 1; min-width: 110px; background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #fff;">
                 <span>🚀</span> <strong>Update-Push</strong>
               </button>
@@ -1399,29 +1410,34 @@
       <div class="modal-card">
         <div class="modal-header">
           <div class="admin-title-row">
-            <span style="font-size: 1.8rem;">✨</span>
+            <span style="font-size: 1.8rem;">⚡</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.33?</h2>
-              <small>Noel Arcade Universe • Automatische Update-Benachrichtigungs Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.34?</h2>
+              <small>Noel Arcade Universe • Vorab-Update Ankündigungs & Live-Push Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
+          <div class="changelog-item" style="border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.5), rgba(239, 68, 68, 0.5)); border-color: #f59e0b; color: #fbbf24;">⚡ VORAB-UPDATE BENACHRICHTIGUNG (VOR DEM UPLOAD)</div>
+            <strong>Benachrichtigungen erscheinen jetzt schon VOR dem Einspielen des Updates!</strong>
+            <p>Wenn ein neues Update ansteht, sendet die Arcade eine weltweite Vorab-Ankündigung an alle Spieler („Achtung: Gleich wird ein neues Update hochgeladen, bitte Spielstand sichern!“). So verpasst niemand mehr die neuesten Spiele und Features!</p>
+          </div>
           <div class="changelog-item" style="border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">✨ AUTOMATISCHE UPDATE-BENACHRICHTIGUNG</div>
-            <strong>Erhalte sofort eine passende Benachrichtigung bei jedem neuen Update!</strong>
-            <p>Sobald eine neue Version der Arcade veröffentlicht wird, schickt dir die App eine passende Benachrichtigung mit Versionsnummer und Neuerungen direkt auf den Bildschirm. Mit 1 Klick auf die Benachrichtigung oder den Toast öffnet sich sofort das „Was ist neu?“-Fenster!</p>
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">🚀 AUTOMATISCHE ECHTZEIT-UPDATE-ERKENNUNG</div>
+            <strong>Echtzeit-Meldung beim Finden neuer Updates im Hintergrund</strong>
+            <p>Sobald der Browser im Hintergrund ein neues Update herunterlädt, warnt die Arcade sofort mit einem Vorab-Banner und bietet einen direkten Schnell-Aktualisieren-Knopf an.</p>
+          </div>
+          <div class="changelog-item" style="border: 1px solid #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(139, 92, 246, 0.5)); border-color: #ec4899; color: #f472b6;">📢 VIP ADMIN VORAB-UPDATE BROADCAST</div>
+            <strong>1-Klick Ankündigung vor dem Hochladen an ALLE Geräte weltweit</strong>
+            <p>In der VIP Admin-Konsole (Reiter: Benachrichtigungen) gibt es jetzt den orangen Button „Vorab-Update Ankündigung an ALLE Geräte senden“, um Updates sofort weltweit anzukündigen.</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📴 HINTERGRUND-PUSH BEI GESCHLOSSENER APP</div>
-            <strong>Benachrichtigungen kommen jetzt an, auch wenn die App geschlossen ist!</strong>
-            <p>Dank modernem Periodic Background Sync und Web Push API im Service Worker wacht die Arcade im Hintergrund auf deinem Windows-PC, Android-Smartphone oder iPhone selbstständig auf und schickt dir automatische Erinnerungen (nach 1h, 2h, 3h, 24h & Live Broadcasts)!</p>
-          </div>
-          <div class="changelog-item" style="border: 1px solid #ec4899; background: rgba(236, 72, 153, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(139, 92, 246, 0.5)); border-color: #ec4899; color: #f472b6;">🌍 GLOBALER GERÄTE-BROADCAST</div>
-            <strong>Live-Benachrichtigungen an ALLE verbundenen Geräte gleichzeitig senden</strong>
-            <p>Neuer Broadcast-Button im Admin-Panel (Reiter: Benachrichtigungen) und in den Einstellungen! Sende mit 1 Klick Live-Meldungen, Turnier-Starts und Event-Ankündigungen an alle Computer, Handys und Tablets aller Spieler weltweit.</p>
+            <strong>Benachrichtigungen kommen an, auch wenn die App geschlossen ist</strong>
+            <p>Dank modernem Periodic Background Sync und Web Push API im Service Worker wacht die Arcade im Hintergrund auf deinem Windows-PC, Android-Smartphone oder iPhone selbstständig auf.</p>
           </div>
           <div class="changelog-item" style="border: 1px solid var(--accent-secondary); background: rgba(6, 182, 212, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.4)); border-color: var(--accent-secondary); color: #38bdf8;">⏱️ 4-STUFEN ZEIT-AUTOMATISIERUNG</div>
@@ -1504,7 +1520,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.33"></script>
-    <script src="script.js?v=0.0.33"></script>
+    <script src="paho-mqtt.js?v=0.0.34"></script>
+    <script src="script.js?v=0.0.34"></script>
   </body>
 </html>
