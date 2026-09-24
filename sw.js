@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.36-swipe-support';
+const CACHE_NAME = 'arcade-collection-v0.0.38-2000coins-reward';
 const APP_SHELL = [
   './',
   './index.html',
@@ -55,13 +55,13 @@ self.addEventListener('fetch', (event) => {
 });
 
 /* ==========================================================================
-   BACKGROUND PUSH & PERIODIC SYNC (WORKS WHEN PHONE IS LOCKED / APP CLOSED)
+   BACKGROUND PUSH & PERIODIC SYNC WITH 2000 COINS ACTION BUTTON
    ========================================================================== */
 const TIER_MESSAGES = [
-  { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Schnapp dir ein schnelles Duell in Mario Kart oder Snake.' },
-  { title: '🔋 Arcade-Energie wieder 100%!', body: 'Deine Energie ist voll aufgeladen! Zeit für eine Runde Super Mario Run.' },
-  { title: '🏎️ Rivalen-Alarm auf der Rennstrecke!', body: 'Deine Gegner trainieren in Mario Kart... Zeig ihnen, wer der Champion ist!' },
-  { title: '🎁 Täglicher Schatzkammer-Bonus!', body: 'Deine +500 Gratis-Münzen stehen bereit! Komm vorbei und hol dir deine Belohnung ab.' }
+  { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Tippe auf den Button und hol dir +2.000 Coins!' },
+  { title: '🔋 Arcade-Energie wieder 100%!', body: 'Deine Energie ist voll aufgeladen! Schnapp dir deine +2.000 Coins und spiele eine Runde.' },
+  { title: '🏎️ Rivalen-Alarm auf der Rennstrecke!', body: 'Deine Gegner trainieren in Mario Kart... Hol dir deine +2.000 Bonus-Coins ab!' },
+  { title: '🎁 Täglicher Schatzkammer-Bonus!', body: 'Deine +2.000 Gratis-Münzen stehen bereit! Tippe auf den Button und hol dir deine Belohnung!' }
 ];
 
 function getRandomTierNotification() {
@@ -76,7 +76,10 @@ function getRandomTierNotification() {
       tag: 'arcade-background-reminder',
       renotify: true,
       requireInteraction: true,
-      data: { url: './' }
+      actions: [
+        { action: 'claim_2000_coins', title: '🎁 +2.000 Coins abholen' }
+      ],
+      data: { url: './?claim=2000_coins', reward: 2000 }
     }
   };
 }
@@ -105,14 +108,17 @@ self.addEventListener('sync', (event) => {
 self.addEventListener('push', (event) => {
   let title = '🎮 Noel Arcade Universe';
   let options = {
-    body: 'Es gibt Neuigkeiten in deiner Arcade!',
+    body: 'Es gibt Neuigkeiten in deiner Arcade! Tippe hier für +2.000 Coins!',
     icon: './icon-192.png',
     badge: './icon-192.png',
     vibrate: [300, 150, 300, 150, 400],
     tag: 'arcade-remote-push-' + Date.now(),
     renotify: true,
     requireInteraction: true,
-    data: { url: './' }
+    actions: [
+      { action: 'claim_2000_coins', title: '🎁 +2.000 Coins abholen' }
+    ],
+    data: { url: './?claim=2000_coins', reward: 2000 }
   };
 
   if (event.data) {
@@ -122,6 +128,12 @@ self.addEventListener('push', (event) => {
       if (payload.body) options.body = payload.body;
       if (payload.icon) options.icon = payload.icon;
       if (payload.tag) options.tag = payload.tag;
+      if (Array.isArray(payload.actions) && payload.actions.length > 0) {
+        options.actions = payload.actions;
+      }
+      if (payload.data) {
+        options.data = payload.data;
+      }
     } catch (e) {
       options.body = event.data.text();
     }
@@ -132,18 +144,28 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// 4. Notification Click Handling (focuses or opens app)
+// 4. Notification Click & Action Button Handling (wakes app, focuses window, and awards 2000 coins)
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
+  const isClaimAction = event.action === 'claim_2000_coins';
+  const targetUrl = './?claim=2000_coins&t=' + Date.now();
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
         if (client.url && 'focus' in client) {
+          client.postMessage({
+            type: 'CLAIM_2000_COINS',
+            amount: 2000,
+            action: event.action || 'click',
+            title: event.notification.title || 'Benachrichtigung'
+          });
           return client.focus();
         }
       }
       if (clients.openWindow) {
-        return clients.openWindow('./');
+        return clients.openWindow(targetUrl);
       }
     })
   );
