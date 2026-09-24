@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.27-apple-guide';
+const CACHE_NAME = 'arcade-collection-v0.0.28-ios-support';
 const APP_SHELL = [
   './',
   './index.html',
