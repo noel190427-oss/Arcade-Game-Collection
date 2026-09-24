@@ -890,6 +890,7 @@
           <button class="admin-tab-btn" data-admin-tab="physics">⚡ Physik & Engine</button>
           <button class="admin-tab-btn" data-admin-tab="aidebug">🤖 KI & Debugger</button>
           <button class="admin-tab-btn" data-admin-tab="soundboard">🎹 VIP Soundboard</button>
+          <button class="admin-tab-btn" data-admin-tab="notifications">🔔 Benachrichtigungen</button>
         </div>
 
         <!-- TAB 1: VIP BANK & MONEY GENERATOR -->
@@ -1099,11 +1100,13 @@
               <button class="soundboard-pad" data-sound-test="explosion">💥 Explosion</button>
             </div>
           </div>
+        </div>
 
-          <!-- PUSH NOTIFICATIONS TEST & REMINDER CONTROL IN ADMIN PANEL -->
+        <!-- TAB 6: NOTIFICATIONS & REMINDER CONTROL -->
+        <div class="admin-tab-content hidden" id="admin-tab-notifications">
           <div class="admin-box">
             <h3>🔔 Benachrichtigungs-Zentrale & Test-Konsole</h3>
-            <p class="admin-desc">Sende sofortige Test-Benachrichtigungen oder simuliere 1-Stunden-Erinnerungen.</p>
+            <p class="admin-desc">Sende sofortige Test-Benachrichtigungen, simuliere 1-Stunden-Erinnerungen oder teste Trophäen-Meldungen.</p>
             <div class="admin-btn-row">
               <button class="primary-button vip-gold-btn" id="admin-test-notif-btn">
                 <span>🔔</span> <strong>Test-Benachrichtigung senden</strong>
@@ -1114,6 +1117,16 @@
               <button class="secondary-button" id="admin-test-trophy-notif-btn">
                 <span>🏆</span> <strong>Trophäen-Alarm testen</strong>
               </button>
+            </div>
+          </div>
+
+          <!-- Apple & Windows Info Card in Admin -->
+          <div class="admin-box" style="margin-top: 14px;">
+            <h3>📱 Geräte-Einstellungen (Apple & Windows)</h3>
+            <p class="admin-desc">So richtest du Benachrichtigungen auf allen Geräten ein:</p>
+            <div style="font-size: 0.84rem; line-height: 1.6; color: var(--text-main); background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px;">
+              <strong style="color: #38bdf8;">🪟 Windows (Google Chrome):</strong> In Chrome Schloss 🔒 klicken ➔ Benachrichtigungen auf „Zulassen“. In Windows-Einstellungen ➔ Benachrichtigungen ➔ Google Chrome auf „Ein“.<br/><br/>
+              <strong style="color: #facc15;">🍏 Apple iPhone & iPad (iOS):</strong> In Safari unten auf Teilen <strong>[ 📤 ]</strong> tippen ➔ <strong>„Zum Home-Bildschirm“ ➕</strong> ➔ Arcade-App vom Home-Bildschirm öffnen ➔ ⚙️ Einstellungen ➔ Benachrichtigungen erlauben!
             </div>
           </div>
         </div>
@@ -1245,6 +1258,31 @@
               <input type="checkbox" id="notifications-toggle" />
               <span class="toggle-slider"></span>
             </label>
+          </div>
+
+          <!-- Direct Test Buttons & Apple iPhone Quick Setup Box in Settings -->
+          <div class="setting-group" style="background: rgba(139, 92, 246, 0.08); border: 1px solid var(--accent-primary); border-radius: 10px; padding: 12px; margin-top: 10px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="primary-button vip-gold-btn btn-small" id="settings-test-notif-btn" style="flex: 1; min-width: 140px;">
+                <span>🔔</span> <strong>Test-Push senden</strong>
+              </button>
+              <button class="secondary-button btn-small" id="settings-test-reminder-btn" style="flex: 1; min-width: 140px;">
+                <span>⏰</span> <strong>1-Std. Reminder testen</strong>
+              </button>
+            </div>
+            
+            <button class="ghost-button btn-small full-width" id="toggle-apple-help-btn" style="margin-top: 10px; text-align: center; border: 1px dashed var(--accent-secondary); color: #38bdf8;">
+              📱 Wie aktiviere ich es auf dem Apple iPhone? (Hier klicken)
+            </button>
+
+            <div id="apple-help-box" class="hidden" style="margin-top: 10px; font-size: 0.82rem; line-height: 1.5; color: var(--text-main); background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px;">
+              <strong style="color: #facc15;">🍏 Apple iPhone Anleitung (iOS 16.4+):</strong><br/>
+              <strong>1.</strong> Öffne diese Seite in <strong>Safari</strong> auf deinem iPhone.<br/>
+              <strong>2.</strong> Tippe unten auf den Teilen-Knopf <strong>[ 📤 ]</strong> (Viereck mit Pfeil nach oben).<br/>
+              <strong>3.</strong> Scrolle etwas runter und wähle <strong>„Zum Home-Bildschirm“ ➕</strong>.<br/>
+              <strong>4.</strong> Öffne jetzt die neue <strong>Noel Arcade App</strong> vom iPhone Home-Bildschirm.<br/>
+              <strong>5.</strong> Klicke auf ⚙️ Einstellungen, schalte 🔔 Benachrichtigungen an und tippe auf <strong>„Erlauben“</strong>!
+            </div>
           </div>
 
           <!-- App Reload / Force Refresh Button (For 65% Keyboards without F5) -->
@@ -1384,7 +1422,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.26"></script>
-    <script src="script.js?v=0.0.26"></script>
+    <script src="paho-mqtt.js?v=0.0.27"></script>
+    <script src="script.js?v=0.0.27"></script>
   </body>
 </html>
