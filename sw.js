@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.31-broadcast-all';
+const CACHE_NAME = 'arcade-collection-v0.0.32-background-push';
 const APP_SHELL = [
   './',
   './index.html',
@@ -54,7 +54,80 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Push & Local Notification Click Handling
+/* ==========================================================================
+   BACKGROUND PUSH & PERIODIC SYNC (WORKS WHEN APP IS CLOSED)
+   ========================================================================== */
+const TIER_MESSAGES = [
+  { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Schnapp dir ein schnelles Duell in Mario Kart oder Snake.' },
+  { title: '🔋 Arcade-Energie wieder 100%!', body: 'Deine Energie ist voll aufgeladen! Zeit für eine Runde Super Mario Run.' },
+  { title: '🏎️ Rivalen-Alarm auf der Rennstrecke!', body: 'Deine Gegner trainieren in Mario Kart... Zeig ihnen, wer der Champion ist!' },
+  { title: '🎁 Täglicher Schatzkammer-Bonus!', body: 'Deine +500 Gratis-Münzen stehen bereit! Komm vorbei und hol dir deine Belohnung ab.' }
+];
+
+function getRandomTierNotification() {
+  const item = TIER_MESSAGES[Math.floor(Math.random() * TIER_MESSAGES.length)];
+  return {
+    title: item.title,
+    options: {
+      body: item.body,
+      icon: './icon-192.png',
+      badge: './icon-192.png',
+      vibrate: [200, 100, 200],
+      tag: 'arcade-background-reminder',
+      renotify: true,
+      data: { url: './' }
+    }
+  };
+}
+
+// 1. Periodic Background Sync (runs in background even when browser/app is closed)
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'arcade-hourly-check' || event.tag === 'arcade-reminder' || event.tag === 'arcade-daily-bonus') {
+    const notif = getRandomTierNotification();
+    event.waitUntil(
+      self.registration.showNotification(notif.title, notif.options)
+    );
+  }
+});
+
+// 2. Background Sync fallback
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'arcade-background-check') {
+    const notif = getRandomTierNotification();
+    event.waitUntil(
+      self.registration.showNotification(notif.title, notif.options)
+    );
+  }
+});
+
+// 3. Web Push API Event (receives remote push notifications while app is closed)
+self.addEventListener('push', (event) => {
+  let title = '🎮 Noel Arcade Universe';
+  let options = {
+    body: 'Es wird Zeit für eine neue Runde!',
+    icon: './icon-192.png',
+    badge: './icon-192.png',
+    vibrate: [200, 100, 200],
+    data: { url: './' }
+  };
+
+  if (event.data) {
+    try {
+      const payload = event.data.json();
+      if (payload.title) title = payload.title;
+      if (payload.body) options.body = payload.body;
+      if (payload.icon) options.icon = payload.icon;
+    } catch (e) {
+      options.body = event.data.text();
+    }
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// 4. Notification Click Handling (focuses or opens app)
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
