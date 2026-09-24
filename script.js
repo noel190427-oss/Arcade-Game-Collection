@@ -831,6 +831,71 @@ function handleNotificationNotSupported() {
   }
 }
 
+/* ==========================================================================
+   2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS)
+   ========================================================================== */
+const CURRENT_APP_VERSION = 'v0.0.33';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.33 ist da! Automatische Update-Benachrichtigungen mit passendem Text sind ab jetzt aktiv!';
+
+function checkForNewAppUpdate(isManualTest = false) {
+  const lastSeenVersion = localStorage.getItem('arcade_last_seen_version');
+
+  if (isManualTest || (lastSeenVersion && lastSeenVersion !== CURRENT_APP_VERSION)) {
+    localStorage.setItem('arcade_last_seen_version', CURRENT_APP_VERSION);
+    saveState();
+
+    sendArcadeNotification(
+      '✨ Neues Update ' + CURRENT_APP_VERSION + ' verfügbar!',
+      'Noel Arcade wurde aktualisiert: ' + CURRENT_APP_UPDATE_SUMMARY,
+      'icon-192.png',
+      'arcade-update-alert'
+    );
+
+    showUpdateBannerToast(CURRENT_APP_VERSION, CURRENT_APP_UPDATE_SUMMARY);
+  } else if (!lastSeenVersion) {
+    localStorage.setItem('arcade_last_seen_version', CURRENT_APP_VERSION);
+  }
+}
+
+function showUpdateBannerToast(version, summary) {
+  const toast = document.createElement('div');
+  toast.className = 'install-toast';
+  toast.style.borderColor = '#38bdf8';
+  toast.style.background = 'linear-gradient(135deg, rgba(2, 132, 199, 0.35), rgba(6, 182, 212, 0.35))';
+  toast.style.boxShadow = '0 8px 32px rgba(6, 182, 212, 0.45)';
+  toast.innerHTML = `
+    <div class="install-toast-content">
+      <span style="font-size: 2.2rem; filter: drop-shadow(0 0 8px #38bdf8);">🚀</span>
+      <div>
+        <strong style="color: #38bdf8; font-size: 0.98rem;">✨ Neues Update ${version} verfügbar!</strong>
+        <p style="margin: 3px 0 0; color: #fff; font-size: 0.88rem; line-height: 1.4;">${summary}</p>
+        <button id="toast-open-whats-new-btn" class="primary-button btn-small" style="margin-top: 8px; font-size: 0.8rem; padding: 4px 10px; background: linear-gradient(135deg, #0284c7, #06b6d4);">
+          📄 Was ist neu ansehen
+        </button>
+      </div>
+    </div>
+    <button class="ghost-button btn-small" id="dismiss-update-toast-btn" style="margin-left: 8px;">✕</button>
+  `;
+  document.body.appendChild(toast);
+  SFX.achievement();
+  triggerConfetti(70, true);
+
+  toast.querySelector('#toast-open-whats-new-btn')?.addEventListener('click', () => {
+    document.getElementById('whats-new-modal')?.classList.remove('hidden');
+    toast.remove();
+  });
+  toast.querySelector('#dismiss-update-toast-btn')?.addEventListener('click', () => toast.remove());
+
+  setTimeout(() => {
+    if (toast.parentElement) {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(20px)';
+      toast.style.transition = 'all 0.4s ease';
+      setTimeout(() => toast.remove(), 400);
+    }
+  }, 10000);
+}
+
 function checkDailyBonus() {
   const now = Date.now();
   const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -2235,6 +2300,14 @@ function initSettings() {
     });
   }
 
+  const settingsTestUpdateBtn = document.getElementById('settings-test-update-btn');
+  if (settingsTestUpdateBtn) {
+    settingsTestUpdateBtn.addEventListener('click', () => {
+      SFX.achievement();
+      checkForNewAppUpdate(true);
+    });
+  }
+
   const toggleAppleHelpBtn = document.getElementById('toggle-apple-help-btn');
   const appleHelpBox = document.getElementById('apple-help-box');
   if (toggleAppleHelpBtn && appleHelpBox) {
@@ -2612,6 +2685,14 @@ function initAdminConsole() {
         'icon-192.png',
         'admin-trophy-test'
       );
+    });
+  }
+
+  const testUpdateNotifBtn = document.getElementById('admin-test-update-btn');
+  if (testUpdateNotifBtn) {
+    testUpdateNotifBtn.addEventListener('click', () => {
+      SFX.achievement();
+      checkForNewAppUpdate(true);
     });
   }
 
@@ -4695,6 +4776,19 @@ function initPWA() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').then((reg) => {
+        // Listen for new service worker updates in real time
+        reg.onupdatefound = () => {
+          const installingWorker = reg.installing;
+          if (installingWorker) {
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New update is ready and waiting
+                checkForNewAppUpdate(true);
+              }
+            };
+          }
+        };
+
         // Register periodic background sync so notifications arrive even when app is closed
         if ('periodicSync' in reg) {
           navigator.permissions?.query({ name: 'periodic-background-sync' }).then((status) => {
@@ -6285,5 +6379,6 @@ window.addEventListener('DOMContentLoaded', () => {
     if (appState.notificationsEnabled !== false) appState.notificationsEnabled = true;
   }
   checkDailyBonus();
+  checkForNewAppUpdate();
 });
 
