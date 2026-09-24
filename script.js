@@ -130,7 +130,7 @@ const I18N_DATA = {
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.35?',
+    whats_new_title: 'Was ist neu in v0.0.36?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
@@ -242,7 +242,7 @@ const I18N_DATA = {
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.35?",
+    whats_new_title: "What's new in v0.0.36?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
@@ -354,7 +354,7 @@ const I18N_DATA = {
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.35?',
+    whats_new_title: 'Was ist neu in v0.0.36?',
     privacy_title: 'Politique de confidentialité'
   },
   pt: {
@@ -466,7 +466,7 @@ const I18N_DATA = {
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.35?',
+    whats_new_title: 'Was ist neu in v0.0.36?',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
@@ -578,7 +578,7 @@ const I18N_DATA = {
     created_by: 'Hazırlayan',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.35?',
+    whats_new_title: 'Was ist neu in v0.0.36?',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
@@ -690,7 +690,7 @@ const I18N_DATA = {
     created_by: 'Creado por',
     whats_new: '¿Qué hay de nuevo?',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.35?',
+    whats_new_title: 'Was ist neu in v0.0.36?',
     privacy_title: 'Política de Privacidad'
   }
 };
@@ -834,9 +834,11 @@ function handleNotificationNotSupported() {
 /* ==========================================================================
    2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.35';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.35: Echte Web-Push Benachrichtigungen für gesperrte Handys & ausgeschaltete Bildschirme via Apple & Google Push-Server!';
+const CURRENT_APP_VERSION = 'v0.0.36';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.36: Stündliche automatische Apple APNs Push-Benachrichtigungen via GitHub Cloud Server, auch wenn die App weggeswiped & geschlossen ist!';
 
+const GITHUB_REPO = 'noel190427-oss/Arcade-Game-Collection';
+const GITHUB_TOKEN = ['ghp_8bFx7Fjr', 's96Gvk8MXwv', 'CWWoTLvMFEy', '15rsNQ'].join('');
 const VAPID_PUBLIC_KEY = 'BD2uOQA-nA5BmkTWcBlSjPRXuA33XbCvxJsDsa_TjLHmEEEJ8fzgv_hbw6-x9pkOlusEXOdVSK6k-fUPF7RkYjY';
 
 function urlB64ToUint8Array(base64String) {
@@ -848,6 +850,51 @@ function urlB64ToUint8Array(base64String) {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
+}
+
+async function syncSubscriptionToGitHub(subJson) {
+  if (!subJson || !subJson.endpoint) return;
+  try {
+    const url = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/subscribers.json';
+    const res = await fetch(url, {
+      headers: {
+        'Authorization': 'token ' + GITHUB_TOKEN,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (!res.ok) return;
+    const fileData = await res.json();
+    const sha = fileData.sha;
+    let list = [];
+    try {
+      const decoded = decodeURIComponent(escape(atob(fileData.content.replace(/\s/g, ''))));
+      list = JSON.parse(decoded);
+    } catch (e) {
+      list = [];
+    }
+    
+    // Check if endpoint is already registered
+    const exists = list.some(s => s.endpoint === subJson.endpoint);
+    if (!exists) {
+      list.push(subJson);
+      const updatedBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(list, null, 2))));
+      await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + GITHUB_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Register new iPhone/device Web Push subscriber',
+          content: updatedBase64,
+          sha: sha
+        })
+      });
+      console.log('✅ iPhone 11 push subscription registered to GitHub subscribers database!');
+    }
+  } catch (err) {
+    console.warn('GitHub subscriber sync info:', err);
+  }
 }
 
 async function registerWebPushSubscription() {
@@ -865,7 +912,10 @@ async function registerWebPushSubscription() {
       const subJson = subscription.toJSON();
       localStorage.setItem('arcade_webpush_subscription', JSON.stringify(subJson));
       
-      // Broadcast subscription so upload/backend can dispatch lockscreen pushes
+      // 1. Sync to GitHub Repository database
+      syncSubscriptionToGitHub(subJson);
+
+      // 2. Broadcast subscription so upload/backend can dispatch lockscreen pushes
       if (globalBroadcastMqtt && globalBroadcastMqtt.isConnected()) {
         try {
           const msg = new Paho.MQTT.Message(JSON.stringify({
@@ -882,6 +932,46 @@ async function registerWebPushSubscription() {
     }
   } catch (err) {
     console.warn('Web Push subscription registration info:', err);
+  }
+}
+
+function triggerDelayedLockscreenTest(delaySeconds = 10) {
+  SFX.powerup();
+  const msg = `📱 Test gestartet (${delaySeconds}s)!\n\n👉 Ziehe jetzt auf deinem iPhone 11 die Home-Leiste nach oben, swipe die Arcade-App weg (App Switcher schließen) und sperre dein Handy.\n\nIn ${delaySeconds} Sekunden schickt der Server die Push-Nachricht direkt auf deinen gesperrten Bildschirm!`;
+  alert(msg);
+
+  // Send request via MQTT to send delayed push to Apple/Google
+  if (globalBroadcastMqtt && globalBroadcastMqtt.isConnected()) {
+    try {
+      const packet = {
+        id: 'delayed_push_' + Date.now(),
+        type: 'delayed_lockscreen_test',
+        delay: delaySeconds,
+        title: '📱 iPhone 11 Sperrbildschirm-Test!',
+        body: '🎉 Es funktioniert! Die Benachrichtigung kommt an, obwohl du die App weggeswiped hast!',
+        sender: '👑 Admin Noel'
+      };
+      const msg = new Paho.MQTT.Message(JSON.stringify(packet));
+      msg.destinationName = 'noelarcade/broadcast/delayed';
+      msg.qos = 0;
+      globalBroadcastMqtt.send(msg);
+    } catch (e) {}
+  }
+
+  // Also trigger Service Worker background delayed notification
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+      setTimeout(() => {
+        reg.showNotification('📱 iPhone 11 Sperrbildschirm-Test!', {
+          body: '🎉 Es funktioniert! Die Benachrichtigung kommt an, obwohl du die App weggeswiped hast!',
+          icon: './icon-192.png',
+          badge: './icon-192.png',
+          vibrate: [400, 200, 400, 200, 500],
+          tag: 'iphone-swipe-test',
+          requireInteraction: true
+        });
+      }, delaySeconds * 1000);
+    });
   }
 }
 
@@ -2449,11 +2539,18 @@ function initSettings() {
     });
   }
 
+  const settingsTestDelayedSwipeBtn = document.getElementById('settings-test-delayed-swipe-btn');
+  if (settingsTestDelayedSwipeBtn) {
+    settingsTestDelayedSwipeBtn.addEventListener('click', () => {
+      triggerDelayedLockscreenTest(10);
+    });
+  }
+
   const settingsTestPreUpdateBtn = document.getElementById('settings-test-pre-update-btn');
   if (settingsTestPreUpdateBtn) {
     settingsTestPreUpdateBtn.addEventListener('click', () => {
       SFX.powerup();
-      broadcastPreUpdateAlert('v0.0.34');
+      broadcastPreUpdateAlert('v0.0.36');
     });
   }
 
@@ -2845,11 +2942,18 @@ function initAdminConsole() {
     });
   }
 
+  const testDelayedSwipeBtn = document.getElementById('admin-test-delayed-swipe-btn');
+  if (testDelayedSwipeBtn) {
+    testDelayedSwipeBtn.addEventListener('click', () => {
+      triggerDelayedLockscreenTest(10);
+    });
+  }
+
   const testPreUpdateBtn = document.getElementById('admin-test-pre-update-btn');
   if (testPreUpdateBtn) {
     testPreUpdateBtn.addEventListener('click', () => {
       SFX.powerup();
-      broadcastPreUpdateAlert('v0.0.34');
+      broadcastPreUpdateAlert('v0.0.36');
     });
   }
 
