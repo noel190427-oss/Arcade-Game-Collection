@@ -1970,6 +1970,59 @@ function initSettings() {
     });
   }
 
+  // Direct Test Buttons & Apple Help Toggle in Settings
+  const settingsTestNotifBtn = document.getElementById('settings-test-notif-btn');
+  if (settingsTestNotifBtn) {
+    settingsTestNotifBtn.addEventListener('click', () => {
+      SFX.powerup();
+      if (!('Notification' in window)) {
+        alert('Benachrichtigungen werden von diesem Browser nicht unterstützt.');
+        return;
+      }
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then((perm) => {
+          if (perm === 'granted') {
+            appState.notificationsEnabled = true;
+            saveState();
+            if (notifToggle) notifToggle.checked = true;
+            sendArcadeNotification(
+              '👑 VIP Admin Test-Benachrichtigung',
+              'Hallo Noel! Dein Benachrichtigungssystem funktioniert zu 100% perfekt!',
+              'icon-192.png',
+              'admin-test'
+            );
+          } else {
+            alert('Bitte erlaube Benachrichtigungen im Browser, um sie zu empfangen.');
+          }
+        });
+      } else {
+        sendArcadeNotification(
+          '👑 VIP Admin Test-Benachrichtigung',
+          'Hallo Noel! Dein Benachrichtigungssystem funktioniert zu 100% perfekt!',
+          'icon-192.png',
+          'admin-test'
+        );
+      }
+    });
+  }
+
+  const settingsTestReminderBtn = document.getElementById('settings-test-reminder-btn');
+  if (settingsTestReminderBtn) {
+    settingsTestReminderBtn.addEventListener('click', () => {
+      SFX.powerup();
+      sendRandomReminderNotification();
+    });
+  }
+
+  const toggleAppleHelpBtn = document.getElementById('toggle-apple-help-btn');
+  const appleHelpBox = document.getElementById('apple-help-box');
+  if (toggleAppleHelpBtn && appleHelpBox) {
+    toggleAppleHelpBtn.addEventListener('click', () => {
+      appleHelpBox.classList.toggle('hidden');
+      SFX.click();
+    });
+  }
+
   sparkleToggle.addEventListener('change', (e) => {
     if (!appState.isVip) {
       sparkleToggle.checked = false;
