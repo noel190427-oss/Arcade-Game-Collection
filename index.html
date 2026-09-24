@@ -1166,7 +1166,10 @@
                 <span>🎁</span> <strong>Stufe 4: 24 Std. (Schatz)</strong>
               </button>
             </div>
-            <button class="primary-button full-width btn-small" id="admin-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 10px; font-weight: bold; border: none; cursor: pointer;">
+            <button class="primary-button full-width btn-small" id="admin-test-coins-notif-btn" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; margin-top: 10px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+              <span>🎁</span> <strong>+2.000 Coins Push an ALLE Geräte weltweit senden (Mit Abhol-Button!)</strong>
+            </button>
+            <button class="primary-button full-width btn-small" id="admin-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 8px; font-weight: bold; border: none; cursor: pointer;">
               <span>📱</span> <strong>10s Sperrbildschirm-Test (iPhone 11 wegswipen)</strong>
             </button>
           </div>
@@ -1337,8 +1340,12 @@
               </button>
             </div>
 
-            <!-- Global Broadcast & Delayed Swipe Test Buttons directly in Settings -->
-            <button class="primary-button full-width btn-small" id="settings-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 8px; font-weight: bold; border: none; cursor: pointer;">
+            <!-- Global Broadcast, 2000 Coins Test & Delayed Swipe Test Buttons directly in Settings -->
+            <button class="primary-button full-width btn-small" id="settings-test-coins-notif-btn" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; margin-top: 8px; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+              <span>🎁</span> <strong>+2.000 Coins Benachrichtigung testen (Mit Abhol-Button!)</strong>
+            </button>
+
+            <button class="primary-button full-width btn-small" id="settings-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 6px; font-weight: bold; border: none; cursor: pointer;">
               <span>📱</span> <strong>10s Sperrbildschirm-Test (iPhone 11 wegswipen)</strong>
             </button>
 
@@ -1419,13 +1426,18 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">🎉</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.37?</h2>
-              <small>Noel Arcade Universe • 100% Kostenlose Benachrichtigungen für ALLE Spieler Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.38?</h2>
+              <small>Noel Arcade Universe • 2.000 Coins Benachrichtigungs-Button Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
+          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.1);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🎁 NEU: +2.000 COINS BENACHRICHTIGUNGS-BUTTON</div>
+            <strong>Erhalte +2.000 Gratis-Coins direkt aus jeder Push-Benachrichtigung!</strong>
+            <p>Jede Benachrichtigung hat jetzt einen interaktiven Button <strong>„🎁 +2.000 Coins abholen“</strong>. Sobald du auf den Button oder die Benachrichtigung tippst, öffnet sich das Spiel und schreibt dir sofort <strong>+2.000 Coins</strong> auf dein Konto gut inklusive Gold-Konfetti und Belohnungs-Feuerwerk!</p>
+          </div>
           <div class="changelog-item" style="border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">🆓 100% KOSTENLOS FÜR ALLE SPIELER (OHNE VIP!)</div>
             <strong>Alle Benachrichtigungen sind für ausnahmslos jeden Spieler komplett gratis!</strong>
@@ -1451,52 +1463,25 @@
             <strong>Benachrichtigungen erscheinen jetzt schon VOR dem Einspielen des Updates!</strong>
             <p>Wenn ein neues Update ansteht, sendet die Arcade eine weltweite Vorab-Ankündigung an alle Spieler („Achtung: Gleich wird ein neues Update hochgeladen, bitte Spielstand sichern!“).</p>
           </div>
-          <div class="changelog-item" style="border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">🚀 AUTOMATISCHE ECHTZEIT-UPDATE-ERKENNUNG</div>
-            <strong>Echtzeit-Meldung beim Finden neuer Updates im Hintergrund</strong>
-            <p>Sobald der Browser im Hintergrund ein neues Update herunterlädt, warnt die Arcade sofort mit einem Vorab-Banner und bietet einen direkten Schnell-Aktualisieren-Knopf an.</p>
-          </div>
-          <div class="changelog-item" style="border: 1px solid #ec4899; background: rgba(236, 72, 153, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(139, 92, 246, 0.5)); border-color: #ec4899; color: #f472b6;">📢 VIP ADMIN VORAB-UPDATE BROADCAST</div>
-            <strong>1-Klick Ankündigung vor dem Hochladen an ALLE Geräte weltweit</strong>
-            <p>In der VIP Admin-Konsole (Reiter: Benachrichtigungen) gibt es jetzt den orangen Button „Vorab-Update Ankündigung an ALLE Geräte senden“, um Updates sofort weltweit anzukündigen.</p>
-          </div>
-          <div class="changelog-item" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📴 HINTERGRUND-PUSH BEI GESCHLOSSENER APP</div>
-            <strong>Benachrichtigungen kommen an, auch wenn die App geschlossen ist</strong>
-            <p>Dank modernem Periodic Background Sync und Web Push API im Service Worker wacht die Arcade im Hintergrund auf deinem Windows-PC, Android-Smartphone oder iPhone selbstständig auf.</p>
-          </div>
-          <div class="changelog-item" style="border: 1px solid var(--accent-secondary); background: rgba(6, 182, 212, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.4)); border-color: var(--accent-secondary); color: #38bdf8;">⏱️ 4-STUFEN ZEIT-AUTOMATISIERUNG</div>
-            <strong>Vollautomatische Benachrichtigungen nach 1h, 2h, 3h & 24h</strong>
-            <p>Die Arcade schickt dir dynamisch passende Nachrichten: Nach 1 Std. (Pause vorbei & Quick-Match), nach 2 Std. (100% Energie & Memory-Training), nach 3 Std. (Rivalen-Alarm & Lucky Drops) und nach 24 Std. (Tages-Schatzkammer +500 Münzen)!</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">🍏 APPLE IPHONE & IPAD WEB PUSH</div>
-            <strong>iOS PWA Unterstützung & Schnellanleitung</strong>
-            <p>Einfaches Hinzufügen zum Home-Bildschirm mit nativer Apple Push-Benachrichtigung und Schritt-für-Schritt Erklärung direkt in den Einstellungen.</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">🔔 ZEITSTUFEN-TESTKONSOLE</div>
-            <strong>5 Test-Buttons in Einstellungen & Admin-Panel</strong>
-            <p>Teste jede Stufe (1h, 2h, 3h, 24h) und sofortige VIP Test-Pushes mit einem Klick in den Einstellungen oder im VIP Admin-Panel (Reiter: Benachrichtigungen).</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">🔄 RELOAD OHNE F-TASTEN</div>
-            <strong>Schnell-Neuladen Button in der oberen Menüleiste</strong>
-            <p>Aktualisiere die gesamte Arcade und leere den Cache mit 1 Klick auf 🔄 oder über Strg+R / Shift+R auf deiner 65% Tastatur.</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">⌨️ 65% KEYBOARD OPTIMIERUNG</div>
-            <strong>Volle Steuerung aller 7 Spiele ohne Numpad</strong>
-            <p>Tic-Tac-Toe mit 1-9 Zahlenreihe, RPSLS mit 1-5, Mario Kart mit WASD/Shift/E und globale Shortcuts (1-7, M=Mute, J=Jukebox, S=Settings).</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">🌐 LIVE MULTIPLAYER LOBBY</div>
-            <strong>Online gegen Freunde spielen (2 bis 10 Spieler)</strong>
-            <p>Neues 4-stelliges Raum-Code System! Erstelle eigene Räume für bis zu 10 Spieler, teile deinen Code und duelliere dich live in Tic-Tac-Toe & Memory Matrix.</p>
-          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 2000 COINS REWARD CELEBRATION MODAL -->
+    <div id="reward-coins-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Belohnung">
+      <div class="modal-card" style="text-align: center; border-color: #facc15; box-shadow: 0 0 40px rgba(250, 204, 21, 0.6); max-width: 440px;">
+        <div style="font-size: 3.8rem; margin-bottom: 6px; filter: drop-shadow(0 0 16px #facc15);">🎁💰</div>
+        <h2 style="color: #facc15; font-size: 1.6rem; margin: 0 0 8px; font-weight: 900;">+2.000 COINS ERHALTEN!</h2>
+        <p id="reward-coins-modal-desc" style="color: #fff; font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">
+          Du hast erfolgreich <strong>+2.000 Bonus-Coins</strong> aus deiner Benachrichtigung abgeholt!
+        </p>
+        <div style="background: rgba(0,0,0,0.35); border-radius: 12px; padding: 14px; margin-bottom: 18px; border: 1px solid rgba(250, 204, 21, 0.4);">
+          <span style="font-size: 0.85rem; color: #fbbf24;">Neuer Kontostand:</span>
+          <div style="font-size: 2rem; font-weight: 900; color: #facc15; margin-top: 4px;" id="reward-coins-modal-balance">🪙 2.000 Coins</div>
+        </div>
+        <button id="close-reward-coins-btn" class="primary-button full-width" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: 900; font-size: 1rem; padding: 12px 18px;">
+          <span>🎉</span> <strong>Klasse, Coins mitnehmen & spielen!</strong>
+        </button>
       </div>
     </div>
 
@@ -1547,7 +1532,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.36"></script>
-    <script src="script.js?v=0.0.36"></script>
+    <script src="paho-mqtt.js?v=0.0.38"></script>
+    <script src="script.js?v=0.0.38"></script>
   </body>
 </html>
