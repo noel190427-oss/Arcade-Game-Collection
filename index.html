@@ -1166,6 +1166,9 @@
                 <span>🎁</span> <strong>Stufe 4: 24 Std. (Schatz)</strong>
               </button>
             </div>
+            <button class="primary-button full-width btn-small" id="admin-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 10px; font-weight: bold; border: none; cursor: pointer;">
+              <span>📱</span> <strong>10s Sperrbildschirm-Test (iPhone 11 wegswipen)</strong>
+            </button>
           </div>
 
           <!-- Apple & Windows Info Card in Admin -->
@@ -1334,8 +1337,12 @@
               </button>
             </div>
 
-            <!-- Global Broadcast Test Button directly in Settings -->
-            <button class="primary-button full-width btn-small" id="settings-test-broadcast-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); margin-top: 8px; font-weight: bold; border: none; cursor: pointer;">
+            <!-- Global Broadcast & Delayed Swipe Test Buttons directly in Settings -->
+            <button class="primary-button full-width btn-small" id="settings-test-delayed-swipe-btn" style="background: linear-gradient(135deg, #10b981, #06b6d4); margin-top: 8px; font-weight: bold; border: none; cursor: pointer;">
+              <span>📱</span> <strong>10s Sperrbildschirm-Test (iPhone 11 wegswipen)</strong>
+            </button>
+
+            <button class="primary-button full-width btn-small" id="settings-test-broadcast-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); margin-top: 6px; font-weight: bold; border: none; cursor: pointer;">
               <span>📢</span> <strong>Broadcast-Test an ALLE Geräte senden</strong>
             </button>
             
@@ -1412,17 +1419,22 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">📱</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.35?</h2>
-              <small>Noel Arcade Universe • Sperrbildschirm Web-Push & Handy-Aus Benachrichtigungs Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.36?</h2>
+              <small>Noel Arcade Universe • iPhone 11 Wegswipe & Automatische Stündliche Cloud-Push Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
           <div class="changelog-item" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📱 BENACHRICHTIGUNGEN BEI GESPERRTEM / AUSGESCHALTETEM HANDY</div>
-            <strong>Erhalte Benachrichtigungen direkt auf den Sperrbildschirm, auch wenn das Handy aus ist!</strong>
-            <p>Die Arcade verbindet sich jetzt über die offizielle Web Push API mit den Push-Servern von Apple (APNs) und Google (FCM). Sobald ein Update, eine Erinnerung oder ein Event ansteht, weckt der Push-Server dein Smartphone im Standby auf und zeigt die Nachricht auf dem Sperrbildschirm an!</p>
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📱 BENACHRICHTIGUNGEN BEI WEGGESWIPTER APP (IPHONE 11 & ANDROID)</div>
+            <strong>Erhalte Push-Nachrichten, selbst wenn du die Arcade-App nach oben wegswipest!</strong>
+            <p>Dank echter Apple APNs Push-Server Anbindung weckt iOS dein iPhone 11 im Sperrbildschirm zuverlässig auf – selbst wenn du die App im App Switcher komplett beendet hast!</p>
+          </div>
+          <div class="changelog-item" style="border: 1px solid #06b6d4; background: rgba(6, 182, 212, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(59, 130, 246, 0.5)); border-color: #06b6d4; color: #38bdf8;">☁️ AUTOMATISCHER 24/7 GITHUB CLOUD PUSH SERVER</div>
+            <strong>Stündliche automatische Erinnerungen direkt aus der Cloud</strong>
+            <p>Ein automatischer Cloud-Dienst sendet stündliche Erinnerungen (nach 1h, 2h, 3h, 24h & Updates) an alle registrierten Geräte weltweit.</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(250, 204, 21, 0.5), rgba(245, 158, 11, 0.5)); border-color: #facc15; color: #fde047;">🍏 APPLE IPHONE SCHNELL-ANLEITUNG</div>
@@ -1530,7 +1542,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.35"></script>
-    <script src="script.js?v=0.0.35"></script>
+    <script src="paho-mqtt.js?v=0.0.36"></script>
+    <script src="script.js?v=0.0.36"></script>
   </body>
 </html>
