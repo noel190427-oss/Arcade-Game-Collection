@@ -130,7 +130,7 @@ const I18N_DATA = {
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.31?',
+    whats_new_title: 'Was ist neu in v0.0.32?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
@@ -242,7 +242,7 @@ const I18N_DATA = {
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.31?",
+    whats_new_title: "What's new in v0.0.32?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
@@ -354,7 +354,7 @@ const I18N_DATA = {
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.31?',
+    whats_new_title: 'Was ist neu in v0.0.32?',
     privacy_title: 'Politique de confidentialité'
   },
   pt: {
@@ -466,7 +466,7 @@ const I18N_DATA = {
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.31?',
+    whats_new_title: 'Was ist neu in v0.0.32?',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
@@ -578,7 +578,7 @@ const I18N_DATA = {
     created_by: 'Hazırlayan',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.31?',
+    whats_new_title: 'Was ist neu in v0.0.32?',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
@@ -690,7 +690,7 @@ const I18N_DATA = {
     created_by: 'Creado por',
     whats_new: '¿Qué hay de nuevo?',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.31?',
+    whats_new_title: 'Was ist neu in v0.0.32?',
     privacy_title: 'Política de Privacidad'
   }
 };
@@ -4694,7 +4694,22 @@ let deferredPrompt = null;
 function initPWA() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => {
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        // Register periodic background sync so notifications arrive even when app is closed
+        if ('periodicSync' in reg) {
+          navigator.permissions?.query({ name: 'periodic-background-sync' }).then((status) => {
+            if (status.state === 'granted') {
+              reg.periodicSync.register('arcade-hourly-check', {
+                minInterval: 60 * 60 * 1000 // 1 hour in background
+              }).catch(() => {});
+            }
+          }).catch(() => {
+            reg.periodicSync.register('arcade-hourly-check', {
+              minInterval: 60 * 60 * 1000
+            }).catch(() => {});
+          });
+        }
+      }).catch(err => {
         console.warn('Service Worker registration error', err);
       });
     });
