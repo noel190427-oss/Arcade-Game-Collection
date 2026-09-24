@@ -1104,9 +1104,38 @@
 
         <!-- TAB 6: NOTIFICATIONS & REMINDER CONTROL -->
         <div class="admin-tab-content hidden" id="admin-tab-notifications">
-          <div class="admin-box">
-            <h3>🔔 Benachrichtigungs-Zentrale & Zeitstufen-Simulation</h3>
-            <p class="admin-desc">Teste die 4 verschiedenen automatischen Stufen (1h, 2h, 3h oder 24h):</p>
+          <!-- GLOBAL BROADCAST TO ALL DEVICES -->
+          <div class="admin-box" style="border: 2px solid #ec4899; background: rgba(236, 72, 153, 0.08); border-radius: 12px; padding: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+              <h3 style="color: #f472b6; margin: 0; font-size: 1.15rem;">🌍 Live Broadcast an ALLE Geräte</h3>
+              <span class="pill-badge pill-online" id="broadcast-server-dot">🟢 Live-Netzwerk</span>
+            </div>
+            <p class="admin-desc">Schicke eine Push-Benachrichtigung und Event-Meldung in Echtzeit an <strong>ALLE Geräte</strong> (Windows, Android, Apple iPhone/iPad, Mac), auf denen das Spiel läuft!</p>
+
+            <div style="margin-bottom: 10px;">
+              <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">⚡ Schnell-Vorlagen (Presets):</label>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="secondary-button btn-small" id="preset-broadcast-tournament" style="font-size: 0.75rem;">🏎️ Mario-Kart Turnier</button>
+                <button class="secondary-button btn-small" id="preset-broadcast-coins" style="font-size: 0.75rem;">🪙 Doppel-Münzen Event</button>
+                <button class="secondary-button btn-small" id="preset-broadcast-boss" style="font-size: 0.75rem;">👑 Noel Highscore-Alarm</button>
+                <button class="secondary-button btn-small" id="preset-broadcast-ttt" style="font-size: 0.75rem;">🤖 Minimax Challenge</button>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+              <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">✍️ Eigene Nachricht eingeben:</label>
+              <input type="text" id="admin-broadcast-custom-text" class="custom-text-input" placeholder="👑 Admin Noel ruft zum großen Turnier auf!" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--accent-primary); background: rgba(0,0,0,0.4); color: #fff; box-sizing: border-box;" />
+            </div>
+
+            <button class="primary-button full-width" id="admin-send-global-broadcast-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); font-size: 1rem; padding: 12px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4); border: none; cursor: pointer;">
+              <span>📢</span> <strong>Test-Benachrichtigung an ALLE Geräte senden</strong>
+            </button>
+            <div id="admin-broadcast-status" style="margin-top: 8px; font-size: 0.85rem; color: #10b981; font-weight: bold; min-height: 20px;"></div>
+          </div>
+
+          <div class="admin-box" style="margin-top: 14px;">
+            <h3>🔔 Zeitstufen-Simulation (Lokales Gerät)</h3>
+            <p class="admin-desc">Teste die 4 verschiedenen automatischen Stufen (1h, 2h, 3h oder 24h) für dieses Gerät:</p>
             <div class="admin-btn-row" style="margin-bottom: 8px;">
               <button class="primary-button vip-gold-btn" id="admin-test-notif-btn">
                 <span>🔔</span> <strong>Direkter VIP Test-Push</strong>
@@ -1287,6 +1316,11 @@
                 <span>🎁</span> <strong>24h: Schatz</strong>
               </button>
             </div>
+
+            <!-- Global Broadcast Test Button directly in Settings -->
+            <button class="primary-button full-width btn-small" id="settings-test-broadcast-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); margin-top: 8px; font-weight: bold; border: none; cursor: pointer;">
+              <span>📢</span> <strong>Broadcast-Test an ALLE Geräte senden</strong>
+            </button>
             
             <button class="ghost-button btn-small full-width" id="toggle-apple-help-btn" style="margin-top: 10px; text-align: center; border: 1px dashed var(--accent-secondary); color: #38bdf8;">
               📱 Wie aktiviere ich es auf dem Apple iPhone? (Hier klicken)
@@ -1361,13 +1395,18 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">✨</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.30?</h2>
-              <small>Noel Arcade Universe • 4-Stufen Automatisierung & Apple iOS Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.31?</h2>
+              <small>Noel Arcade Universe • Globaler Geräte-Broadcast & Echtzeit-Event Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
+          <div class="changelog-item" style="border: 1px solid #ec4899; background: rgba(236, 72, 153, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(139, 92, 246, 0.5)); border-color: #ec4899; color: #f472b6;">🌍 GLOBALER GERÄTE-BROADCAST</div>
+            <strong>Live-Benachrichtigungen an ALLE verbundenen Geräte gleichzeitig senden</strong>
+            <p>Neuer Broadcast-Button im Admin-Panel (Reiter: Benachrichtigungen) und in den Einstellungen! Sende mit 1 Klick Live-Meldungen, Turnier-Starts und Event-Ankündigungen an alle Computer, Handys und Tablets aller Spieler weltweit.</p>
+          </div>
           <div class="changelog-item" style="border: 1px solid var(--accent-secondary); background: rgba(6, 182, 212, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.4)); border-color: var(--accent-secondary); color: #38bdf8;">⏱️ 4-STUFEN ZEIT-AUTOMATISIERUNG</div>
             <strong>Vollautomatische Benachrichtigungen nach 1h, 2h, 3h & 24h</strong>
@@ -1449,7 +1488,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.29"></script>
-    <script src="script.js?v=0.0.29"></script>
+    <script src="paho-mqtt.js?v=0.0.31"></script>
+    <script src="script.js?v=0.0.31"></script>
   </body>
 </html>
