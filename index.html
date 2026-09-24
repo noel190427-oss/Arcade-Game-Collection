@@ -231,6 +231,9 @@
           <button id="open-settings-btn" class="icon-button" title="Einstellungen & Themes" aria-label="Einstellungen">
             ⚙️
           </button>
+          <button id="app-reload-btn" class="icon-button" title="App & Spiele neu laden (Aktualisieren ohne F-Tasten)" aria-label="Neu laden">
+            🔄
+          </button>
         </div>
       </header>
 
@@ -1225,6 +1228,17 @@
               <input type="checkbox" id="notifications-toggle" />
               <span class="toggle-slider"></span>
             </label>
+          </div>
+
+          <!-- App Reload / Force Refresh Button (For 65% Keyboards without F5) -->
+          <div class="setting-group" style="margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+            <label class="setting-title">🔄 App & Cache Aktualisieren</label>
+            <button class="primary-button full-width" id="settings-force-reload-btn" style="background: linear-gradient(135deg, #0284c7, #06b6d4);">
+              <span>🔄</span> <strong>Webseite & Spiele neu laden</strong>
+            </button>
+            <small style="color: var(--text-muted); display: block; margin-top: 6px; font-size: 0.8rem; line-height: 1.4;">
+              Lädt die neueste Version herunter und startet alle Spiele ohne F-Tasten (F5) sauber neu.
+            </small>
           </div>
         </div>
       </div>
