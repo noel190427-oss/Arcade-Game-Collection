@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.39-custom-gift-coins';
+const CACHE_NAME = 'arcade-collection-v0.0.40-custom-gift-coins';
 const APP_SHELL = [
   './',
   './index.html',
