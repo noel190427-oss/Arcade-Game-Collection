@@ -2667,35 +2667,6 @@ function initSettings() {
     });
   }
 
-  const settingsSendCustomCoinsBtn = document.getElementById('settings-send-custom-gift-coins-btn');
-  const settingsGiftCoinsInput = document.getElementById('settings-gift-coins-input');
-  if (settingsSendCustomCoinsBtn && settingsGiftCoinsInput) {
-    settingsSendCustomCoinsBtn.addEventListener('click', () => {
-      const amt = parseInt(settingsGiftCoinsInput.value, 10);
-      if (isNaN(amt) || amt <= 0) {
-        alert('Bitte eine gültige Münzen-Anzahl (z.B. 2000) eingeben!');
-        return;
-      }
-      SFX.win();
-      triggerConfetti(80, true);
-      broadcastCustomCoinsGift(amt);
-      alert(`🎉 Erfolg! +${amt.toLocaleString()} Coins wurden soeben an alle Spieler im WLAN & Netzwerk gesendet!`);
-    });
-  }
-
-  const settingsTestCoinsBtn = document.getElementById('settings-test-coins-notif-btn');
-  if (settingsTestCoinsBtn) {
-    settingsTestCoinsBtn.addEventListener('click', () => {
-      SFX.powerup();
-      sendArcadeNotification(
-        '🎁 2.000 Coins Geschenk für dich!',
-        'Tippe auf den Button „🎁 +2.000 Coins abholen“ oder öffne die Nachricht, um deine Belohnung abzuholen!',
-        'icon-192.png',
-        'coins-reward-test'
-      );
-    });
-  }
-
   const settingsTestDelayedSwipeBtn = document.getElementById('settings-test-delayed-swipe-btn');
   if (settingsTestDelayedSwipeBtn) {
     settingsTestDelayedSwipeBtn.addEventListener('click', () => {
