@@ -833,6 +833,69 @@ function checkDailyBonus() {
 }
 
 /* ==========================================================================
+   2.2 INACTIVITY & 1-HOUR CREATIVE REMINDERS POOL
+   ========================================================================== */
+const ARCADE_REMINDERS = [
+  {
+    title: '🎮 Es wird mal wieder Zeit zu spielen!',
+    body: 'Die Arcade vermisst dich – knacke jetzt den nächsten Highscore!'
+  },
+  {
+    title: '🏎️ Mario Kart GP wartet auf dich!',
+    body: 'Deine Rivalen trainieren heimlich auf der Strecke... Zeit für dein Comeback!'
+  },
+  {
+    title: '👑 VIP Bonus-Alarm!',
+    body: 'Deine VIP-Schatzkammer hat neue Münzen für dich bereitgelegt. Hol sie dir ab!'
+  },
+  {
+    title: '🧠 Memory-Training!',
+    body: 'Bist du bereit für die 10-Paare Meister-Herausforderung? Teste dein Gedächtnis!'
+  },
+  {
+    title: '🤖 Minimax will eine Revanche!',
+    body: 'Die unbesiegbare Minimax KI wartet auf dich im Tic-Tac-Toe!'
+  },
+  {
+    title: '⚡ Neon Snake Speed-Run!',
+    body: 'Kannst du heute die 100-Punkte-Marke knacken und die goldene Schlange freischalten?'
+  },
+  {
+    title: '🧱 Cyber Bricks Laser-Show!',
+    body: 'Neue Laser-Kanonen & Power-ups warten auf dich im Breakout-Modus!'
+  }
+];
+
+function sendRandomReminderNotification() {
+  const reminder = ARCADE_REMINDERS[Math.floor(Math.random() * ARCADE_REMINDERS.length)];
+  sendArcadeNotification(reminder.title, reminder.body, 'favicon.svg', 'arcade-reminder');
+}
+
+let userInactivityTimer = null;
+const ONE_HOUR_MS = 60 * 60 * 1000;
+
+function resetInactivityTimer() {
+  if (userInactivityTimer) clearTimeout(userInactivityTimer);
+  userInactivityTimer = setTimeout(() => {
+    sendRandomReminderNotification();
+    resetInactivityTimer();
+  }, ONE_HOUR_MS);
+}
+
+// Track user interaction and tab visibility for 1-hour reminders
+['mousemove', 'keydown', 'touchstart', 'click'].forEach((evt) => {
+  window.addEventListener(evt, () => resetInactivityTimer(), { passive: true });
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    resetInactivityTimer();
+  } else {
+    resetInactivityTimer();
+  }
+});
+
+/* ==========================================================================
    3. 3D PHYSICS CONFETTI & MONEY SHOWER ENGINE
    ========================================================================== */
 const confettiCanvas = document.getElementById('confetti-canvas');
@@ -2186,6 +2249,62 @@ function initAdminConsole() {
       else if (type === 'explosion') playSynthTone({ freq: 120, duration: 0.25, type: 'square', sweep: -80 });
     });
   });
+
+  // Push Notifications Test & Reminder Controls
+  const testNotifBtn = document.getElementById('admin-test-notif-btn');
+  if (testNotifBtn) {
+    testNotifBtn.addEventListener('click', () => {
+      SFX.powerup();
+      if (!('Notification' in window)) {
+        alert('Benachrichtigungen werden von diesem Browser nicht unterstützt.');
+        return;
+      }
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then((perm) => {
+          if (perm === 'granted') {
+            appState.notificationsEnabled = true;
+            saveState();
+            sendArcadeNotification(
+              '👑 VIP Admin Test-Benachrichtigung',
+              'Hallo Noel! Dein Benachrichtigungssystem funktioniert zu 100% perfekt!',
+              'favicon.svg',
+              'admin-test'
+            );
+          } else {
+            alert('Bitte erlaube Benachrichtigungen im Browser, um sie zu empfangen.');
+          }
+        });
+      } else {
+        sendArcadeNotification(
+          '👑 VIP Admin Test-Benachrichtigung',
+          'Hallo Noel! Dein Benachrichtigungssystem funktioniert zu 100% perfekt!',
+          'favicon.svg',
+          'admin-test'
+        );
+      }
+    });
+  }
+
+  const testReminderBtn = document.getElementById('admin-test-reminder-btn');
+  if (testReminderBtn) {
+    testReminderBtn.addEventListener('click', () => {
+      SFX.powerup();
+      sendRandomReminderNotification();
+    });
+  }
+
+  const testTrophyNotifBtn = document.getElementById('admin-test-trophy-notif-btn');
+  if (testTrophyNotifBtn) {
+    testTrophyNotifBtn.addEventListener('click', () => {
+      SFX.achievement();
+      sendArcadeNotification(
+        '🏆 Errungenschaft freigeschaltet!',
+        '👑 VIP Administrator: Öffne die geheime VIP & Admin Konsole mit Quanten-Key',
+        'favicon.svg',
+        'admin-trophy-test'
+      );
+    });
+  }
 }
 
 /* ==========================================================================
