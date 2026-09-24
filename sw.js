@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.38-2000coins-reward';
+const CACHE_NAME = 'arcade-collection-v0.0.39-custom-gift-coins';
 const APP_SHELL = [
   './',
   './index.html',
@@ -144,20 +144,20 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// 4. Notification Click & Action Button Handling (wakes app, focuses window, and awards 2000 coins)
+// 4. Notification Click & Action Button Handling (wakes app, focuses window, and awards coins)
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const isClaimAction = event.action === 'claim_2000_coins';
-  const targetUrl = './?claim=2000_coins&t=' + Date.now();
+  const rewardAmount = (event.notification.data && event.notification.data.reward) ? event.notification.data.reward : 2000;
+  const targetUrl = './?claim=' + rewardAmount + '_coins&t=' + Date.now();
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
         if (client.url && 'focus' in client) {
           client.postMessage({
-            type: 'CLAIM_2000_COINS',
-            amount: 2000,
+            type: 'CLAIM_CUSTOM_COINS',
+            amount: rewardAmount,
             action: event.action || 'click',
             title: event.notification.title || 'Benachrichtigung'
           });
