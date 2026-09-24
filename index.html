@@ -1134,25 +1134,28 @@
           </div>
 
           <div class="admin-box" style="margin-top: 14px;">
-            <h3>🔔 Zeitstufen-Simulation (Lokales Gerät)</h3>
-            <p class="admin-desc">Teste die 4 verschiedenen automatischen Stufen (1h, 2h, 3h oder 24h) für dieses Gerät:</p>
+            <h3>🔔 Zeitstufen-Simulation & Update-Test</h3>
+            <p class="admin-desc">Teste die 4 automatischen Stufen oder simuliere eine echte Update-Benachrichtigung:</p>
             <div class="admin-btn-row" style="margin-bottom: 8px;">
               <button class="primary-button vip-gold-btn" id="admin-test-notif-btn">
                 <span>🔔</span> <strong>Direkter VIP Test-Push</strong>
               </button>
+              <button class="secondary-button" id="admin-test-update-btn" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(139, 92, 246, 0.3)); border-color: #38bdf8; color: #fff;">
+                <span>🚀</span> <strong>Update-Push simulieren</strong>
+              </button>
               <button class="secondary-button" id="admin-test-tier1-btn">
-                <span>⏰</span> <strong>Stufe 1: 1 Std. (Pause vorbei)</strong>
+                <span>⏰</span> <strong>Stufe 1: 1 Std. (Pause)</strong>
               </button>
             </div>
             <div class="admin-btn-row">
               <button class="secondary-button" id="admin-test-tier2-btn">
-                <span>🔋</span> <strong>Stufe 2: 2 Std. (Energie 100%)</strong>
+                <span>🔋</span> <strong>Stufe 2: 2 Std. (Energie)</strong>
               </button>
               <button class="secondary-button" id="admin-test-tier3-btn">
-                <span>🏎️</span> <strong>Stufe 3: 3 Std. (Rivalen & Boss)</strong>
+                <span>🏎️</span> <strong>Stufe 3: 3 Std. (Rivalen)</strong>
               </button>
               <button class="secondary-button" id="admin-test-tier24-btn">
-                <span>🎁</span> <strong>Stufe 4: 24 Std. (Tages-Schatzkammer)</strong>
+                <span>🎁</span> <strong>Stufe 4: 24 Std. (Schatz)</strong>
               </button>
             </div>
           </div>
@@ -1289,7 +1292,7 @@
           <div class="setting-row">
             <div>
               <strong data-i18n="notifications_title">🔔 Push-Benachrichtigungen</strong>
-              <p class="setting-desc" data-i18n="notifications_desc">Erhalte automatische Benachrichtigungen bei Trophäen, Multiplayer & Tages-Boni.</p>
+              <p class="setting-desc" data-i18n="notifications_desc">Erhalte automatische Benachrichtigungen bei Trophäen, Updates & Tages-Boni.</p>
             </div>
             <label class="toggle-switch">
               <input type="checkbox" id="notifications-toggle" />
@@ -1300,19 +1303,22 @@
           <!-- Direct Test Buttons & Apple iPhone Quick Setup Box in Settings -->
           <div class="setting-group" style="background: rgba(139, 92, 246, 0.08); border: 1px solid var(--accent-primary); border-radius: 10px; padding: 12px; margin-top: 10px;">
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="primary-button vip-gold-btn btn-small" id="settings-test-notif-btn" style="flex: 1; min-width: 120px;">
+              <button class="primary-button vip-gold-btn btn-small" id="settings-test-notif-btn" style="flex: 1; min-width: 110px;">
                 <span>🔔</span> <strong>Test-Push</strong>
               </button>
-              <button class="secondary-button btn-small" id="settings-test-tier1-btn" style="flex: 1; min-width: 120px;">
+              <button class="secondary-button btn-small" id="settings-test-update-btn" style="flex: 1; min-width: 110px; background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #fff;">
+                <span>🚀</span> <strong>Update-Push</strong>
+              </button>
+              <button class="secondary-button btn-small" id="settings-test-tier1-btn" style="flex: 1; min-width: 110px;">
                 <span>⏰</span> <strong>1h: Pause</strong>
               </button>
-              <button class="secondary-button btn-small" id="settings-test-tier2-btn" style="flex: 1; min-width: 120px;">
+              <button class="secondary-button btn-small" id="settings-test-tier2-btn" style="flex: 1; min-width: 110px;">
                 <span>🔋</span> <strong>2h: Energie</strong>
               </button>
-              <button class="secondary-button btn-small" id="settings-test-tier3-btn" style="flex: 1; min-width: 120px;">
+              <button class="secondary-button btn-small" id="settings-test-tier3-btn" style="flex: 1; min-width: 110px;">
                 <span>🏎️</span> <strong>3h: Rivalen</strong>
               </button>
-              <button class="secondary-button btn-small" id="settings-test-tier24-btn" style="flex: 1; min-width: 120px;">
+              <button class="secondary-button btn-small" id="settings-test-tier24-btn" style="flex: 1; min-width: 110px;">
                 <span>🎁</span> <strong>24h: Schatz</strong>
               </button>
             </div>
@@ -1395,13 +1401,18 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">✨</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.32?</h2>
-              <small>Noel Arcade Universe • Offline & Background Push-Benachrichtigungs Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.33?</h2>
+              <small>Noel Arcade Universe • Automatische Update-Benachrichtigungs Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
+          <div class="changelog-item" style="border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">✨ AUTOMATISCHE UPDATE-BENACHRICHTIGUNG</div>
+            <strong>Erhalte sofort eine passende Benachrichtigung bei jedem neuen Update!</strong>
+            <p>Sobald eine neue Version der Arcade veröffentlicht wird, schickt dir die App eine passende Benachrichtigung mit Versionsnummer und Neuerungen direkt auf den Bildschirm. Mit 1 Klick auf die Benachrichtigung oder den Toast öffnet sich sofort das „Was ist neu?“-Fenster!</p>
+          </div>
           <div class="changelog-item" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📴 HINTERGRUND-PUSH BEI GESCHLOSSENER APP</div>
             <strong>Benachrichtigungen kommen jetzt an, auch wenn die App geschlossen ist!</strong>
@@ -1493,7 +1504,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.32"></script>
-    <script src="script.js?v=0.0.32"></script>
+    <script src="paho-mqtt.js?v=0.0.33"></script>
+    <script src="script.js?v=0.0.33"></script>
   </body>
 </html>
