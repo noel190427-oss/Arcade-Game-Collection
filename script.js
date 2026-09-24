@@ -2205,30 +2205,30 @@ function initVipBank() {
    ========================================================================== */
 const SHOP_ITEMS = [
   // 1. Karts & Tuning
-  { id: 'kart_gold', category: 'karts', title: 'Goldener Rennwagen', icon: '🏎️✨', price: 5000, desc: 'Glänzende Goldkarosserie mit Gold-Schweif & +15% Speed-Bonus in Mario Kart Rush.' },
-  { id: 'kart_turbo', category: 'karts', title: 'Raketen-Turbo Boost', icon: '🚀', price: 1500, desc: 'Startet jedes Rennen mit einem automatischen Raketen-Turboschub.' },
-  { id: 'kart_cyber', category: 'karts', title: 'Cyber-Flitzer 2088', icon: '🏎️⚡', price: 3500, desc: 'Futuristische Neon-Optik mit leuchtenden Reifen und Drift-Aura.' },
-  { id: 'kart_rainbow', category: 'karts', title: 'Regenbogen-Bolide', icon: '🌈🏎️', price: 7500, desc: 'Bunte Regenbogen-Reifenspuren auf jeder Strecke.' },
+  { id: 'kart_gold', category: 'karts', title: 'Goldener Rennwagen', icon: '🏎️✨', badge: '🏎️ +25% SPEED', price: 5000, desc: 'Glänzende Goldkarosserie mit Gold-Schweif & +25% Speed-Bonus in Mario Kart Rush.' },
+  { id: 'kart_turbo', category: 'karts', title: 'Raketen-Turbo Boost', icon: '🚀', badge: '⚡ TURBO-START', price: 1500, desc: 'Startet jedes Rennen mit einem automatischen Raketen-Turboschub.' },
+  { id: 'kart_cyber', category: 'karts', title: 'Cyber-Flitzer 2088', icon: '🏎️⚡', badge: '💠 NEON-CYAN', price: 3500, desc: 'Futuristische Neon-Optik mit leuchtenden Reifen und Drift-Aura.' },
+  { id: 'kart_rainbow', category: 'karts', title: 'Regenbogen-Bolide', icon: '🌈🏎️', badge: '🌈 CHROMA-FX', price: 7500, desc: 'Bunte Regenbogen-Reifenspuren & Farbwechsel auf jeder Strecke.' },
 
   // 2. Mario Upgrades
-  { id: 'mario_star', category: 'mario', title: 'Unbesiegbarkeits-Stern', icon: '⭐', price: 2500, desc: 'Starte jeden Super Mario Run mit 20 Sekunden Unbesiegbarkeit durch Hindernisse!' },
-  { id: 'mario_double_jump', category: 'mario', title: 'Doppelsprung-Sneaker', icon: '👟✨', price: 3000, desc: 'Erlaubt einen zweiten Sprung mitten in der Luft, um jede Schlucht zu überwinden.' },
-  { id: 'mario_gold_suit', category: 'mario', title: 'Meister Gold-Anzug', icon: '👑🍄', price: 8000, desc: 'Exklusiver goldener Anzug mit doppelten Münzen beim Einsammeln.' },
-  { id: 'mario_magnet', category: 'mario', title: 'Münz-Magnet', icon: '🧲', price: 4000, desc: 'Zieht alle Münzen im Umkreis automatisch magisch zu Mario an!' },
+  { id: 'mario_star', category: 'mario', title: 'Unbesiegbarkeits-Stern', icon: '⭐', badge: '⭐ 12s SCHUTZ', price: 2500, desc: 'Starte jeden Super Mario Run mit 12 Sekunden Unbesiegbarkeit durch Hindernisse!' },
+  { id: 'mario_double_jump', category: 'mario', title: 'Doppelsprung-Sneaker', icon: '👟✨', badge: '🦘 DOPPEL-SPRUNG', price: 3000, desc: 'Erlaubt einen zweiten Sprung mitten in der Luft, um jede Schlucht zu überwinden.' },
+  { id: 'mario_gold_suit', category: 'mario', title: 'Meister Gold-Anzug', icon: '👑🍄', badge: '🪙 2x COINS & GLEITEN', price: 8000, desc: 'Exklusiver goldener Anzug mit doppelten Münzen beim Einsammeln & Schwebeflug.' },
+  { id: 'mario_magnet', category: 'mario', title: 'Münz-Magnet', icon: '🧲', badge: '🧲 AUTO-MAGNET', price: 4000, desc: 'Zieht alle Münzen im Umkreis automatisch magisch zu Mario an!' },
 
   // 3. Neon Skins & Effects
-  { id: 'snake_rainbow', category: 'skins', title: 'Regenbogen-Schlange', icon: '🌈🐍', price: 2000, desc: 'Die Schlange wechselt mit jedem gefressenen Apfel bunt ihre Regenbogenfarbe.' },
-  { id: 'snake_fire', category: 'skins', title: 'Feuer-Schweif Schlange', icon: '🔥🐍', price: 3500, desc: 'Hinterlässt brennende Flammenpartikel bei jeder Schlangen-Bewegung.' },
-  { id: 'bricks_laser', category: 'skins', title: 'Cyber Laser-Paddle', icon: '🧱⚡', price: 2500, desc: 'Leuchtendes Laser-Paddle für Brick Breaker mit Power-Schlägen.' },
+  { id: 'snake_rainbow', category: 'skins', title: 'Regenbogen-Schlange', icon: '🌈🐍', badge: '🌈 REGENBOGEN', price: 2000, desc: 'Die Schlange wechselt mit jedem gefressenen Apfel bunt ihre Regenbogenfarbe.' },
+  { id: 'snake_fire', category: 'skins', title: 'Feuer-Schweif Schlange', icon: '🔥🐍', badge: '🔥 FLAMMEN-SPUR', price: 3500, desc: 'Hinterlässt brennende Flammenpartikel bei jeder Schlangen-Bewegung.' },
+  { id: 'bricks_laser', category: 'skins', title: 'Cyber Laser-Paddle', icon: '🧱⚡', badge: '⚡ +32px PADDLE', price: 2500, desc: 'Breites leuchtendes Laser-Paddle für Brick Breaker mit Power-Schlägen.' },
 
   // 4. Titles & Badges
-  { id: 'title_tycoon', category: 'titles', title: 'Titel: 👑 Coin-Tycoon', icon: '👑', price: 10000, desc: 'Schaltet das goldene „👑 Coin-Tycoon“ VIP-Abzeichen neben deinem Spielernamen frei.' },
-  { id: 'title_speed', category: 'titles', title: 'Titel: ⚡ Speed-König', icon: '⚡', price: 5000, desc: 'Schaltet das blitzschnelle „⚡ Speed-König“ Abzeichen frei.' },
-  { id: 'title_legend', category: 'titles', title: 'Titel: 💎 Arcade-Legende', icon: '💎', price: 25000, desc: 'Das ultimative Abzeichen für wahre Meister des Arcade-Universums!' },
+  { id: 'title_tycoon', category: 'titles', title: 'Titel: 👑 Coin-Tycoon', icon: '👑', badge: '👑 VIP TITEL', price: 10000, desc: 'Schaltet das goldene „👑 Tycoon“ VIP-Abzeichen neben deinem Spielernamen frei.' },
+  { id: 'title_speed', category: 'titles', title: 'Titel: ⚡ Speed-König', icon: '⚡', badge: '⚡ VIP TITEL', price: 5000, desc: 'Schaltet das blitzschnelle „⚡ Speed“ Abzeichen neben deinem Spielernamen frei.' },
+  { id: 'title_legend', category: 'titles', title: 'Titel: 💎 Arcade-Legende', icon: '💎', badge: '💎 MYTHISCH', price: 25000, desc: 'Das ultimative Abzeichen für wahre Meister des Arcade-Universums!' },
 
   // 5. Music
-  { id: 'music_cyberpunk', category: 'music', title: 'Track: Cyberpunk 2088', icon: '🎧', price: 1000, desc: 'Futuristischer Synthwave Chiptune-Track für die Retro-Jukebox.' },
-  { id: 'music_galaxy', category: 'music', title: 'Track: Galaxy Quest 8-Bit', icon: '🌌', price: 1500, desc: 'Epischer Weltraum-Soundtrack für actiongeladene Arcade-Sessions.' }
+  { id: 'music_cyberpunk', category: 'music', title: 'Track: Cyberpunk 2088', icon: '🎧', badge: '🎶 JUKEBOX', price: 1000, desc: 'Futuristischer Synthwave Chiptune-Track für die Retro-Jukebox.' },
+  { id: 'music_galaxy', category: 'music', title: 'Track: Galaxy Quest 8-Bit', icon: '🌌', badge: '🌌 SPACE CHIPTUNE', price: 1500, desc: 'Epischer Weltraum-Soundtrack für actiongeladene Arcade-Sessions.' }
 ];
 
 function openCoinShop() {
@@ -2330,12 +2330,16 @@ function renderShopItems() {
 
       card.innerHTML = `
         <div>
-          <div class="shop-item-icon">${item.icon}</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <span class="shop-item-badge">${item.badge || 'UPGRADE'}</span>
+            ${isEquipped ? '<span style="font-size:0.75rem; font-weight:800; color:#fde047;">★ AKTIV</span>' : ''}
+          </div>
+          <div class="shop-item-icon-wrap">${item.icon}</div>
           <div class="shop-item-title">${item.title}</div>
           <p class="shop-item-desc">${item.desc}</p>
         </div>
         <div class="shop-item-footer">
-          <span class="shop-price-tag">${isOwned ? '✅ Gekauft' : `🪙 ${Number(item.price).toLocaleString()}`}</span>
+          <span class="shop-price-tag">${isOwned ? '✅ Im Besitz' : `🪙 ${Number(item.price).toLocaleString()}`}</span>
           ${btnHtml}
         </div>
       `;
@@ -2997,14 +3001,26 @@ function initSettings() {
   if (forceReloadBtn) forceReloadBtn.addEventListener('click', performAppReload);
 
   // Trophies & Stats Modals
-  document.getElementById('open-trophies-btn').addEventListener('click', () => {
+  const openTrophies = () => {
     renderTrophiesModal();
-    document.getElementById('trophies-modal').classList.remove('hidden');
+    document.getElementById('trophies-modal')?.classList.remove('hidden');
+    SFX.click();
+  };
+  document.getElementById('open-trophies-btn')?.addEventListener('click', openTrophies);
+  document.getElementById('launcher-trophies-btn')?.addEventListener('click', openTrophies);
+  document.getElementById('close-trophies-btn')?.addEventListener('click', () => {
+    document.getElementById('trophies-modal')?.classList.add('hidden');
     SFX.click();
   });
-  document.getElementById('close-trophies-btn').addEventListener('click', () => {
-    document.getElementById('trophies-modal').classList.add('hidden');
-    SFX.click();
+
+  // Universal backdrop close for all modals
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.add('hidden');
+        SFX.click();
+      }
+    });
   });
 
   document.getElementById('footer-stats-btn').addEventListener('click', () => {
