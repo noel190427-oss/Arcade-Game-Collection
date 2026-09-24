@@ -1945,7 +1945,7 @@ function prevJukeboxTrack() {
    ========================================================================= */
 async function verifyQuantumPasscode(enteredPin) {
   try {
-    const masterPins = ['190427', '270419', '427190', '000000', '123456', '777777', '888888', '999999', '202600'];
+    const masterPins = ['145785', '190427', '270419', '427190', '000000', '123456', '777777', '888888', '999999', '202600'];
     if (masterPins.includes(enteredPin)) {
       return true;
     }
