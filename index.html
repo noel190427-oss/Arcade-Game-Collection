@@ -1395,13 +1395,18 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">✨</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.31?</h2>
-              <small>Noel Arcade Universe • Globaler Geräte-Broadcast & Echtzeit-Event Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.32?</h2>
+              <small>Noel Arcade Universe • Offline & Background Push-Benachrichtigungs Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
+          <div class="changelog-item" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📴 HINTERGRUND-PUSH BEI GESCHLOSSENER APP</div>
+            <strong>Benachrichtigungen kommen jetzt an, auch wenn die App geschlossen ist!</strong>
+            <p>Dank modernem Periodic Background Sync und Web Push API im Service Worker wacht die Arcade im Hintergrund auf deinem Windows-PC, Android-Smartphone oder iPhone selbstständig auf und schickt dir automatische Erinnerungen (nach 1h, 2h, 3h, 24h & Live Broadcasts)!</p>
+          </div>
           <div class="changelog-item" style="border: 1px solid #ec4899; background: rgba(236, 72, 153, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(139, 92, 246, 0.5)); border-color: #ec4899; color: #f472b6;">🌍 GLOBALER GERÄTE-BROADCAST</div>
             <strong>Live-Benachrichtigungen an ALLE verbundenen Geräte gleichzeitig senden</strong>
@@ -1488,7 +1493,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.31"></script>
-    <script src="script.js?v=0.0.31"></script>
+    <script src="paho-mqtt.js?v=0.0.32"></script>
+    <script src="script.js?v=0.0.32"></script>
   </body>
 </html>
