@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.42-clean-settings';
+const CACHE_NAME = 'arcade-collection-v0.0.43-vip-pin-145785';
 const APP_SHELL = [
   './',
   './index.html',
