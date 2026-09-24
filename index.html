@@ -736,6 +736,7 @@
         <div class="footer-content">
           <span>🎮 Arcade Collection Ultra & VIP • PWA Offline Ready</span>
           <div class="footer-links">
+            <button class="link-btn" id="footer-settings-btn" data-i18n="nav_settings">⚙️ Einstellungen</button>
             <button class="link-btn" id="footer-stats-btn" data-i18n="nav_stats">📊 Statistiken</button>
             <button class="link-btn vip-footer-trigger" id="footer-vip-btn">👑 VIP Admin</button>
             <button class="link-btn" id="footer-reset-all" data-i18n="nav_reset_all">🔄 Alle Scores zurücksetzen</button>
@@ -1237,20 +1238,18 @@
                 <span class="theme-preview nordic-preview"></span>
                 <strong>Nordic Slate</strong>
               </button>
-              <button class="theme-opt vip-lock-item" data-theme="vipgold" id="theme-opt-vipgold">
+              <button class="theme-opt" data-theme="vipgold" id="theme-opt-vipgold">
                 <span class="theme-preview vipgold-preview"></span>
                 <strong>👑 VIP Gold</strong>
-                <span class="vip-lock-badge">🔒</span>
               </button>
-              <button class="theme-opt vip-lock-item" data-theme="vipplatinum" id="theme-opt-vipplatinum">
+              <button class="theme-opt" data-theme="vipplatinum" id="theme-opt-vipplatinum">
                 <span class="theme-preview vipplatinum-preview"></span>
                 <strong>💎 Platinum</strong>
-                <span class="vip-lock-badge">🔒</span>
               </button>
             </div>
           </div>
 
-          <!-- Animation Style Selection (With VIP Matrix Lock) -->
+          <!-- Animation Style Selection -->
           <div class="setting-group">
             <label class="setting-title" data-i18n="anim_style_label">✨ Animations- & Motion-Stil</label>
             <div class="segmented-control">
@@ -1258,7 +1257,7 @@
               <button class="segment-btn" data-anim="smooth">🌊 Smooth</button>
               <button class="segment-btn" data-anim="pixel">👾 Pixel 8-Bit</button>
               <button class="segment-btn" data-anim="eco">⚡ Eco</button>
-              <button class="segment-btn vip-lock-item" data-anim="vipmatrix" id="anim-opt-vipmatrix">👑 VIP Matrix <span class="vip-lock-badge">🔒</span></button>
+              <button class="segment-btn" data-anim="vipmatrix" id="anim-opt-vipmatrix">👑 VIP Matrix</button>
             </div>
           </div>
 
@@ -1286,10 +1285,10 @@
             </label>
           </div>
 
-          <!-- VIP Mouse Sparkle Particle Trail -->
-          <div class="setting-row vip-setting-row vip-lock-item" id="vip-sparkle-trail-row">
+          <!-- VIP Mouse Sparkle Particle Trail (Available for all in settings) -->
+          <div class="setting-row" id="vip-sparkle-trail-row">
             <div>
-              <strong>✨ VIP Sparkle Partikel-Spur</strong>
+              <strong>✨ Sparkle Partikel-Spur</strong>
               <p class="setting-desc">Goldene Glitzer-Spur bei Maus- und Touch-Bewegungen.</p>
             </div>
             <label class="toggle-switch">
@@ -1439,7 +1438,7 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">🎉</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.40?</h2>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.41?</h2>
               <small>Noel Arcade Universe • WLAN & Netzwerk Coins-Geschenk Edition</small>
             </div>
           </div>
