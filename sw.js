@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.25-admin-notifs';
+const CACHE_NAME = 'arcade-collection-v0.0.26-hourly-auto';
 const APP_SHELL = [
   './',
   './index.html',
