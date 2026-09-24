@@ -1410,19 +1410,29 @@
       <div class="modal-card">
         <div class="modal-header">
           <div class="admin-title-row">
-            <span style="font-size: 1.8rem;">⚡</span>
+            <span style="font-size: 1.8rem;">📱</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.34?</h2>
-              <small>Noel Arcade Universe • Vorab-Update Ankündigungs & Live-Push Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.35?</h2>
+              <small>Noel Arcade Universe • Sperrbildschirm Web-Push & Handy-Aus Benachrichtigungs Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
+          <div class="changelog-item" style="border: 1px solid #10b981; background: rgba(16, 185, 129, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5)); border-color: #10b981; color: #34d399;">📱 BENACHRICHTIGUNGEN BEI GESPERRTEM / AUSGESCHALTETEM HANDY</div>
+            <strong>Erhalte Benachrichtigungen direkt auf den Sperrbildschirm, auch wenn das Handy aus ist!</strong>
+            <p>Die Arcade verbindet sich jetzt über die offizielle Web Push API mit den Push-Servern von Apple (APNs) und Google (FCM). Sobald ein Update, eine Erinnerung oder ein Event ansteht, weckt der Push-Server dein Smartphone im Standby auf und zeigt die Nachricht auf dem Sperrbildschirm an!</p>
+          </div>
+          <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(250, 204, 21, 0.5), rgba(245, 158, 11, 0.5)); border-color: #facc15; color: #fde047;">🍏 APPLE IPHONE SCHNELL-ANLEITUNG</div>
+            <strong>So empfängt dein iPhone Push-Nachrichten bei gesperrtem Bildschirm:</strong>
+            <p>Auf Apple iOS ist es ganz einfach: Öffne die Arcade in Safari ➔ Tippe unten auf Teilen [ 📤 ] ➔ Wähle „Zum Home-Bildschirm“ ➕ ➔ Öffne die App vom Home-Bildschirm und erlaube Benachrichtigungen in den ⚙️ Einstellungen! Schon empfängt dein iPhone alle Sperrbildschirm-Pushes.</p>
+          </div>
           <div class="changelog-item" style="border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.5), rgba(239, 68, 68, 0.5)); border-color: #f59e0b; color: #fbbf24;">⚡ VORAB-UPDATE BENACHRICHTIGUNG (VOR DEM UPLOAD)</div>
             <strong>Benachrichtigungen erscheinen jetzt schon VOR dem Einspielen des Updates!</strong>
-            <p>Wenn ein neues Update ansteht, sendet die Arcade eine weltweite Vorab-Ankündigung an alle Spieler („Achtung: Gleich wird ein neues Update hochgeladen, bitte Spielstand sichern!“). So verpasst niemand mehr die neuesten Spiele und Features!</p>
+            <p>Wenn ein neues Update ansteht, sendet die Arcade eine weltweite Vorab-Ankündigung an alle Spieler („Achtung: Gleich wird ein neues Update hochgeladen, bitte Spielstand sichern!“).</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #38bdf8; background: rgba(56, 189, 248, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(139, 92, 246, 0.5)); border-color: #38bdf8; color: #7dd3fc;">🚀 AUTOMATISCHE ECHTZEIT-UPDATE-ERKENNUNG</div>
@@ -1520,7 +1530,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.34"></script>
-    <script src="script.js?v=0.0.34"></script>
+    <script src="paho-mqtt.js?v=0.0.35"></script>
+    <script src="script.js?v=0.0.35"></script>
   </body>
 </html>
