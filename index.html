@@ -1105,17 +1105,25 @@
         <!-- TAB 6: NOTIFICATIONS & REMINDER CONTROL -->
         <div class="admin-tab-content hidden" id="admin-tab-notifications">
           <div class="admin-box">
-            <h3>🔔 Benachrichtigungs-Zentrale & Test-Konsole</h3>
-            <p class="admin-desc">Sende sofortige Test-Benachrichtigungen, simuliere 1-Stunden-Erinnerungen oder teste Trophäen-Meldungen.</p>
-            <div class="admin-btn-row">
+            <h3>🔔 Benachrichtigungs-Zentrale & Zeitstufen-Simulation</h3>
+            <p class="admin-desc">Teste die 4 verschiedenen automatischen Stufen (1h, 2h, 3h oder 24h):</p>
+            <div class="admin-btn-row" style="margin-bottom: 8px;">
               <button class="primary-button vip-gold-btn" id="admin-test-notif-btn">
-                <span>🔔</span> <strong>Test-Benachrichtigung senden</strong>
+                <span>🔔</span> <strong>Direkter VIP Test-Push</strong>
               </button>
-              <button class="secondary-button" id="admin-test-reminder-btn">
-                <span>⏰</span> <strong>1-Stunden Reminder simulieren</strong>
+              <button class="secondary-button" id="admin-test-tier1-btn">
+                <span>⏰</span> <strong>Stufe 1: 1 Std. (Pause vorbei)</strong>
               </button>
-              <button class="secondary-button" id="admin-test-trophy-notif-btn">
-                <span>🏆</span> <strong>Trophäen-Alarm testen</strong>
+            </div>
+            <div class="admin-btn-row">
+              <button class="secondary-button" id="admin-test-tier2-btn">
+                <span>🔋</span> <strong>Stufe 2: 2 Std. (Energie 100%)</strong>
+              </button>
+              <button class="secondary-button" id="admin-test-tier3-btn">
+                <span>🏎️</span> <strong>Stufe 3: 3 Std. (Rivalen & Boss)</strong>
+              </button>
+              <button class="secondary-button" id="admin-test-tier24-btn">
+                <span>🎁</span> <strong>Stufe 4: 24 Std. (Tages-Schatzkammer)</strong>
               </button>
             </div>
           </div>
@@ -1262,12 +1270,21 @@
 
           <!-- Direct Test Buttons & Apple iPhone Quick Setup Box in Settings -->
           <div class="setting-group" style="background: rgba(139, 92, 246, 0.08); border: 1px solid var(--accent-primary); border-radius: 10px; padding: 12px; margin-top: 10px;">
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button class="primary-button vip-gold-btn btn-small" id="settings-test-notif-btn" style="flex: 1; min-width: 140px;">
-                <span>🔔</span> <strong>Test-Push senden</strong>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="primary-button vip-gold-btn btn-small" id="settings-test-notif-btn" style="flex: 1; min-width: 120px;">
+                <span>🔔</span> <strong>Test-Push</strong>
               </button>
-              <button class="secondary-button btn-small" id="settings-test-reminder-btn" style="flex: 1; min-width: 140px;">
-                <span>⏰</span> <strong>1-Std. Reminder testen</strong>
+              <button class="secondary-button btn-small" id="settings-test-tier1-btn" style="flex: 1; min-width: 120px;">
+                <span>⏰</span> <strong>1h: Pause</strong>
+              </button>
+              <button class="secondary-button btn-small" id="settings-test-tier2-btn" style="flex: 1; min-width: 120px;">
+                <span>🔋</span> <strong>2h: Energie</strong>
+              </button>
+              <button class="secondary-button btn-small" id="settings-test-tier3-btn" style="flex: 1; min-width: 120px;">
+                <span>🏎️</span> <strong>3h: Rivalen</strong>
+              </button>
+              <button class="secondary-button btn-small" id="settings-test-tier24-btn" style="flex: 1; min-width: 120px;">
+                <span>🎁</span> <strong>24h: Schatz</strong>
               </button>
             </div>
             
@@ -1422,7 +1439,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.28"></script>
-    <script src="script.js?v=0.0.28"></script>
+    <script src="paho-mqtt.js?v=0.0.29"></script>
+    <script src="script.js?v=0.0.29"></script>
   </body>
 </html>
