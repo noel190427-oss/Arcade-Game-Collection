@@ -701,6 +701,7 @@ const I18N_DATA = {
 const DEFAULT_STATE = {
   notificationsEnabled: true,
   lastDailyBonus: 0,
+  lastHourlyReminder: 0,
   playerName: 'Gast',
   playerAvatar: '👾',
   isVip: false,
@@ -835,7 +836,7 @@ function checkDailyBonus() {
 }
 
 /* ==========================================================================
-   2.2 INACTIVITY & 1-HOUR CREATIVE REMINDERS POOL
+   2.2 AUTOMATIC HOURLY GAME REMINDER NOTIFICATIONS ENGINE
    ========================================================================== */
 const ARCADE_REMINDERS = [
   {
@@ -852,7 +853,7 @@ const ARCADE_REMINDERS = [
   },
   {
     title: '🧠 Memory-Training!',
-    body: 'Bist du bereit für die 10-Paare Meister-Herausforderung? Teste dein Gedächtnis!'
+    body: 'Bist du bereit für die 10-Paare Meister-Herausforderung? Teste jetzt dein Gedächtnis!'
   },
   {
     title: '🤖 Minimax will eine Revanche!',
@@ -865,6 +866,18 @@ const ARCADE_REMINDERS = [
   {
     title: '🧱 Cyber Bricks Laser-Show!',
     body: 'Neue Laser-Kanonen & Power-ups warten auf dich im Breakout-Modus!'
+  },
+  {
+    title: '🍄 Super Mario Run ruft!',
+    body: 'Der Münzen-Magnet und der Hover-Sprung warten auf deinen nächsten Run!'
+  },
+  {
+    title: '✊🖐️✌️ Markov KI Duell!',
+    body: 'Die Vorhersage-KI analysiert deine Züge... Schaffst du eine 5er-Serie in RPSLS?'
+  },
+  {
+    title: '🏆 Trophäen-Jagd!',
+    body: 'Schau vorbei und schalte noch heute die nächste Arcade-Errungenschaft frei!'
   }
 ];
 
@@ -873,29 +886,34 @@ function sendRandomReminderNotification() {
   sendArcadeNotification(reminder.title, reminder.body, 'icon-192.png', 'arcade-reminder');
 }
 
-let userInactivityTimer = null;
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
-function resetInactivityTimer() {
-  if (userInactivityTimer) clearTimeout(userInactivityTimer);
-  userInactivityTimer = setTimeout(() => {
+function checkHourlyNotification() {
+  const now = Date.now();
+  if (!appState.lastHourlyReminder) {
+    appState.lastHourlyReminder = now;
+    saveState();
+    return;
+  }
+
+  // If 1 full hour has passed since the last reminder, send an automatic reminder
+  if (now - appState.lastHourlyReminder >= ONE_HOUR_MS) {
+    appState.lastHourlyReminder = now;
+    saveState();
     sendRandomReminderNotification();
-    resetInactivityTimer();
-  }, ONE_HOUR_MS);
+  }
 }
 
-// Track user interaction and tab visibility for 1-hour reminders
-['mousemove', 'keydown', 'touchstart', 'click'].forEach((evt) => {
-  window.addEventListener(evt, () => resetInactivityTimer(), { passive: true });
-});
+// Background & foreground check: runs every 30 seconds
+setInterval(checkHourlyNotification, 30 * 1000);
 
+// Check immediately on tab focus / wake up
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden') {
-    resetInactivityTimer();
-  } else {
-    resetInactivityTimer();
+  if (document.visibilityState === 'visible') {
+    checkHourlyNotification();
   }
 });
+window.addEventListener('focus', checkHourlyNotification);
 
 /* ==========================================================================
    3. 3D PHYSICS CONFETTI & MONEY SHOWER ENGINE
