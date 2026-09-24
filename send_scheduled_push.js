@@ -34,7 +34,11 @@ async function main() {
     body: msg.body,
     icon: './icon-192.png',
     badge: './icon-192.png',
-    tag: 'arcade-hourly-' + Date.now()
+    tag: 'arcade-hourly-' + Date.now(),
+    actions: [
+      { action: 'claim_2000_coins', title: '🎁 +2.000 Coins abholen' }
+    ],
+    data: { url: './?claim=2000_coins', reward: 2000 }
   });
 
   const results = await Promise.allSettled(
