@@ -1214,6 +1214,18 @@
               <span class="toggle-slider"></span>
             </label>
           </div>
+
+          <!-- Push & Browser Notifications Toggle -->
+          <div class="setting-row">
+            <div>
+              <strong data-i18n="notifications_title">🔔 Push-Benachrichtigungen</strong>
+              <p class="setting-desc" data-i18n="notifications_desc">Erhalte automatische Benachrichtigungen bei Trophäen, Multiplayer & Tages-Boni.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifications-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -1263,27 +1275,27 @@
           <div class="admin-title-row">
             <span style="font-size: 1.8rem;">✨</span>
             <div>
-              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.13?</h2>
-              <small>Noel Arcade Universe • Live Multiplayer Edition</small>
+              <h2 data-i18n="whats_new_title">Was ist neu in v0.0.24?</h2>
+              <small>Noel Arcade Universe • Notifications & 65% Keyboard Edition</small>
             </div>
           </div>
           <button class="close-modal-btn" id="close-whats-new-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="whats-new-content">
           <div class="changelog-item" style="border: 1px solid var(--accent-secondary); background: rgba(6, 182, 212, 0.08);">
-            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.4)); border-color: var(--accent-secondary); color: #38bdf8;">🌐 LIVE MULTIPLAYER LOBBY</div>
+            <div class="changelog-badge" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(6, 182, 212, 0.4)); border-color: var(--accent-secondary); color: #38bdf8;">🔔 AUTOMATISCHE BENACHRICHTIGUNGEN</div>
+            <strong>Push & Browser-Benachrichtigungen</strong>
+            <p>Sobald Benachrichtigungen in Google Chrome / Browser aktiviert sind, sendet die Arcade dir automatische Push-Nachrichten bei freigeschalteten Trophäen, Multiplayer-Beitritten und täglichen Münz-Boni!</p>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-badge">⌨️ 65% KEYBOARD OPTIMIERUNG</div>
+            <strong>Volle Tastatur-Steuerung ohne Numpad</strong>
+            <p>Spiele Tic-Tac-Toe mit 1-9 Zahlenreihe, RPSLS mit 1-5, Mario Kart mit WASD/Shift/E, Mario Run mit Space/W und steuere die gesamte Arcade blitzschnell mit deiner 65% Tastatur!</p>
+          </div>
+          <div class="changelog-item">
+            <div class="changelog-badge">🌐 LIVE MULTIPLAYER LOBBY</div>
             <strong>Online gegen Freunde spielen (2 bis 10 Spieler)</strong>
             <p>Neues 4-stelliges Raum-Code System! Erstelle eigene Räume für bis zu 10 Spieler, teile deinen Code und duelliere dich live in Tic-Tac-Toe & Memory Matrix.</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">🚦 START-COUNTDOWNS</div>
-            <strong>3-Sekunden Start-Countdown mit Sound</strong>
-            <p>Mario Kart Rush & Super Mario Run starten jetzt mit authentischer Startampel, Soundeffekten und Raketen-Turbostart.</p>
-          </div>
-          <div class="changelog-item">
-            <div class="changelog-badge">❓ SPIELANLEITUNGEN</div>
-            <strong>Anleitungs-Modals für alle 7 Spiele</strong>
-            <p>Jedes Spiel besitzt einen eigenen Anleitung-Button mit Regeln, Steuerung, KI-Details und Profi-Tipps in 6 Sprachen.</p>
           </div>
           <div class="changelog-item">
             <div class="changelog-badge">👑 VIP UNIVERSE</div>
@@ -1341,7 +1353,7 @@
       </div>
     </div>
 
-    <script src="paho-mqtt.js?v=0.0.23"></script>
-    <script src="script.js?v=0.0.23"></script>
+    <script src="paho-mqtt.js?v=0.0.24"></script>
+    <script src="script.js?v=0.0.24"></script>
   </body>
 </html>
