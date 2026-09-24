@@ -1927,6 +1927,27 @@ function initSettings() {
     SFX.click();
   });
 
+  // Reload / Refresh App Handlers (Ideal for 65% keyboards without F5)
+  const performAppReload = () => {
+    SFX.click();
+    const reloadBtn = document.getElementById('app-reload-btn');
+    if (reloadBtn) reloadBtn.textContent = '⏳';
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        for (const reg of regs) reg.update();
+      });
+    }
+    setTimeout(() => {
+      window.location.reload();
+    }, 200);
+  };
+
+  const topReloadBtn = document.getElementById('app-reload-btn');
+  if (topReloadBtn) topReloadBtn.addEventListener('click', performAppReload);
+
+  const forceReloadBtn = document.getElementById('settings-force-reload-btn');
+  if (forceReloadBtn) forceReloadBtn.addEventListener('click', performAppReload);
+
   // Trophies & Stats Modals
   document.getElementById('open-trophies-btn').addEventListener('click', () => {
     renderTrophiesModal();
