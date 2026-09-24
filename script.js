@@ -130,7 +130,7 @@ const I18N_DATA = {
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.30?',
+    whats_new_title: 'Was ist neu in v0.0.31?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
@@ -242,7 +242,7 @@ const I18N_DATA = {
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.30?",
+    whats_new_title: "What's new in v0.0.31?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
@@ -354,7 +354,7 @@ const I18N_DATA = {
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.30?',
+    whats_new_title: 'Was ist neu in v0.0.31?',
     privacy_title: 'Politique de confidentialité'
   },
   pt: {
@@ -466,7 +466,7 @@ const I18N_DATA = {
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.30?',
+    whats_new_title: 'Was ist neu in v0.0.31?',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
@@ -578,7 +578,7 @@ const I18N_DATA = {
     created_by: 'Hazırlayan',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.30?',
+    whats_new_title: 'Was ist neu in v0.0.31?',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
@@ -690,7 +690,7 @@ const I18N_DATA = {
     created_by: 'Creado por',
     whats_new: '¿Qué hay de nuevo?',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.30?',
+    whats_new_title: 'Was ist neu in v0.0.31?',
     privacy_title: 'Política de Privacidad'
   }
 };
@@ -929,6 +929,186 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 window.addEventListener('focus', checkDynamicAutomations);
+
+/* ==========================================================================
+   2.3 REAL-TIME GLOBAL MULTI-DEVICE BROADCAST NOTIFICATION SYSTEM
+   ========================================================================== */
+let globalBroadcastChannel = null;
+let globalBroadcastMqtt = null;
+const processedBroadcastIds = new Set();
+
+function showBroadcastToast(title, body, sender) {
+  const toast = document.createElement('div');
+  toast.className = 'install-toast';
+  toast.style.borderColor = '#ec4899';
+  toast.style.background = 'linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(139, 92, 246, 0.35))';
+  toast.style.boxShadow = '0 8px 32px rgba(236, 72, 153, 0.45)';
+  toast.innerHTML = `
+    <div class="install-toast-content">
+      <span style="font-size: 2.2rem; filter: drop-shadow(0 0 8px #ec4899);">📢</span>
+      <div>
+        <strong style="color: #f472b6; font-size: 0.98rem;">${title}</strong>
+        <p style="margin: 3px 0 0; color: #fff; font-size: 0.88rem; line-height: 1.4;">${body}</p>
+        <small style="color: var(--text-muted); font-size: 0.75rem;">Von: ${sender || 'Admin Noel'} • Live-Broadcast an alle Geräte</small>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(toast);
+  SFX.achievement();
+  triggerConfetti(60, true);
+  triggerHaptic([60, 40, 60]);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+    toast.style.transition = 'all 0.4s ease';
+    setTimeout(() => toast.remove(), 400);
+  }, 7000);
+}
+
+function handleIncomingBroadcast(packet) {
+  if (!packet || !packet.id) return;
+  if (processedBroadcastIds.has(packet.id)) return;
+  processedBroadcastIds.add(packet.id);
+
+  // Limit set size to avoid memory growth
+  if (processedBroadcastIds.size > 200) {
+    const first = processedBroadcastIds.values().next().value;
+    processedBroadcastIds.delete(first);
+  }
+
+  const title = packet.title || '📢 Noel Arcade Universe';
+  const body = packet.body || 'Neue Benachrichtigung erhalten!';
+  const sender = packet.sender || 'Admin Noel';
+
+  // 1. Trigger System Push / Browser notification
+  sendArcadeNotification(title, body, 'icon-192.png', 'broadcast-' + packet.id);
+
+  // 2. Trigger In-App UI Toast & Celebratory SFX
+  showBroadcastToast(title, body, sender);
+}
+
+function initGlobalBroadcastSystem() {
+  // 1. BroadcastChannel for same-device cross-tab communication
+  if ('BroadcastChannel' in window) {
+    try {
+      globalBroadcastChannel = new BroadcastChannel('noel_arcade_global_broadcast');
+      globalBroadcastChannel.onmessage = (e) => {
+        if (e.data) handleIncomingBroadcast(e.data);
+      };
+    } catch (e) {
+      console.warn('BroadcastChannel error:', e);
+    }
+  }
+
+  // 2. Storage event fallback for older browsers / cross-tabs
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'noel_global_broadcast_signal' && e.newValue) {
+      try {
+        const data = JSON.parse(e.newValue);
+        handleIncomingBroadcast(data);
+      } catch (err) {}
+    }
+  });
+
+  // 3. Connect to HiveMQ Public MQTT WSS for Worldwide Cross-Device delivery
+  const connectBroadcastMqtt = () => {
+    if (typeof Paho === 'undefined' || !Paho.MQTT) {
+      setTimeout(connectBroadcastMqtt, 2000);
+      return;
+    }
+
+    const clientId = 'noel_user_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36).slice(-4);
+    try {
+      globalBroadcastMqtt = new Paho.MQTT.Client('broker.hivemq.com', 8884, '/mqtt', clientId);
+      
+      globalBroadcastMqtt.onConnectionLost = (resp) => {
+        const dot = document.getElementById('broadcast-server-dot');
+        if (dot) {
+          dot.textContent = '🟡 Reconnecting...';
+          dot.className = 'pill-badge';
+        }
+        setTimeout(connectBroadcastMqtt, 3000);
+      };
+
+      globalBroadcastMqtt.onMessageArrived = (message) => {
+        try {
+          const packet = JSON.parse(message.payloadString);
+          handleIncomingBroadcast(packet);
+        } catch (e) {
+          console.warn('MQTT broadcast parse error:', e);
+        }
+      };
+
+      globalBroadcastMqtt.connect({
+        useSSL: true,
+        timeout: 10,
+        keepAliveInterval: 45,
+        cleanSession: true,
+        onSuccess: () => {
+          const dot = document.getElementById('broadcast-server-dot');
+          if (dot) {
+            dot.textContent = '🟢 Live-Netzwerk';
+            dot.className = 'pill-badge pill-online';
+          }
+          globalBroadcastMqtt.subscribe('noelarcade/broadcast/all', { qos: 0 });
+        },
+        onFailure: () => {
+          const dot = document.getElementById('broadcast-server-dot');
+          if (dot) {
+            dot.textContent = '🟡 Offline';
+            dot.className = 'pill-badge';
+          }
+          setTimeout(connectBroadcastMqtt, 5000);
+        }
+      });
+    } catch (e) {
+      console.warn('Global MQTT init error:', e);
+    }
+  };
+
+  connectBroadcastMqtt();
+}
+
+function broadcastNotificationToAll(title, body) {
+  const senderName = appState.playerName || 'Admin Noel';
+  const packet = {
+    id: 'bc_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+    timestamp: Date.now(),
+    title: title || '📢 Noel Arcade Universe',
+    body: body || 'Große Ankündigung in der Arcade!',
+    sender: senderName
+  };
+
+  // 1. Send via MQTT to all devices worldwide
+  if (globalBroadcastMqtt && globalBroadcastMqtt.isConnected()) {
+    try {
+      const msg = new Paho.MQTT.Message(JSON.stringify(packet));
+      msg.destinationName = 'noelarcade/broadcast/all';
+      msg.qos = 0;
+      globalBroadcastMqtt.send(msg);
+    } catch (e) {
+      console.warn('MQTT broadcast send error:', e);
+    }
+  }
+
+  // 2. Send via BroadcastChannel locally
+  if (globalBroadcastChannel) {
+    try {
+      globalBroadcastChannel.postMessage(packet);
+    } catch (e) {}
+  }
+
+  // 3. Send via localStorage for cross-tabs
+  try {
+    localStorage.setItem('noel_global_broadcast_signal', JSON.stringify(packet));
+  } catch (e) {}
+
+  // 4. Trigger on sending device as well
+  handleIncomingBroadcast(packet);
+
+  return packet;
+}
 
 /* ==========================================================================
    3. 3D PHYSICS CONFETTI & MONEY SHOWER ENGINE
@@ -2044,6 +2224,17 @@ function initSettings() {
     });
   }
 
+  const settingsBroadcastBtn = document.getElementById('settings-test-broadcast-btn');
+  if (settingsBroadcastBtn) {
+    settingsBroadcastBtn.addEventListener('click', () => {
+      SFX.win();
+      broadcastNotificationToAll(
+        '📢 Noel Arcade Universe',
+        '👑 Live-Test von ' + (appState.playerName || 'Admin Noel') + ': Alle Geräte haben diese Nachricht empfangen!'
+      );
+    });
+  }
+
   const toggleAppleHelpBtn = document.getElementById('toggle-apple-help-btn');
   const appleHelpBox = document.getElementById('apple-help-box');
   if (toggleAppleHelpBtn && appleHelpBox) {
@@ -2421,6 +2612,40 @@ function initAdminConsole() {
         'icon-192.png',
         'admin-trophy-test'
       );
+    });
+  }
+
+  // Global Broadcast Presets & Send Button in Admin Console
+  const setupPreset = (id, text) => {
+    const btn = document.getElementById(id);
+    const input = document.getElementById('admin-broadcast-custom-text');
+    if (btn && input) {
+      btn.addEventListener('click', () => {
+        input.value = text;
+        SFX.click();
+      });
+    }
+  };
+
+  setupPreset('preset-broadcast-tournament', '🏎️ Großes Mario-Kart Turnier gestartet! Wer holt Platz 1?');
+  setupPreset('preset-broadcast-coins', '🪙 Doppel-Münzen Event aktiv! Hol dir 2x Bonus-Gold in allen Spielen!');
+  setupPreset('preset-broadcast-boss', '👑 Admin Noel hat einen neuen Highscore aufgestellt! Schaffst du mehr?');
+  setupPreset('preset-broadcast-ttt', '🤖 Minimax Challenge: Wer knackt die unbesiegbare Meister-KI?');
+
+  const adminSendBroadcastBtn = document.getElementById('admin-send-global-broadcast-btn');
+  const broadcastStatusEl = document.getElementById('admin-broadcast-status');
+  if (adminSendBroadcastBtn) {
+    adminSendBroadcastBtn.addEventListener('click', () => {
+      const input = document.getElementById('admin-broadcast-custom-text');
+      const text = (input?.value || '').trim() || '👑 Admin Noel ruft alle Spieler zum gemeinsamen Arcade-Match auf!';
+      SFX.win();
+      broadcastNotificationToAll('📢 Noel Arcade Universe', text);
+      if (broadcastStatusEl) {
+        broadcastStatusEl.textContent = '✅ Nachricht erfolgreich an alle verbundenen Geräte gesendet!';
+        setTimeout(() => {
+          if (broadcastStatusEl) broadcastStatusEl.textContent = '';
+        }, 4500);
+      }
     });
   }
 }
@@ -6037,6 +6262,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initRPS();
   initSnake();
   initBrickBreaker();
+  initGlobalBroadcastSystem();
   initPWA();
 
   // Auto-detect browser notification permission & check daily bonus
