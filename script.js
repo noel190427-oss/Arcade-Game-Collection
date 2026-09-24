@@ -817,6 +817,20 @@ function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null) 
   }
 }
 
+function handleNotificationNotSupported() {
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+  const appleBox = document.getElementById('apple-help-box');
+  if (appleBox) appleBox.classList.remove('hidden');
+
+  if (isIos && !isStandalone) {
+    alert('🍏 WICHTIGER IPHONE-HINWEIS:\n\nAuf dem iPhone schaltet Apple Benachrichtigungen erst frei, wenn du die App zum Home-Bildschirm hinzufügst!\n\n1. Tippe unten in Safari auf Teilen [ 📤 ]\n2. Wähle „Zum Home-Bildschirm“ ➕\n3. Öffne die neue Noel Arcade App vom Home-Bildschirm!\n\n(Die Schritt-für-Schritt Anleitung ist jetzt in den Einstellungen eingeblendet)');
+  } else {
+    alert('Benachrichtigungen werden von diesem Browser nicht unterstützt. Bitte nutze Google Chrome oder füge die App auf dem iPhone zum Home-Bildschirm hinzu.');
+  }
+}
+
 function checkDailyBonus() {
   const now = Date.now();
   const ONE_DAY = 24 * 60 * 60 * 1000;
@@ -1976,7 +1990,7 @@ function initSettings() {
     settingsTestNotifBtn.addEventListener('click', () => {
       SFX.powerup();
       if (!('Notification' in window)) {
-        alert('Benachrichtigungen werden von diesem Browser nicht unterstützt.');
+        handleNotificationNotSupported();
         return;
       }
       if (Notification.permission !== 'granted') {
@@ -2329,7 +2343,7 @@ function initAdminConsole() {
     testNotifBtn.addEventListener('click', () => {
       SFX.powerup();
       if (!('Notification' in window)) {
-        alert('Benachrichtigungen werden von diesem Browser nicht unterstützt.');
+        handleNotificationNotSupported();
         return;
       }
       if (Notification.permission !== 'granted') {
