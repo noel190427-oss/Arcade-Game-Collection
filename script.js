@@ -823,11 +823,11 @@ function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null, 
   }
 }
 
-function claim2000CoinsReward(source = 'Push-Benachrichtigung') {
-  const amount = 2000;
-  appState.vipCoins = (appState.vipCoins || 0) + amount;
+function claimCustomCoinsReward(amount = 2000, source = 'Push-Benachrichtigung') {
+  const parsedAmount = Math.max(1, Number(amount) || 2000);
+  appState.vipCoins = (appState.vipCoins || 0) + parsedAmount;
   if (!appState.stats.mario.totalCoins) appState.stats.mario.totalCoins = 0;
-  appState.stats.mario.totalCoins += amount;
+  appState.stats.mario.totalCoins += parsedAmount;
   saveState();
 
   updateVipVisualState();
@@ -839,10 +839,14 @@ function claim2000CoinsReward(source = 'Push-Benachrichtigung') {
   triggerConfetti(90, true);
 
   const modal = document.getElementById('reward-coins-modal');
+  const titleEl = modal?.querySelector('h2');
   const descEl = document.getElementById('reward-coins-modal-desc');
   const balanceEl = document.getElementById('reward-coins-modal-balance');
+  if (titleEl) {
+    titleEl.textContent = `+${parsedAmount.toLocaleString()} COINS ERHALTEN!`;
+  }
   if (descEl) {
-    descEl.innerHTML = `Du hast erfolgreich <strong>+2.000 Bonus-Coins</strong> aus der Benachrichtigung (<em>${source}</em>) abgeholt!`;
+    descEl.innerHTML = `Du hast erfolgreich <strong>+${parsedAmount.toLocaleString()} Bonus-Coins</strong> (${source}) abgeholt!`;
   }
   if (balanceEl) {
     balanceEl.textContent = `🪙 ${Number(appState.vipCoins).toLocaleString()} Coins`;
@@ -860,7 +864,7 @@ function claim2000CoinsReward(source = 'Push-Benachrichtigung') {
     <div class="install-toast-content">
       <span style="font-size: 2.2rem; filter: drop-shadow(0 0 10px #facc15);">💰</span>
       <div>
-        <strong style="color: #fde047; font-size: 1rem;">+2.000 COINS GUTGESCHRIEBEN!</strong>
+        <strong style="color: #fde047; font-size: 1rem;">+${parsedAmount.toLocaleString()} COINS GUTGESCHRIEBEN!</strong>
         <p style="margin: 3px 0 0; color: #fff; font-size: 0.88rem;">Neuer Kontostand: <strong>🪙 ${Number(appState.vipCoins).toLocaleString()} Coins</strong></p>
       </div>
     </div>
@@ -869,6 +873,10 @@ function claim2000CoinsReward(source = 'Push-Benachrichtigung') {
   document.body.appendChild(toast);
   toast.querySelector('#dismiss-coins-toast-btn')?.addEventListener('click', () => toast.remove());
   setTimeout(() => { if (toast.parentElement) toast.remove(); }, 7000);
+}
+
+function claim2000CoinsReward(source = 'Push-Benachrichtigung') {
+  claimCustomCoinsReward(2000, source);
 }
 
 function handleNotificationNotSupported() {
@@ -888,8 +896,8 @@ function handleNotificationNotSupported() {
 /* ==========================================================================
    2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.38';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.38: Neuer 2.000 Coins Button in jeder Benachrichtigung! Hol dir sofort +2.000 Coins auf dein Konto!';
+const CURRENT_APP_VERSION = 'v0.0.39';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.39: Beliebige Anzahl Coins an alle Spieler im WLAN & Netzwerk senden!';
 
 const GITHUB_REPO = 'noel190427-oss/Arcade-Game-Collection';
 const GITHUB_TOKEN = ['ghp_8bFx7Fjr', 's96Gvk8MXwv', 'CWWoTLvMFEy', '15rsNQ'].join('');
@@ -1333,15 +1341,81 @@ function handleIncomingBroadcast(packet) {
   const body = packet.body || 'Neue Benachrichtigung erhalten!';
   const sender = packet.sender || 'Admin Noel';
 
-  // 1. Trigger System Push / Browser notification
+  // 1. Special Coins Gift Broadcast Handling (WLAN & Online)
+  if (packet.type === 'coins_gift') {
+    const giftAmount = Math.max(1, Number(packet.amount) || 2000);
+    claimCustomCoinsReward(giftAmount, sender);
+    sendArcadeNotification(
+      title,
+      body,
+      'icon-192.png',
+      'broadcast-' + packet.id,
+      [{ action: 'claim_custom_coins', title: `🎁 +${giftAmount.toLocaleString()} Coins abholen` }],
+      { url: `./?claim=${giftAmount}_coins`, reward: giftAmount }
+    );
+    return;
+  }
+
+  // 2. Trigger System Push / Browser notification
   sendArcadeNotification(title, body, 'icon-192.png', 'broadcast-' + packet.id);
 
-  // 2. Trigger In-App UI Toast & Celebratory SFX
+  // 3. Trigger In-App UI Toast & Celebratory SFX
   if (packet.type === 'pre_update') {
     showPreUpdateBannerToast(packet.version || 'v0.0.34', body);
   } else {
     showBroadcastToast(title, body, sender);
   }
+}
+
+function broadcastCustomCoinsGift(amount) {
+  const parsedAmount = Math.max(1, parseInt(amount, 10) || 2000);
+  const senderName = appState.playerName || 'Admin Noel';
+
+  const packet = {
+    id: 'gift_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+    timestamp: Date.now(),
+    type: 'coins_gift',
+    amount: parsedAmount,
+    title: `🎁 +${parsedAmount.toLocaleString()} Coins Geschenk von ${senderName}!`,
+    body: `${senderName} hat allen Spielern im WLAN +${parsedAmount.toLocaleString()} Coins geschenkt!`,
+    sender: senderName,
+    actions: [
+      { action: 'claim_custom_coins', title: `🎁 +${parsedAmount.toLocaleString()} Coins abholen` }
+    ],
+    data: {
+      url: `./?claim=${parsedAmount}_coins`,
+      reward: parsedAmount
+    }
+  };
+
+  // 1. Send via MQTT to all devices worldwide & in same WLAN
+  if (globalBroadcastMqtt && globalBroadcastMqtt.isConnected()) {
+    try {
+      const msg = new Paho.MQTT.Message(JSON.stringify(packet));
+      msg.destinationName = 'noelarcade/broadcast/all';
+      msg.qos = 0;
+      globalBroadcastMqtt.send(msg);
+    } catch (e) {
+      console.warn('MQTT gift broadcast send error:', e);
+    }
+  }
+
+  // 2. BroadcastChannel locally
+  if (globalBroadcastChannel) {
+    try {
+      globalBroadcastChannel.postMessage(packet);
+    } catch (e) {}
+  }
+
+  // 3. localStorage cross-tab
+  try {
+    localStorage.setItem('noel_global_broadcast_signal', JSON.stringify(packet));
+  } catch (e) {}
+
+  // 4. Trigger locally
+  handleIncomingBroadcast(packet);
+
+  return packet;
 }
 
 function initGlobalBroadcastSystem() {
@@ -2593,6 +2667,22 @@ function initSettings() {
     });
   }
 
+  const settingsSendCustomCoinsBtn = document.getElementById('settings-send-custom-gift-coins-btn');
+  const settingsGiftCoinsInput = document.getElementById('settings-gift-coins-input');
+  if (settingsSendCustomCoinsBtn && settingsGiftCoinsInput) {
+    settingsSendCustomCoinsBtn.addEventListener('click', () => {
+      const amt = parseInt(settingsGiftCoinsInput.value, 10);
+      if (isNaN(amt) || amt <= 0) {
+        alert('Bitte eine gültige Münzen-Anzahl (z.B. 2000) eingeben!');
+        return;
+      }
+      SFX.win();
+      triggerConfetti(80, true);
+      broadcastCustomCoinsGift(amt);
+      alert(`🎉 Erfolg! +${amt.toLocaleString()} Coins wurden soeben an alle Spieler im WLAN & Netzwerk gesendet!`);
+    });
+  }
+
   const settingsTestCoinsBtn = document.getElementById('settings-test-coins-notif-btn');
   if (settingsTestCoinsBtn) {
     settingsTestCoinsBtn.addEventListener('click', () => {
@@ -3009,15 +3099,43 @@ function initAdminConsole() {
     });
   }
 
+  const adminSendCustomGiftBtn = document.getElementById('admin-send-custom-gift-coins-btn');
+  const adminGiftCoinsInput = document.getElementById('admin-custom-gift-coins-input');
+  const adminGiftStatusEl = document.getElementById('admin-gift-status-msg');
+
+  if (adminSendCustomGiftBtn && adminGiftCoinsInput) {
+    adminSendCustomGiftBtn.addEventListener('click', () => {
+      const amt = parseInt(adminGiftCoinsInput.value, 10);
+      if (isNaN(amt) || amt <= 0) {
+        alert('Bitte eine gültige Münzen-Anzahl (z.B. 2000) eingeben!');
+        return;
+      }
+      SFX.win();
+      triggerConfetti(100, true);
+      broadcastCustomCoinsGift(amt);
+      if (adminGiftStatusEl) {
+        adminGiftStatusEl.textContent = `✅ +${amt.toLocaleString()} Coins erfolgreich an alle Spieler im WLAN & weltweit gesendet!`;
+        setTimeout(() => { if (adminGiftStatusEl) adminGiftStatusEl.textContent = ''; }, 6000);
+      }
+    });
+  }
+
+  // Gift Coin Preset Buttons
+  document.querySelectorAll('.gift-coin-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (adminGiftCoinsInput) {
+        adminGiftCoinsInput.value = btn.dataset.coins;
+        SFX.click();
+      }
+    });
+  });
+
   const adminTestCoinsBtn = document.getElementById('admin-test-coins-notif-btn');
   if (adminTestCoinsBtn) {
     adminTestCoinsBtn.addEventListener('click', () => {
       SFX.win();
       triggerConfetti(90, true);
-      broadcastNotificationToAll(
-        '🎁 +2.000 Bonus-Coins Geschenk!',
-        '👑 Admin Noel schenkt allen Spielern +2.000 Coins! Tippe auf den Button und hol sie dir ab!'
-      );
+      broadcastCustomCoinsGift(2000);
     });
   }
 
@@ -6760,22 +6878,30 @@ window.addEventListener('DOMContentLoaded', () => {
   checkDailyBonus();
   checkForNewAppUpdate();
 
-  // Listen for Service Worker Notification 2000 Coins Claim events
+  // Listen for Service Worker Notification Custom Coins Claim events
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data && (event.data.type === 'CLAIM_2000_COINS' || event.data.type === 'NOTIFICATION_REWARD')) {
-        claim2000CoinsReward(event.data.title || 'Push-Benachrichtigung');
+      if (event.data && (event.data.type === 'CLAIM_CUSTOM_COINS' || event.data.type === 'CLAIM_2000_COINS' || event.data.type === 'NOTIFICATION_REWARD')) {
+        const amt = Number(event.data.amount) || 2000;
+        claimCustomCoinsReward(amt, event.data.title || 'Push-Benachrichtigung');
       }
     });
   }
 
-  // Check URL parameters for 2000 coins claim from opened push notifications
+  // Check URL parameters for coins claim from opened push notifications (e.g. ?claim=5000_coins)
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('claim') === '2000_coins' || urlParams.get('reward') === '2000coins') {
+    const claimParam = urlParams.get('claim');
+    if (claimParam && claimParam.endsWith('_coins')) {
+      const amt = parseInt(claimParam.replace('_coins', ''), 10) || 2000;
       window.history.replaceState({}, document.title, window.location.pathname);
       setTimeout(() => {
-        claim2000CoinsReward('Push-Benachrichtigung');
+        claimCustomCoinsReward(amt, 'WLAN Geschenk / Benachrichtigung');
+      }, 700);
+    } else if (urlParams.get('reward') === '2000coins') {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setTimeout(() => {
+        claimCustomCoinsReward(2000, 'WLAN Geschenk / Benachrichtigung');
       }, 700);
     }
   } catch (e) {}
