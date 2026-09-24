@@ -130,7 +130,7 @@ const I18N_DATA = {
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.34?',
+    whats_new_title: 'Was ist neu in v0.0.35?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
@@ -242,7 +242,7 @@ const I18N_DATA = {
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.34?",
+    whats_new_title: "What's new in v0.0.35?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
@@ -354,7 +354,7 @@ const I18N_DATA = {
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.34?',
+    whats_new_title: 'Was ist neu in v0.0.35?',
     privacy_title: 'Politique de confidentialité'
   },
   pt: {
@@ -466,7 +466,7 @@ const I18N_DATA = {
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.34?',
+    whats_new_title: 'Was ist neu in v0.0.35?',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
@@ -578,7 +578,7 @@ const I18N_DATA = {
     created_by: 'Hazırlayan',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.34?',
+    whats_new_title: 'Was ist neu in v0.0.35?',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
@@ -690,7 +690,7 @@ const I18N_DATA = {
     created_by: 'Creado por',
     whats_new: '¿Qué hay de nuevo?',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.34?',
+    whats_new_title: 'Was ist neu in v0.0.35?',
     privacy_title: 'Política de Privacidad'
   }
 };
@@ -834,8 +834,56 @@ function handleNotificationNotSupported() {
 /* ==========================================================================
    2.15 AUTOMATIC APP UPDATE NOTIFICATION SYSTEM (MATCHING UPDATE TEXTS & PRE-UPDATE)
    ========================================================================== */
-const CURRENT_APP_VERSION = 'v0.0.34';
-const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.34: Vorab-Update-Benachrichtigung vor jedem Upload, Live-Update Ankündigungen & automatische Update-Warnung!';
+const CURRENT_APP_VERSION = 'v0.0.35';
+const CURRENT_APP_UPDATE_SUMMARY = 'Update v0.0.35: Echte Web-Push Benachrichtigungen für gesperrte Handys & ausgeschaltete Bildschirme via Apple & Google Push-Server!';
+
+const VAPID_PUBLIC_KEY = 'BD2uOQA-nA5BmkTWcBlSjPRXuA33XbCvxJsDsa_TjLHmEEEJ8fzgv_hbw6-x9pkOlusEXOdVSK6k-fUPF7RkYjY';
+
+function urlB64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function registerWebPushSubscription() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let subscription = await reg.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    if (subscription) {
+      const subJson = subscription.toJSON();
+      localStorage.setItem('arcade_webpush_subscription', JSON.stringify(subJson));
+      
+      // Broadcast subscription so upload/backend can dispatch lockscreen pushes
+      if (globalBroadcastMqtt && globalBroadcastMqtt.isConnected()) {
+        try {
+          const msg = new Paho.MQTT.Message(JSON.stringify({
+            type: 'register_push_subscription',
+            subscription: subJson,
+            playerName: appState.playerName || 'Player',
+            platform: navigator.userAgent
+          }));
+          msg.destinationName = 'noelarcade/subscriptions/register';
+          msg.qos = 0;
+          globalBroadcastMqtt.send(msg);
+        } catch (e) {}
+      }
+    }
+  } catch (err) {
+    console.warn('Web Push subscription registration info:', err);
+  }
+}
 
 function checkForNewAppUpdate(isManualTest = false) {
   const lastSeenVersion = localStorage.getItem('arcade_last_seen_version');
@@ -857,8 +905,8 @@ function checkForNewAppUpdate(isManualTest = false) {
   }
 }
 
-function broadcastPreUpdateAlert(targetVersion = 'v0.0.34', customMsg = '') {
-  const versionStr = targetVersion || 'v0.0.34';
+function broadcastPreUpdateAlert(targetVersion = 'v0.0.35', customMsg = '') {
+  const versionStr = targetVersion || 'v0.0.35';
   const title = '⚡ Update-Ankündigung: Neues Update ' + versionStr + ' steht bevor!';
   const body = customMsg || 'Achtung: Gleich wird ein neues Update hochgeladen! Freut euch auf neue Features. Bitte sichert euren Spielstand!';
 
@@ -2299,12 +2347,14 @@ function initSettings() {
           if (Notification.permission === 'granted') {
             appState.notificationsEnabled = true;
             saveState();
+            registerWebPushSubscription();
             sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'icon-192.png');
           } else if (Notification.permission !== 'denied') {
             Notification.requestPermission().then((perm) => {
               if (perm === 'granted') {
                 appState.notificationsEnabled = true;
                 saveState();
+                registerWebPushSubscription();
                 sendArcadeNotification('🔔 Benachrichtigungen aktiviert!', 'Du erhältst ab jetzt automatische Benachrichtigungen zu Trophäen, Multiplayer & Belohnungen!', 'icon-192.png');
               } else {
                 e.target.checked = false;
@@ -4944,6 +4994,10 @@ function initPWA() {
             }).catch(() => {});
           });
         }
+
+        if ('Notification' in window && Notification.permission === 'granted') {
+          registerWebPushSubscription();
+        }
       }).catch(err => {
         console.warn('Service Worker registration error', err);
       });
@@ -6518,6 +6572,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Auto-detect browser notification permission & check daily bonus
   if ('Notification' in window && Notification.permission === 'granted') {
     if (appState.notificationsEnabled !== false) appState.notificationsEnabled = true;
+    registerWebPushSubscription();
   }
   checkDailyBonus();
   checkForNewAppUpdate();
