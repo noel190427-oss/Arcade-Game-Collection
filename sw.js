@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.34-pre-update-notifications';
+const CACHE_NAME = 'arcade-collection-v0.0.35-lockscreen-push';
 const APP_SHELL = [
   './',
   './index.html',
@@ -55,7 +55,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 /* ==========================================================================
-   BACKGROUND PUSH & PERIODIC SYNC (WORKS WHEN APP IS CLOSED)
+   BACKGROUND PUSH & PERIODIC SYNC (WORKS WHEN PHONE IS LOCKED / APP CLOSED)
    ========================================================================== */
 const TIER_MESSAGES = [
   { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Schnapp dir ein schnelles Duell in Mario Kart oder Snake.' },
@@ -72,9 +72,10 @@ function getRandomTierNotification() {
       body: item.body,
       icon: './icon-192.png',
       badge: './icon-192.png',
-      vibrate: [200, 100, 200],
+      vibrate: [300, 150, 300, 150, 400],
       tag: 'arcade-background-reminder',
       renotify: true,
+      requireInteraction: true,
       data: { url: './' }
     }
   };
@@ -100,14 +101,17 @@ self.addEventListener('sync', (event) => {
   }
 });
 
-// 3. Web Push API Event (receives remote push notifications while app is closed)
+// 3. Web Push API Event (receives remote push notifications from Apple APNs / Google FCM when phone is locked/off)
 self.addEventListener('push', (event) => {
   let title = '🎮 Noel Arcade Universe';
   let options = {
-    body: 'Es wird Zeit für eine neue Runde!',
+    body: 'Es gibt Neuigkeiten in deiner Arcade!',
     icon: './icon-192.png',
     badge: './icon-192.png',
-    vibrate: [200, 100, 200],
+    vibrate: [300, 150, 300, 150, 400],
+    tag: 'arcade-remote-push-' + Date.now(),
+    renotify: true,
+    requireInteraction: true,
     data: { url: './' }
   };
 
@@ -117,6 +121,7 @@ self.addEventListener('push', (event) => {
       if (payload.title) title = payload.title;
       if (payload.body) options.body = payload.body;
       if (payload.icon) options.icon = payload.icon;
+      if (payload.tag) options.tag = payload.tag;
     } catch (e) {
       options.body = event.data.text();
     }
