@@ -2231,9 +2231,11 @@ html.is-vip-active .vip-lock-item {
   display: flex;
   gap: 6px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 8px;
   margin: 14px 0 18px;
+  scrollbar-width: thin;
 }
 .admin-tab-btn {
   background: var(--bg-secondary);
