@@ -1486,6 +1486,7 @@ function initGlobalBroadcastSystem() {
             dot.className = 'pill-badge pill-online';
           }
           globalBroadcastMqtt.subscribe('noelarcade/broadcast/all', { qos: 0 });
+          setTimeout(() => sendPresenceTelemetry('online'), 800);
         },
         onFailure: () => {
           const dot = document.getElementById('broadcast-server-dot');
@@ -1543,6 +1544,68 @@ function broadcastNotificationToAll(title, body) {
 
   return packet;
 }
+
+// REALTIME PRESENCE TELEMETRY ENGINE
+let presenceInterval = null;
+const clientDeviceId = 'client_' + (localStorage.getItem('noel_arcade_device_uid') || (() => {
+  const uid = Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+  try { localStorage.setItem('noel_arcade_device_uid', uid); } catch (e) {}
+  return uid;
+})());
+
+function getDeviceType() {
+  const ua = navigator.userAgent || '';
+  if (/Quest|Oculus/i.test(ua)) return 'Meta Quest VR';
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'Apple iPhone';
+  if (/Android/i.test(ua)) return 'Android PWA';
+  if (/Macintosh/i.test(ua)) return 'Mac Desktop';
+  return 'PC Desktop';
+}
+
+function sendPresenceTelemetry(status = 'online') {
+  if (!globalBroadcastMqtt || !globalBroadcastMqtt.isConnected()) return;
+  try {
+    const activeGameName = (() => {
+      const activePanel = document.querySelector('.game-panel.active-panel');
+      if (!activePanel) return 'Arcade Hub';
+      const id = activePanel.id;
+      if (id === 'mariokart') return 'Mario Kart Rush';
+      if (id === 'supermario') return 'Super Mario Run';
+      if (id === 'snake') return 'Neon Snake';
+      if (id === 'brickbreaker') return 'Cyber Bricks';
+      if (id === 'memory') return 'Memory Matrix';
+      if (id === 'tictactoe') return 'Tic-Tac-Toe';
+      if (id === 'rps') return 'RPSLS';
+      return 'Arcade Hub';
+    })();
+
+    const payload = {
+      type: status === 'offline' ? 'PRESENCE_LEAVE' : 'PRESENCE_PING',
+      playerId: clientDeviceId,
+      name: appState.playerName || (appState.isVipUnlocked ? '👑 VIP Noel' : 'Gamer'),
+      avatar: appState.playerAvatar || '👾',
+      game: activeGameName,
+      device: getDeviceType(),
+      status: status,
+      timestamp: Date.now()
+    };
+
+    const msg = new Paho.MQTT.Message(JSON.stringify(payload));
+    msg.destinationName = 'noelarcade/presence/heartbeat';
+    msg.qos = 0;
+    globalBroadcastMqtt.send(msg);
+  } catch (e) {}
+}
+
+window.addEventListener('beforeunload', () => {
+  sendPresenceTelemetry('offline');
+});
+
+// Periodic heartbeat every 12 seconds
+setInterval(() => {
+  sendPresenceTelemetry('online');
+}, 12000);
+
 
 /* ==========================================================================
    3. 3D PHYSICS CONFETTI & MONEY SHOWER ENGINE
