@@ -274,17 +274,17 @@
 
       <!-- QUICK NAV BAR -->
       <div class="quick-nav-bar" style="display:flex; gap:8px; margin: 8px 12px 12px 12px; flex-wrap:wrap; justify-content:space-between;">
-        <button id="launcher-shop-btn" class="primary-button btn-small" data-i18n="nav_shop" style="flex:1; min-width:135px; background:linear-gradient(135deg, #f59e0b, #eab308); color:#000; font-weight:800; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
-          <span>🛍️</span> Coin-Shop
+        <button id="launcher-shop-btn" class="primary-button btn-small" style="flex:1; min-width:135px; background:linear-gradient(135deg, #f59e0b, #eab308); color:#000; font-weight:800; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);">
+          <span>🛍️</span> <span data-i18n="nav_shop">Coin-Shop</span>
         </button>
-        <button id="launcher-settings-btn" class="secondary-button btn-small" data-i18n="nav_settings" style="flex:1; min-width:135px; background:linear-gradient(135deg, #0284c7, #06b6d4); font-weight:800; color:#fff; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);">
-          <span>⚙️</span> Einstellungen
+        <button id="launcher-settings-btn" class="secondary-button btn-small" style="flex:1; min-width:135px; background:linear-gradient(135deg, #0284c7, #06b6d4); font-weight:800; color:#fff; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);">
+          <span>⚙️</span> <span data-i18n="nav_settings">Einstellungen</span>
         </button>
-        <button id="launcher-vip-btn" class="ghost-button btn-small" data-i18n="nav_vip" style="flex:1; min-width:135px; border:1.5px solid #facc15; color:#facc15; font-weight:800; background:rgba(250, 204, 21, 0.08); box-shadow: 0 4px 14px rgba(250, 204, 21, 0.2);">
-          <span>👑</span> VIP Admin
+        <button id="launcher-vip-btn" class="ghost-button btn-small" style="flex:1; min-width:135px; border:1.5px solid #facc15; color:#facc15; font-weight:800; background:rgba(250, 204, 21, 0.08); box-shadow: 0 4px 14px rgba(250, 204, 21, 0.2);">
+          <span>👑</span> <span data-i18n="nav_vip">VIP Admin</span>
         </button>
-        <button id="launcher-trophies-btn" class="secondary-button btn-small" data-i18n="nav_trophies" style="flex:1; min-width:135px; background:linear-gradient(135deg, #8b5cf6, #ec4899); font-weight:800; color:#fff; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);">
-          <span>🏆</span> Trophäen
+        <button id="launcher-trophies-btn" class="secondary-button btn-small" style="flex:1; min-width:135px; background:linear-gradient(135deg, #8b5cf6, #ec4899); font-weight:800; color:#fff; box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);">
+          <span>🏆</span> <span data-i18n="nav_trophies">Trophäen</span>
         </button>
       </div>
 
@@ -762,10 +762,10 @@
         <div class="footer-content">
           <span>🎮 Arcade Collection Ultra & VIP • PWA Offline Ready</span>
           <div class="footer-links">
-            <button class="link-btn" id="footer-settings-btn" data-i18n="nav_settings">⚙️ Einstellungen</button>
-            <button class="link-btn" id="footer-stats-btn" data-i18n="nav_stats">📊 Statistiken</button>
-            <button class="link-btn vip-footer-trigger" id="footer-vip-btn">👑 VIP Admin</button>
-            <button class="link-btn" id="footer-reset-all" data-i18n="nav_reset_all">🔄 Alle Scores zurücksetzen</button>
+            <button class="link-btn" id="footer-settings-btn"><span>⚙️</span> <span data-i18n="nav_settings">Einstellungen</span></button>
+            <button class="link-btn" id="footer-stats-btn"><span>📊</span> <span data-i18n="nav_stats">Statistiken</span></button>
+            <button class="link-btn vip-footer-trigger" id="footer-vip-btn"><span>👑</span> <span data-i18n="nav_vip">VIP Admin</span></button>
+            <button class="link-btn" id="footer-reset-all"><span>🔄</span> <span data-i18n="nav_reset_all">Alle Scores zurücksetzen</span></button>
           </div>
         </div>
 
@@ -1235,7 +1235,7 @@
     <div id="settings-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Einstellungen">
       <div class="modal-card">
         <div class="modal-header">
-          <h2 data-i18n="settings_title">⚙️ Einstellungen</h2>
+          <h2><span>⚙️</span> <span data-i18n="settings_title">Einstellungen</span></h2>
           <button class="close-modal-btn" id="close-settings-btn" aria-label="Schließen">✕</button>
         </div>
 
@@ -1479,7 +1479,7 @@
     <div id="trophies-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Trophäen">
       <div class="modal-card">
         <div class="modal-header">
-          <h2 data-i18n="trophies_title">🏆 Arcade Errungenschaften</h2>
+          <h2><span>🏆</span> <span data-i18n="trophies_title">Arcade Errungenschaften</span></h2>
           <button class="close-modal-btn" id="close-trophies-btn" aria-label="Schließen">✕</button>
         </div>
         <p class="modal-subtext" data-i18n="trophies_subtitle">Schalte Trophäen frei, indem du in den Spielen Bestleistungen erzielst!</p>
@@ -1491,7 +1491,7 @@
     <div id="stats-modal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Statistiken">
       <div class="modal-card">
         <div class="modal-header">
-          <h2 data-i18n="stats_title">📊 Spieler-Statistiken</h2>
+          <h2><span>📊</span> <span data-i18n="stats_title">Spieler-Statistiken</span></h2>
           <button class="close-modal-btn" id="close-stats-btn" aria-label="Schließen">✕</button>
         </div>
         <div class="stats-overview-grid" id="stats-overview-content"></div>
