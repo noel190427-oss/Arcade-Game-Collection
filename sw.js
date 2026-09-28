@@ -1,7 +1,8 @@
-const CACHE_NAME = 'arcade-collection-v0.0.45-arcade-coin-shop';
+const CACHE_NAME = 'arcade-collection-v0.0.47-live-telemetry';
 const APP_SHELL = [
   './',
   './index.html',
+  './stats.html',
   './privacy.html',
   './style.css',
   './script.js',
