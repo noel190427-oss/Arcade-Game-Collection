@@ -2576,7 +2576,7 @@ function renderStatsModal() {
    9. I18N & LANGUAGE OVERLAY LOGIC
    ========================================================================== */
 function applyLanguage(langCode) {
-  if (!I18N_DATA[langCode]) langCode = 'de';
+  if (!I18N_DATA[langCode]) langCode = 'en';
   appState.language = langCode;
   document.documentElement.lang = langCode;
   
@@ -2591,6 +2591,40 @@ function applyLanguage(langCode) {
       el.textContent = dict[key];
     }
   });
+
+  // Dynamic Elements Translation
+  const quickPlayBtn = document.getElementById('quick-play-instant-btn');
+  if (quickPlayBtn) {
+    quickPlayBtn.textContent = langCode === 'de' ? '⚡ JETZT SPIELEN (Direktstart) ➔' : '⚡ PLAY NOW (Instant Start) ➔';
+  }
+
+  const shopNavBtn = document.getElementById('launcher-shop-btn');
+  if (shopNavBtn) shopNavBtn.innerHTML = '<span>🛍️</span> ' + (langCode === 'de' ? 'Coin-Shop' : 'Coin Shop');
+
+  const settingsNavBtn = document.getElementById('launcher-settings-btn');
+  if (settingsNavBtn) settingsNavBtn.innerHTML = '<span>⚙️</span> ' + (langCode === 'de' ? 'Einstellungen' : 'Settings');
+
+  const vipNavBtn = document.getElementById('launcher-vip-btn');
+  if (vipNavBtn) vipNavBtn.innerHTML = '<span>👑</span> VIP Admin';
+
+  const trophiesNavBtn = document.getElementById('launcher-trophies-btn');
+  if (trophiesNavBtn) trophiesNavBtn.innerHTML = '<span>🏆</span> ' + (langCode === 'de' ? 'Trophäen' : 'Trophies');
+
+  // Kart Status Banner
+  const kartStatus = document.getElementById('kart-status-banner');
+  if (kartStatus) {
+    kartStatus.textContent = langCode === 'de' 
+      ? 'Rennziel: Besiege alle 6 KI-Fahrer und hole Platz 1!' 
+      : 'Race Goal: Defeat all 6 AI drivers and claim 1st place!';
+  }
+
+  // Runner Status Banner
+  const runnerStatus = document.getElementById('runner-status');
+  if (runnerStatus) {
+    runnerStatus.textContent = langCode === 'de'
+      ? 'Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)'
+      : 'Tap screen or press [SPACE] to jump! (Double jump active)';
+  }
 
   saveState();
 }
