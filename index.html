@@ -290,18 +290,18 @@
 
       <!-- GAME LAUNCHER SELECTOR -->
       <section class="launcher hidden" id="launcher" aria-label="Spiele-Liste">
-        <button class="game-card active" data-game="mariokart" id="btn-game-mariokart">
+        <button class="game-card active" data-game="cyberkart" id="btn-game-kart">
           <span class="game-icon">🏎️⚡</span>
           <div class="game-card-text">
             <strong>Cyber Kart Turbo 2D</strong>
             <small data-i18n="card_kart_sub">50cc-300cc & Nitro Drift</small>
           </div>
         </button>
-        <button class="game-card" data-game="supermario" id="btn-game-supermario">
+        <button class="game-card" data-game="cyberrunner" id="btn-game-runner">
           <span class="game-icon">⚡🏃</span>
           <div class="game-card-text">
             <strong>Cyber Runner Ultra</strong>
-            <small data-i18n="card_mario_sub">Jetpack & Raycast KI</small>
+            <small data-i18n="card_cyber_sub">Jetpack & Raycast KI</small>
           </div>
         </button>
         <button class="game-card" data-game="tictactoe" id="btn-game-tictactoe">
@@ -436,82 +436,82 @@
       </section>
 
       <!-- GAME 3: CYBER RUNNER ULTRA -->
-      <section id="supermario" class="game-panel">
+      <section id="cyberrunner" class="game-panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
             <h2>⚡🏃 Cyber Runner Ultra</h2>
-            <span class="panel-subtitle" data-i18n="mario_desc">Prädiktive Raycast-KI, Jetpack-Booster & Neon-Münzen</span>
+            <span class="panel-subtitle" data-i18n="cyber_desc">Prädiktive Raycast-KI, Jetpack-Booster & Neon-Münzen</span>
           </div>
           <div class="header-action-group">
-            <button class="ghost-button how-to-play-btn" data-guide-game="supermario" id="mario-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
-            <button class="ghost-button vip-lock-item" id="mario-gold-suit-toggle" title="VIP Cyber-Anzug & Jetpack">👑 Cyber-Anzug <span class="vip-lock-badge">🔒</span></button>
-            <button class="ghost-button" id="mario-ai-toggle" title="KI-Autopilot">🤖 <span data-i18n="ai_autopilot">Autopilot</span></button>
-            <button class="primary-button" id="reset-supermario" data-i18n="restart_btn">Neu starten</button>
+            <button class="ghost-button how-to-play-btn" data-guide-game="cyberrunner" id="cyber-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="ghost-button vip-lock-item" id="cyber-gold-suit-toggle" title="VIP Cyber-Anzug & Jetpack">👑 Cyber-Anzug <span class="vip-lock-badge">🔒</span></button>
+            <button class="ghost-button" id="cyber-ai-toggle" title="KI-Autopilot">🤖 <span data-i18n="ai_autopilot">Autopilot</span></button>
+            <button class="primary-button" id="reset-runner" data-i18n="restart_btn">Neu starten</button>
           </div>
         </div>
 
         <div class="runner-toolbar">
-          <div class="stat-pill"><span data-i18n="stat_score">Score:</span> <strong id="mario-score">0</strong></div>
-          <div class="stat-pill">🪙 <span data-i18n="stat_coins">Münzen:</span> <strong id="mario-coins">0</strong></div>
-          <div class="stat-pill">🏆 <span data-i18n="stat_highscore">Best:</span> <strong id="mario-highscore">0</strong></div>
+          <div class="stat-pill"><span data-i18n="stat_score">Score:</span> <strong id="runner-score">0</strong></div>
+          <div class="stat-pill">🪙 <span data-i18n="stat_coins">Münzen:</span> <strong id="runner-coins">0</strong></div>
+          <div class="stat-pill">🏆 <span data-i18n="stat_highscore">Best:</span> <strong id="runner-highscore">0</strong></div>
           
           <div class="runner-mode-switch" aria-label="Schwierigkeitsmodus">
-            <button class="mario-mode-button active-mode" data-mario-mode="easy" data-i18n="diff_easy">Leicht</button>
-            <button class="mario-mode-button" data-mario-mode="medium" data-i18n="diff_medium">Mittel</button>
-            <button class="mario-mode-button" data-mario-mode="hard" data-i18n="diff_hard">Schwer</button>
+            <button class="cyber-mode-button active-mode" data-cyber-mode="easy" data-i18n="diff_easy">Leicht</button>
+            <button class="cyber-mode-button" data-cyber-mode="medium" data-i18n="diff_medium">Mittel</button>
+            <button class="cyber-mode-button" data-cyber-mode="hard" data-i18n="diff_hard">Schwer</button>
           </div>
         </div>
 
-        <div class="status-banner" id="mario-status" data-i18n="mario_hint">Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)</div>
+        <div class="status-banner" id="runner-status" data-i18n="cyber_hint">Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)</div>
 
         <div class="runner-world-container">
           <!-- Live AI Autopilot HUD Indicator -->
-          <div class="ai-live-hud hidden" id="mario-ai-hud">
+          <div class="ai-live-hud hidden" id="cyber-ai-hud">
             <span class="ai-hud-pulse"></span>
             <strong>🤖 KI-AUTOPILOT AKTIV</strong>
-            <span id="mario-ai-telemetry">Raycast: Scanner bereit</span>
+            <span id="cyber-ai-telemetry">Raycast: Scanner bereit</span>
           </div>
 
-          <div class="runner-world" id="mario-world" aria-label="Cyber Runner World" tabindex="0">
+          <div class="runner-world" id="runner-world-view" aria-label="Cyber Runner World" tabindex="0">
             <!-- Parallax layers -->
             <div class="parallax-layer bg-sky"></div>
-            <div class="parallax-layer bg-mountains" id="mario-mountains"></div>
-            <div class="parallax-layer bg-hills" id="mario-hills"></div>
+            <div class="parallax-layer bg-mountains" id="runner-mountains"></div>
+            <div class="parallax-layer bg-hills" id="runner-hills"></div>
             <div class="cloud cloud-1"></div>
             <div class="cloud cloud-2"></div>
             <div class="cloud cloud-3"></div>
 
-            <div class="goal-flag" id="mario-goal-flag">
+            <div class="goal-flag" id="runner-goal-flag">
               <span class="goal-flag-top"></span>
               <span class="goal-flag-pole"></span>
             </div>
 
-            <div class="runner-floor" id="mario-floor"></div>
-            <div class="runner-shadow" id="mario-shadow"></div>
+            <div class="runner-floor" id="runner-floor"></div>
+            <div class="runner-shadow" id="runner-shadow"></div>
 
-            <div class="runner-character" id="mario-runner">
-              <div class="mario-hat"></div>
-              <div class="mario-face"></div>
-              <div class="mario-body"></div>
-              <div class="mario-arm"></div>
-              <div class="mario-leg"></div>
-              <div class="god-mode-aura hidden" id="mario-god-aura"></div>
+            <div class="runner-character" id="cyber-runner">
+              <div class="runner-visor"></div>
+              <div class="runner-face"></div>
+              <div class="runner-armor"></div>
+              <div class="runner-arm"></div>
+              <div class="runner-boots"></div>
+              <div class="god-mode-aura hidden" id="runner-god-aura"></div>
             </div>
 
             <!-- Particle dust container -->
-            <div class="particle-container" id="mario-particles"></div>
+            <div class="particle-container" id="runner-particles"></div>
             
             <!-- AI Laser Raycast Visualizer Canvas -->
-            <canvas class="ai-raycast-canvas" id="mario-raycast-canvas" width="600" height="220"></canvas>
+            <canvas class="ai-raycast-canvas" id="runner-raycast-canvas" width="600" height="220"></canvas>
 
             <!-- Countdown Overlay -->
-            <div class="mario-countdown-overlay hidden" id="mario-countdown-overlay">
+            <div class="runner-countdown-overlay hidden" id="runner-countdown-overlay">
               <div class="traffic-lights">
-                <span class="light red" id="mario-light-1"></span>
-                <span class="light yellow" id="mario-light-2"></span>
-                <span class="light green" id="mario-light-3"></span>
+                <span class="light red" id="cyber-light-1"></span>
+                <span class="light yellow" id="cyber-light-2"></span>
+                <span class="light green" id="cyber-light-3"></span>
               </div>
-              <h2 class="countdown-text" id="mario-countdown-text">READY</h2>
+              <h2 class="countdown-text" id="runner-countdown-text">READY</h2>
             </div>
           </div>
         </div>
@@ -519,22 +519,22 @@
         <div class="progress-wrap">
           <span class="progress-label-start">🚩 0m</span>
           <div class="progress-track">
-            <div class="progress-fill" id="mario-progress-fill"></div>
+            <div class="progress-fill" id="runner-progress-fill"></div>
           </div>
-          <span class="progress-label-end" id="mario-progress-label">0%</span>
+          <span class="progress-label-end" id="runner-progress-label">0%</span>
         </div>
       </section>
 
       <!-- GAME 4: CYBER KART TURBO 2D -->
-      <section id="mariokart" class="game-panel active-panel">
+      <section id="cyberkart" class="game-panel active-panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
             <h2>🏁🏎️ Cyber Kart Turbo 2D</h2>
             <span class="panel-subtitle" data-i18n="kart_desc">50cc-300cc Cups, Laser Mystery-Boxen, Nitro-Drift & 6 KI-Gegner</span>
           </div>
           <div class="header-action-group">
-            <button class="ghost-button how-to-play-btn" data-guide-game="mariokart" id="kart-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
-            <button class="primary-button" id="reset-mariokart" data-i18n="restart_btn">Neu starten</button>
+            <button class="ghost-button how-to-play-btn" data-guide-game="cyberkart" id="kart-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
+            <button class="primary-button" id="reset-kart" data-i18n="restart_btn">Neu starten</button>
           </div>
         </div>
 
@@ -560,13 +560,13 @@
           <div class="stat-pill">🏁 <span data-i18n="stat_distance">Distanz:</span> <strong id="kart-distance-pill">0m / 2000m</strong></div>
         </div>
 
-        <div class="mario-kart-controls-hint">
+        <div class="kart-controls-hint">
           <span data-i18n="kart_controls_hint">⌨️ <strong>W / ↑</strong> Gas | <strong>S / ↓</strong> Bremse | <strong>A/D / ←/→</strong> Lenken | <strong>SHIFT/SPACE</strong> Driften | <strong>E</strong> Item nutzen</span>
         </div>
 
         <div class="canvas-center-wrap">
           <div class="kart-canvas-wrapper">
-            <canvas id="mario-kart-canvas" width="480" height="320" aria-label="Mario Kart Rennstrecke"></canvas>
+            <canvas id="kart-canvas-elem" width="480" height="320" aria-label="Cyber Kart Turbo Rennstrecke"></canvas>
             
             <!-- Race Countdown Overlay (3, 2, 1, GO!) -->
             <div class="kart-countdown-overlay hidden" id="kart-countdown-overlay">
@@ -608,7 +608,7 @@
           </div>
         </div>
 
-        <div class="status-banner" id="mario-kart-status">Rennziel: Besiege alle 6 KI-Fahrer und hole Platz 1!</div>
+        <div class="status-banner" id="kart-status-banner">Rennziel: Besiege alle 6 KI-Fahrer und hole Platz 1!</div>
       </section>
 
       <!-- GAME 5: ROCK-PAPER-SCISSORS-LIZARD-SPOCK (RPSLS) -->
@@ -985,17 +985,17 @@
             <h3 data-i18n="admin_godmode_title">🛡️ God-Mode & Unverwundbarkeit</h3>
             <div class="setting-row">
               <div>
-                <strong>Super Mario Run: Unverwundbarkeit</strong>
-                <p class="setting-desc">Mario läuft durch Hindernisse ohne Kollisionsschaden.</p>
+                <strong>Cyber Runner Ultra: Unverwundbarkeit</strong>
+                <p class="setting-desc">Cyber Runner läuft durch Hindernisse ohne Kollisionsschaden.</p>
               </div>
               <label class="toggle-switch">
-                <input type="checkbox" id="admin-god-mario" />
+                <input type="checkbox" id="admin-god-cyber" />
                 <span class="toggle-slider"></span>
               </label>
             </div>
             <div class="setting-row">
               <div>
-                <strong>Mario Kart: Dauer-Turbo & Stern-Power</strong>
+                <strong>Cyber Kart Turbo: Dauer-Turbo & Stern-Power</strong>
                 <p class="setting-desc">Unendlicher Boost, 150 km/h Topspeed und Kollisionsschutz.</p>
               </div>
               <label class="toggle-switch">
@@ -1040,15 +1040,15 @@
 
             <div class="setting-group" style="margin-top: 14px;">
               <div class="setting-row-no-border">
-                <strong>Super Mario Sprungkraft</strong>
-                <span id="admin-mario-jump-val">12.5</span>
+                <strong>Super Cyber Runner Sprungkraft</strong>
+                <span id="admin-cyber-jump-val">12.5</span>
               </div>
-              <input type="range" id="admin-mario-jump-slider" min="80" max="220" value="125" class="custom-range" />
+              <input type="range" id="admin-cyber-jump-slider" min="80" max="220" value="125" class="custom-range" />
             </div>
 
             <div class="setting-group" style="margin-top: 14px;">
               <div class="setting-row-no-border">
-                <strong>Mario Kart Beschleunigung</strong>
+                <strong>Cyber Kart Turbo Beschleunigung</strong>
                 <span id="admin-kart-accel-val">1.0x</span>
               </div>
               <input type="range" id="admin-kart-accel-slider" min="50" max="250" value="100" class="custom-range" />
@@ -1067,7 +1067,7 @@
             <h3>🤖 KI-Debug-Overlays & Telemetrie</h3>
             <div class="setting-row">
               <div>
-                <strong>Super Mario Raycast-Laser zeichnen</strong>
+                <strong>Super Cyber Runner Raycast-Laser zeichnen</strong>
                 <p class="setting-desc">Zeigt Sichtstrahlen, Hindernisdistanzen und Sprungparabeln.</p>
               </div>
               <label class="toggle-switch">
@@ -1143,7 +1143,7 @@
               <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px;">⚡ Schnell-Vorlagen (Presets):</label>
               <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                 <button class="secondary-button btn-small" id="preset-broadcast-pre-update" style="font-size: 0.75rem; border-color: #f59e0b; color: #fbbf24;">⚡ Vorab-Update Ankündigung</button>
-                <button class="secondary-button btn-small" id="preset-broadcast-tournament" style="font-size: 0.75rem;">🏎️ Mario-Kart Turnier</button>
+                <button class="secondary-button btn-small" id="preset-broadcast-tournament" style="font-size: 0.75rem;">🏎️ Cyber Runner-Kart Turnier</button>
                 <button class="secondary-button btn-small" id="preset-broadcast-coins" style="font-size: 0.75rem;">🪙 Doppel-Münzen Event</button>
                 <button class="secondary-button btn-small" id="preset-broadcast-boss" style="font-size: 0.75rem;">👑 Noel Highscore-Alarm</button>
                 <button class="secondary-button btn-small" id="preset-broadcast-ttt" style="font-size: 0.75rem;">🤖 Minimax Challenge</button>
@@ -1428,7 +1428,7 @@
               <span style="font-size: 1.8rem;">🛍️</span>
               <div>
                 <h2>Arcade Coin-Shop</h2>
-                <small>Kaufe Karts, Super Mario Upgrades, Neon Skins & VIP Titel!</small>
+                <small>Kaufe Karts, Super Cyber Runner Upgrades, Neon Skins & VIP Titel!</small>
               </div>
             </div>
             <div class="shop-balance-chip">
@@ -1442,7 +1442,7 @@
         <!-- Shop Category Navigation Tabs -->
         <div class="shop-nav-tabs" id="shop-nav-tabs">
           <button class="shop-tab-btn active-shop-tab" data-shop-tab="karts">🏎️ Karts & Tuning</button>
-          <button class="shop-tab-btn" data-shop-tab="mario">🍄 Mario Upgrades</button>
+          <button class="shop-tab-btn" data-shop-tab="cyber">🍄 Cyber Runner Upgrades</button>
           <button class="shop-tab-btn" data-shop-tab="skins">🐍 Neon Skins</button>
           <button class="shop-tab-btn" data-shop-tab="titles">👑 Titel & Ränge</button>
           <button class="shop-tab-btn" data-shop-tab="music">🎶 Jukebox Tracks</button>
@@ -1453,9 +1453,9 @@
           <div class="shop-grid" id="shop-grid-karts"></div>
         </div>
 
-        <!-- Tab 2: Mario Upgrades -->
-        <div class="shop-tab-content hidden" id="shop-tab-mario">
-          <div class="shop-grid" id="shop-grid-mario"></div>
+        <!-- Tab 2: Cyber Runner Upgrades -->
+        <div class="shop-tab-content hidden" id="shop-tab-cyber">
+          <div class="shop-grid" id="shop-grid-cyber"></div>
         </div>
 
         <!-- Tab 3: Neon Skins -->
@@ -1530,12 +1530,12 @@
           <div class="changelog-item" style="border: 2px solid #ec4899; background: rgba(236, 72, 153, 0.12);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; font-weight: bold;">🛍️ NEU: DER GROSSE ARCADE COIN SHOP</div>
             <strong>Verwende deine gesammelten Coins, um coole Karts, Skins, Items & VIP-Titel zu kaufen!</strong>
-            <p>Endlich haben alle deine Coins einen echten Nutzen! Im neuen Shop kannst du dir <strong>Gold-Karts</strong>, <strong>Cyber-Boliden</strong>, <strong>Super Mario Unbesiegbarkeits-Sterne</strong>, <strong>Münz-Magneten</strong>, <strong>Regenbogen-Schlangen</strong>, <strong>Laser-Paddles</strong> und exklusive <strong>VIP Titel-Abzeichen</strong> (z.B. 👑 Tycoon, 💎 Legende) freischalten!</p>
+            <p>Endlich haben alle deine Coins einen echten Nutzen! Im neuen Shop kannst du dir <strong>Gold-Karts</strong>, <strong>Cyber-Boliden</strong>, <strong>Super Cyber Runner Unbesiegbarkeits-Sterne</strong>, <strong>Münz-Magneten</strong>, <strong>Regenbogen-Schlangen</strong>, <strong>Laser-Paddles</strong> und exklusive <strong>VIP Titel-Abzeichen</strong> (z.B. 👑 Tycoon, 💎 Legende) freischalten!</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🏎️ SPÜRBARE GAMEPLAY-BOOSTS & VISUELLE EFFEKTE</div>
             <strong>Gekaufte Items verleihen dir echte Vorteile in allen Minispielen!</strong>
-            <p>Der Münz-Magnet saugt automatisch alle Münzen in Mario Run an, der Raketen-Boost katapultiert dich in Mario Kart sofort nach vorne, und Regenbogen-Skins verpassen deinen Spielen lebendige Farbeffekte!</p>
+            <p>Der Münz-Magnet saugt automatisch alle Münzen in Cyber Runner Run an, der Raketen-Boost katapultiert dich in Cyber Kart Turbo sofort nach vorne, und Regenbogen-Skins verpassen deinen Spielen lebendige Farbeffekte!</p>
           </div>
           <div class="changelog-item" style="border: 1px solid #facc15; background: rgba(250, 204, 21, 0.08);">
             <div class="changelog-badge" style="background: linear-gradient(135deg, #f59e0b, #eab308); color: #000; font-weight: bold;">🎁 COINS-GESCHENK AN ALLE SPIELER IM WLAN</div>
