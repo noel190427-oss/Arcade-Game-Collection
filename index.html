@@ -17,7 +17,9 @@
     <meta name="msapplication-TileColor" content="#0a0d17" />
 
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="style.css?v=0.0.42" />
+    <link rel="stylesheet" href="style.css?v=0.0.48" />
+    <!-- CrazyGames SDK v3 Official Integration -->
+    <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
   </head>
   <body>
     <!-- Confetti & Fireworks Particle Canvas -->
@@ -159,9 +161,14 @@
             <li><span class="bullet-icon">🤖</span> <span data-i18n="tut_step2">Unbesiegbarer Minimax, Markov KI & VIP Admin Menü.</span></li>
             <li><span class="bullet-icon">⚡</span> <span data-i18n="tut_step3">Offline-fähig, 6 Themes, 4 Animationsstile & Low-End Sparmodus.</span></li>
           </ul>
-          <button id="continue-tutorial" class="primary-button full-width">
-            <span data-i18n="continue_btn">Weiter</span> ➔
-          </button>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+            <button id="quick-play-instant-btn" class="primary-button full-width" style="background:linear-gradient(135deg, #10b981, #06b6d4); font-size:1.05rem; font-weight:900; box-shadow:0 0 20px rgba(16, 185, 129, 0.4);">
+              ⚡ JETZT SPIELEN (Direktstart) ➔
+            </button>
+            <button id="continue-tutorial" class="secondary-button full-width">
+              <span data-i18n="continue_btn">Profil anpassen & Weiter</span> ⚙️
+            </button>
+          </div>
         </div>
 
         <!-- Step 2: Name & Avatar Panel -->
@@ -283,7 +290,21 @@
 
       <!-- GAME LAUNCHER SELECTOR -->
       <section class="launcher hidden" id="launcher" aria-label="Spiele-Liste">
-        <button class="game-card active" data-game="tictactoe" id="btn-game-tictactoe">
+        <button class="game-card active" data-game="mariokart" id="btn-game-mariokart">
+          <span class="game-icon">🏎️⚡</span>
+          <div class="game-card-text">
+            <strong>Cyber Kart Turbo 2D</strong>
+            <small data-i18n="card_kart_sub">50cc-300cc & Nitro Drift</small>
+          </div>
+        </button>
+        <button class="game-card" data-game="supermario" id="btn-game-supermario">
+          <span class="game-icon">⚡🏃</span>
+          <div class="game-card-text">
+            <strong>Cyber Runner Ultra</strong>
+            <small data-i18n="card_mario_sub">Jetpack & Raycast KI</small>
+          </div>
+        </button>
+        <button class="game-card" data-game="tictactoe" id="btn-game-tictactoe">
           <span class="game-icon">❌⭕</span>
           <div class="game-card-text">
             <strong>Tic-Tac-Toe</strong>
@@ -295,20 +316,6 @@
           <div class="game-card-text">
             <strong>Memory</strong>
             <small data-i18n="card_memory_sub">Paare finden</small>
-          </div>
-        </button>
-        <button class="game-card" data-game="supermario" id="btn-game-supermario">
-          <span class="game-icon">🍄🏃</span>
-          <div class="game-card-text">
-            <strong>Super Mario Run</strong>
-            <small data-i18n="card_mario_sub">Raycast KI & Sprung</small>
-          </div>
-        </button>
-        <button class="game-card" data-game="mariokart" id="btn-game-mariokart">
-          <span class="game-icon">🏁🏎️</span>
-          <div class="game-card-text">
-            <strong>Mario Kart Rush</strong>
-            <small data-i18n="card_kart_sub">50cc-200cc & Items</small>
           </div>
         </button>
         <button class="game-card" data-game="rps" id="btn-game-rps">
@@ -428,16 +435,16 @@
         </div>
       </section>
 
-      <!-- GAME 3: SUPER MARIO RUN -->
+      <!-- GAME 3: CYBER RUNNER ULTRA -->
       <section id="supermario" class="game-panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
-            <h2>🍄🏃 Super Mario Run</h2>
-            <span class="panel-subtitle" data-i18n="mario_desc">Prädiktive Raycast-KI, Doppelsprung & Münzenjagd</span>
+            <h2>⚡🏃 Cyber Runner Ultra</h2>
+            <span class="panel-subtitle" data-i18n="mario_desc">Prädiktive Raycast-KI, Jetpack-Booster & Neon-Münzen</span>
           </div>
           <div class="header-action-group">
             <button class="ghost-button how-to-play-btn" data-guide-game="supermario" id="mario-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
-            <button class="ghost-button vip-lock-item" id="mario-gold-suit-toggle" title="VIP Gold-Anzug & Flugsprung">👑 Gold-Anzug <span class="vip-lock-badge">🔒</span></button>
+            <button class="ghost-button vip-lock-item" id="mario-gold-suit-toggle" title="VIP Cyber-Anzug & Jetpack">👑 Cyber-Anzug <span class="vip-lock-badge">🔒</span></button>
             <button class="ghost-button" id="mario-ai-toggle" title="KI-Autopilot">🤖 <span data-i18n="ai_autopilot">Autopilot</span></button>
             <button class="primary-button" id="reset-supermario" data-i18n="restart_btn">Neu starten</button>
           </div>
@@ -448,7 +455,7 @@
           <div class="stat-pill">🪙 <span data-i18n="stat_coins">Münzen:</span> <strong id="mario-coins">0</strong></div>
           <div class="stat-pill">🏆 <span data-i18n="stat_highscore">Best:</span> <strong id="mario-highscore">0</strong></div>
           
-          <div class="runner-mode-switch" aria-label="Mario Schwierigkeitsmodus">
+          <div class="runner-mode-switch" aria-label="Schwierigkeitsmodus">
             <button class="mario-mode-button active-mode" data-mario-mode="easy" data-i18n="diff_easy">Leicht</button>
             <button class="mario-mode-button" data-mario-mode="medium" data-i18n="diff_medium">Mittel</button>
             <button class="mario-mode-button" data-mario-mode="hard" data-i18n="diff_hard">Schwer</button>
@@ -465,7 +472,7 @@
             <span id="mario-ai-telemetry">Raycast: Scanner bereit</span>
           </div>
 
-          <div class="runner-world" id="mario-world" aria-label="Super Mario Runner World" tabindex="0">
+          <div class="runner-world" id="mario-world" aria-label="Cyber Runner World" tabindex="0">
             <!-- Parallax layers -->
             <div class="parallax-layer bg-sky"></div>
             <div class="parallax-layer bg-mountains" id="mario-mountains"></div>
@@ -497,7 +504,7 @@
             <!-- AI Laser Raycast Visualizer Canvas -->
             <canvas class="ai-raycast-canvas" id="mario-raycast-canvas" width="600" height="220"></canvas>
 
-            <!-- Super Mario Run Countdown Overlay (3, 2, 1, RUN!) -->
+            <!-- Countdown Overlay -->
             <div class="mario-countdown-overlay hidden" id="mario-countdown-overlay">
               <div class="traffic-lights">
                 <span class="light red" id="mario-light-1"></span>
@@ -518,12 +525,12 @@
         </div>
       </section>
 
-      <!-- GAME 4: MARIO KART RUSH -->
-      <section id="mariokart" class="game-panel">
+      <!-- GAME 4: CYBER KART TURBO 2D -->
+      <section id="mariokart" class="game-panel active-panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
-            <h2>🏁🏎️ Mario Kart Rush</h2>
-            <span class="panel-subtitle" data-i18n="kart_desc">50cc-200cc Cups, Mystery Item-Boxen, Drift & 6 KI-Gegner</span>
+            <h2>🏁🏎️ Cyber Kart Turbo 2D</h2>
+            <span class="panel-subtitle" data-i18n="kart_desc">50cc-300cc Cups, Laser Mystery-Boxen, Nitro-Drift & 6 KI-Gegner</span>
           </div>
           <div class="header-action-group">
             <button class="ghost-button how-to-play-btn" data-guide-game="mariokart" id="kart-how-to-play-btn">❓ <span data-i18n="how_to_play">Anleitung</span></button>
