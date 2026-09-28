@@ -7,12 +7,12 @@
  * - Complete VIP Lock & Protection System (Non-VIPs locked out of all VIP perks, VIPs fully unlocked)
  * - VIP Bank & Money Generator ("Give Money to Yourself" with Cash Register SFX & Coin Showers)
  * - VIP 24K Gold & Platinum Diamond Themes, VIP Matrix Hyper Animations & Sparkle Trails
- * - Super Mario Run Gold Suit & Hover Jump, Mario Kart 300cc Hyper VIP Cup
+ * - Cyber Runner Ultra Gold Suit & Hover Jump, Cyber Kart Turbo 300cc Hyper VIP Cup
  * - Retro Synthesized Web Audio Chiptune Jukebox (6 Offline BGM Tracks & Visualizer)
  * - 3D Physics Confetti, Money Rain & Fireworks Particle Engine
  * - Resource Freeze during overlays & background tabs (0% idle CPU)
  * - Optimal Minimax Tic-Tac-Toe AI & Markov Chain RPSLS AI
- * - 7 Complete Arcade Games (TTT, Memory, Mario Run, Mario Kart, RPSLS, Neon Snake, Cyber Bricks)
+ * - 7 Complete Arcade Games (TTT, Memory, Cyber Run, Cyber Kart Turbo, RPSLS, Neon Snake, Cyber Bricks)
  */
 
 /* ==========================================================================
@@ -35,7 +35,7 @@ const I18N_DATA = {
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'Minimax KI',
     card_memory_sub: 'Paare finden',
-    card_mario_sub: 'Raycast KI & Sprung',
+    card_cyber_sub: 'Raycast KI & Sprung',
     card_kart_sub: '50cc-300cc & Items',
     card_rps_title: 'RPSLS',
     card_rps_sub: 'Markov Vorhersage-KI',
@@ -58,12 +58,12 @@ const I18N_DATA = {
     stat_attempts: 'Versuche:',
     stat_combo: 'Streak:',
     stat_time: 'Zeit:',
-    mario_desc: 'Prädiktive Raycast-KI, Doppelsprung & Münzenjagd',
+    cyber_desc: 'Prädiktive Raycast-KI, Doppelsprung & Münzenjagd',
     ai_autopilot: 'Autopilot',
     stat_score: 'Score:',
     stat_coins: 'Münzen:',
     stat_highscore: 'Best:',
-    mario_hint: 'Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)',
+    cyber_hint: 'Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)',
     kart_desc: '50cc-300cc Cups, Mystery Item-Boxen, Drift & 6 KI-Gegner',
     stat_position: 'Rang:',
     stat_speed: 'Tempo:',
@@ -147,7 +147,7 @@ const I18N_DATA = {
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'Minimax AI',
     card_memory_sub: 'Find pairs',
-    card_mario_sub: 'Raycast AI & Jump',
+    card_cyber_sub: 'Raycast AI & Jump',
     card_kart_sub: '50cc-300cc & Items',
     card_rps_title: 'RPSLS',
     card_rps_sub: 'Markov Predictor AI',
@@ -170,12 +170,12 @@ const I18N_DATA = {
     stat_attempts: 'Tries:',
     stat_combo: 'Streak:',
     stat_time: 'Time:',
-    mario_desc: 'Predictive Raycast AI, double jumps & coin hunt',
+    cyber_desc: 'Predictive Raycast AI, double jumps & coin hunt',
     ai_autopilot: 'Autopilot',
     stat_score: 'Score:',
     stat_coins: 'Coins:',
     stat_highscore: 'Best:',
-    mario_hint: 'Tap screen or press [SPACE] to jump! (Double jump active)',
+    cyber_hint: 'Tap screen or press [SPACE] to jump! (Double jump active)',
     kart_desc: '50cc-300cc Cups, Mystery Item Boxes, Drift & 6 AI Bots',
     stat_position: 'Rank:',
     stat_speed: 'Speed:',
@@ -259,7 +259,7 @@ const I18N_DATA = {
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'IA Minimax',
     card_memory_sub: 'Trouver les paires',
-    card_mario_sub: 'IA Raycast & Saut',
+    card_cyber_sub: 'IA Raycast & Saut',
     card_kart_sub: '50cc-300cc & Items',
     card_rps_title: 'PFCEL',
     card_rps_sub: 'IA Prédictive Markov',
@@ -282,12 +282,12 @@ const I18N_DATA = {
     stat_attempts: 'Essais :',
     stat_combo: 'Série :',
     stat_time: 'Temps :',
-    mario_desc: 'IA Raycast prédictive, double saut et pièces',
+    cyber_desc: 'IA Raycast prédictive, double saut et pièces',
     ai_autopilot: 'Pilote auto',
     stat_score: 'Score :',
     stat_coins: 'Pièces :',
     stat_highscore: 'Record :',
-    mario_hint: 'Appuyez ou barre [ESPACE] pour sauter ! (Double saut actif)',
+    cyber_hint: 'Appuyez ou barre [ESPACE] pour sauter ! (Double saut actif)',
     kart_desc: '50cc-300cc, boîtes mystères, drift et 6 bots',
     stat_position: 'Rang :',
     stat_speed: 'Vitesse :',
@@ -371,7 +371,7 @@ const I18N_DATA = {
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'IA Minimax',
     card_memory_sub: 'Achar pares',
-    card_mario_sub: 'IA Raycast & Pulo',
+    card_cyber_sub: 'IA Raycast & Pulo',
     card_kart_sub: '50cc-300cc & Itens',
     card_rps_title: 'Jokenpô+',
     card_rps_sub: 'IA Preditiva Markov',
@@ -394,12 +394,12 @@ const I18N_DATA = {
     stat_attempts: 'Tentativas:',
     stat_combo: 'Combo:',
     stat_time: 'Tempo:',
-    mario_desc: 'IA Raycast preditiva, pulo duplo e moedas',
+    cyber_desc: 'IA Raycast preditiva, pulo duplo e moedas',
     ai_autopilot: 'Piloto Auto',
     stat_score: 'Pontos:',
     stat_coins: 'Moedas:',
     stat_highscore: 'Recorde:',
-    mario_hint: 'Toque na tela ou pressione [ESPAÇO] para pular! (Pulo duplo ativo)',
+    cyber_hint: 'Toque na tela ou pressione [ESPAÇO] para pular! (Pulo duplo ativo)',
     kart_desc: '50cc-300cc, caixas de itens, drift e 6 bots',
     stat_position: 'Posição:',
     stat_speed: 'Velocidade:',
@@ -483,7 +483,7 @@ const I18N_DATA = {
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'Minimax YZ',
     card_memory_sub: 'Çiftleri Bul',
-    card_mario_sub: 'Raycast YZ & Zıpla',
+    card_cyber_sub: 'Raycast YZ & Zıpla',
     card_kart_sub: '50cc-300cc & Nesneler',
     card_rps_title: 'Taş-Kağıt-Makas+',
     card_rps_sub: 'Markov Tahmin YZ',
@@ -506,12 +506,12 @@ const I18N_DATA = {
     stat_attempts: 'Deneme:',
     stat_combo: 'Seri:',
     stat_time: 'Süre:',
-    mario_desc: 'Öngörülü Raycast YZ, çift zıplama ve altınlar',
+    cyber_desc: 'Öngörülü Raycast YZ, çift zıplama ve altınlar',
     ai_autopilot: 'Otopilot',
     stat_score: 'Puan:',
     stat_coins: 'Altın:',
     stat_highscore: 'En İyi:',
-    mario_hint: 'Zıplamak için ekrana dokun veya [BOŞLUK] tuşuna bas! (Çift zıplama aktif)',
+    cyber_hint: 'Zıplamak için ekrana dokun veya [BOŞLUK] tuşuna bas! (Çift zıplama aktif)',
     kart_desc: '50cc-300cc, gizemli kutular, drift ve 6 bot',
     stat_position: 'Sıra:',
     stat_speed: 'Hız:',
@@ -595,7 +595,7 @@ const I18N_DATA = {
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'IA Minimax',
     card_memory_sub: 'Encontrar parejas',
-    card_mario_sub: 'IA Raycast & Salto',
+    card_cyber_sub: 'IA Raycast & Salto',
     card_kart_sub: '50cc-300cc & Objetos',
     card_rps_title: 'Piedra-Papel+',
     card_rps_sub: 'IA Predictiva Markov',
@@ -618,12 +618,12 @@ const I18N_DATA = {
     stat_attempts: 'Intentos:',
     stat_combo: 'Racha:',
     stat_time: 'Tiempo:',
-    mario_desc: 'IA Raycast predictiva, doble salto y monedas',
+    cyber_desc: 'IA Raycast predictiva, doble salto y monedas',
     ai_autopilot: 'Piloto Auto',
     stat_score: 'Puntos:',
     stat_coins: 'Monedas:',
     stat_highscore: 'Récord:',
-    mario_hint: '¡Toca o pulsa [ESPACIO] para saltar! (Doble salto disponible)',
+    cyber_hint: '¡Toca o pulsa [ESPACIO] para saltar! (Doble salto disponible)',
     kart_desc: '50cc-300cc, cajas sorpresa, drift y 6 bots IA',
     stat_position: 'Puesto:',
     stat_speed: 'Velocidad:',
@@ -718,14 +718,14 @@ const DEFAULT_STATE = {
   soundMuted: false,
   hapticEnabled: true,
   admin: {
-    godMario: false,
+    godCyber: false,
     godKart: false,
     godBricks: false,
     godSnake: false,
     infiniteCoins: false,
-    marioGoldSuit: false,
+    cyberGoldSuit: false,
     gameSpeed: 1.0,
-    marioJumpVelocity: 12.5,
+    cyberJumpVelocity: 12.5,
     kartAccelMultiplier: 1.0,
     showAiRaycast: true,
     showMinimaxTree: false,
@@ -734,7 +734,7 @@ const DEFAULT_STATE = {
   stats: {
     ttt: { winsX: 0, winsO: 0, draws: 0, gamesPlayed: 0 },
     memory: { gamesPlayed: 0, bestTime: 999, maxCombo: 0 },
-    mario: { highscore: 0, totalCoins: 0, gamesPlayed: 0 },
+    cyber: { highscore: 0, totalCoins: 0, gamesPlayed: 0 },
     kart: { firstPlaces: 0, totalRaces: 0 },
     rps: { userWins: 0, compWins: 0, draws: 0, maxStreak: 0 },
     snake: { highscore: 0, gamesPlayed: 0 },
@@ -744,8 +744,8 @@ const DEFAULT_STATE = {
     first_step: { id: 'first_step', icon: '🎮', title: 'Erster Schritt', desc: 'Spiele dein erstes Arcade-Spiel', unlocked: false },
     ttt_master: { id: 'ttt_master', icon: '🤖', title: 'Minimax Bezwinger', desc: 'Erreiche ein Remis oder Sieg im Meister-Modus', unlocked: false },
     memory_champ: { id: 'memory_champ', icon: '🧠', title: 'Fotogedächtnis', desc: 'Memory in unter 20 Versuchen lösen', unlocked: false },
-    mario_runner: { id: 'mario_runner', icon: '🍄', title: 'Marathon-Sprinter', desc: 'Erreiche 500 Punkte in Super Mario Run', unlocked: false },
-    kart_champion: { id: 'kart_champion', icon: '🏎️', title: 'Grand-Prix Sieger', desc: 'Erreiche Platz 1 in Mario Kart Rush', unlocked: false },
+    cyber_runner: { id: 'cyber_runner', icon: '🍄', title: 'Marathon-Sprinter', desc: 'Erreiche 500 Punkte in Cyber Runner Ultra', unlocked: false },
+    kart_champion: { id: 'kart_champion', icon: '🏎️', title: 'Grand-Prix Sieger', desc: 'Erreiche Platz 1 in Cyber Kart Turbo 2D', unlocked: false },
     markov_mind: { id: 'markov_mind', icon: '🔮', title: 'Gedankenleser', desc: 'Erreiche eine 4er-Siegesserie in RPSLS', unlocked: false },
     snake_length: { id: 'snake_length', icon: '🐍', title: 'Schlangenbändiger', desc: 'Erreiche 100 Punkte in Neon Snake', unlocked: false },
     brick_crusher: { id: 'brick_crusher', icon: '🧱', title: 'Ziegelmeister', desc: 'Erreiche Level 2 in Cyber Brick Breaker', unlocked: false },
@@ -828,8 +828,8 @@ function sendArcadeNotification(title, body, icon = 'icon-192.png', tag = null, 
 function claimCustomCoinsReward(amount = 2000, source = 'Push-Benachrichtigung') {
   const parsedAmount = Math.max(1, Number(amount) || 2000);
   appState.vipCoins = (appState.vipCoins || 0) + parsedAmount;
-  if (!appState.stats.mario.totalCoins) appState.stats.mario.totalCoins = 0;
-  appState.stats.mario.totalCoins += parsedAmount;
+  if (!appState.stats.cyber.totalCoins) appState.stats.cyber.totalCoins = 0;
+  appState.stats.cyber.totalCoins += parsedAmount;
   saveState();
 
   updateVipVisualState();
@@ -1218,18 +1218,18 @@ function checkDailyBonus() {
    ========================================================================== */
 const TIER_NOTIFICATIONS = {
   tier1: [
-    { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Schnapp dir ein schnelles Duell in Mario Kart oder Snake.' },
+    { title: '🎮 Pause vorbei – Zeit zu spielen!', body: 'Die Arcade vermisst dich! Schnapp dir ein schnelles Duell in Cyber Kart Turbo oder Snake.' },
     { title: '⚡ Quick-Match Bereit!', body: 'Kurze Pause? Knacke jetzt den nächsten Highscore in Neon Snake!' },
     { title: '🤖 Minimax KI wartet!', body: 'Traust du dich an eine schnelle Runde Tic-Tac-Toe auf Meister-Stufe?' }
   ],
   tier2: [
-    { title: '🔋 Arcade-Energie wieder 100%!', body: 'Deine Energie ist voll aufgeladen! Zeit für eine Runde Super Mario Run.' },
+    { title: '🔋 Arcade-Energie wieder 100%!', body: 'Deine Energie ist voll aufgeladen! Zeit für eine Runde Cyber Runner Ultra.' },
     { title: '🧠 Gehirnjogging-Zeit!', body: 'Trainiere dein Gedächtnis: Schaffst du das 10-Paare Memory Matrix in unter 15 Zügen?' },
     { title: '🧱 Laser-Power freigeschaltet!', body: 'In Cyber Bricks wartet der 3x Multi-Ball & Laser-Modus auf deinen Einsatz!' }
   ],
   tier3: [
-    { title: '🏎️ Rivalen-Alarm auf der Rennstrecke!', body: 'Deine Gegner trainieren heimlich in Mario Kart... Zeig ihnen, wer der Champion ist!' },
-    { title: '🍄 Lucky Drop & Gold-Pilz!', body: 'In Super Mario Run sind gerade goldene Bonus-Münzen aktiviert! Hol sie dir!' },
+    { title: '🏎️ Rivalen-Alarm auf der Rennstrecke!', body: 'Deine Gegner trainieren heimlich in Cyber Kart Turbo... Zeig ihnen, wer der Champion ist!' },
+    { title: '🍄 Lucky Drop & Gold-Pilz!', body: 'In Cyber Runner Ultra sind gerade goldene Bonus-Münzen aktiviert! Hol sie dir!' },
     { title: '🔮 Markov KI fordert dich heraus!', body: 'Die KI glaubt, deine nächsten Züge zu kennen... Schaffst du eine 5er-Serie in RPSLS?' }
   ],
   tier24: [
@@ -1569,8 +1569,8 @@ function sendPresenceTelemetry(status = 'online') {
       const activePanel = document.querySelector('.game-panel.active-panel');
       if (!activePanel) return 'Arcade Hub';
       const id = activePanel.id;
-      if (id === 'mariokart') return 'Mario Kart Rush';
-      if (id === 'supermario') return 'Super Mario Run';
+      if (id === 'cyberkart') return 'Cyber Kart Turbo 2D';
+      if (id === 'cyberrunner') return 'Cyber Runner Ultra';
       if (id === 'snake') return 'Neon Snake';
       if (id === 'brickbreaker') return 'Cyber Bricks';
       if (id === 'memory') return 'Memory Matrix';
@@ -1934,12 +1934,12 @@ const SFX = {
     playSynthTone({ freq: 1320, duration: 0.45, type: 'triangle', sweep: 150, gainMul: 0.8 });
     triggerHaptic([30, 50, 80]);
   },
-  marioCountdownLow: () => {
+  cyberCountdownLow: () => {
     playSynthTone({ freq: 523.25, duration: 0.16, type: 'square', gainMul: 1.1 });
     playSynthTone({ freq: 1046.50, duration: 0.16, type: 'sine', gainMul: 0.4 });
     triggerHaptic(25);
   },
-  marioCountdownGo: () => {
+  cyberCountdownGo: () => {
     playSynthTone({ freq: 659.25, duration: 0.12, type: 'square', gainMul: 1.2 });
     setTimeout(() => playSynthTone({ freq: 783.99, duration: 0.14, type: 'square', gainMul: 1.3 }), 90);
     setTimeout(() => playSynthTone({ freq: 1046.50, duration: 0.35, type: 'square', sweep: 80, gainMul: 1.4 }), 180);
@@ -2223,7 +2223,7 @@ function mintVipCoins(amount) {
   }
 
   appState.vipCoins += amount;
-  appState.stats.mario.totalCoins += amount;
+  appState.stats.cyber.totalCoins += amount;
   saveState();
   updateVipVisualState();
 
@@ -2268,16 +2268,16 @@ function initVipBank() {
    ========================================================================== */
 const SHOP_ITEMS = [
   // 1. Karts & Tuning
-  { id: 'kart_gold', category: 'karts', title: 'Goldener Rennwagen', icon: '🏎️✨', badge: '🏎️ +25% SPEED', price: 5000, desc: 'Glänzende Goldkarosserie mit Gold-Schweif & +25% Speed-Bonus in Mario Kart Rush.' },
+  { id: 'kart_gold', category: 'karts', title: 'Goldener Rennwagen', icon: '🏎️✨', badge: '🏎️ +25% SPEED', price: 5000, desc: 'Glänzende Goldkarosserie mit Gold-Schweif & +25% Speed-Bonus in Cyber Kart Turbo 2D.' },
   { id: 'kart_turbo', category: 'karts', title: 'Raketen-Turbo Boost', icon: '🚀', badge: '⚡ TURBO-START', price: 1500, desc: 'Startet jedes Rennen mit einem automatischen Raketen-Turboschub.' },
   { id: 'kart_cyber', category: 'karts', title: 'Cyber-Flitzer 2088', icon: '🏎️⚡', badge: '💠 NEON-CYAN', price: 3500, desc: 'Futuristische Neon-Optik mit leuchtenden Reifen und Drift-Aura.' },
   { id: 'kart_rainbow', category: 'karts', title: 'Regenbogen-Bolide', icon: '🌈🏎️', badge: '🌈 CHROMA-FX', price: 7500, desc: 'Bunte Regenbogen-Reifenspuren & Farbwechsel auf jeder Strecke.' },
 
-  // 2. Mario Upgrades
-  { id: 'mario_star', category: 'mario', title: 'Unbesiegbarkeits-Stern', icon: '⭐', badge: '⭐ 12s SCHUTZ', price: 2500, desc: 'Starte jeden Super Mario Run mit 12 Sekunden Unbesiegbarkeit durch Hindernisse!' },
-  { id: 'mario_double_jump', category: 'mario', title: 'Doppelsprung-Sneaker', icon: '👟✨', badge: '🦘 DOPPEL-SPRUNG', price: 3000, desc: 'Erlaubt einen zweiten Sprung mitten in der Luft, um jede Schlucht zu überwinden.' },
-  { id: 'mario_gold_suit', category: 'mario', title: 'Meister Gold-Anzug', icon: '👑🍄', badge: '🪙 2x COINS & GLEITEN', price: 8000, desc: 'Exklusiver goldener Anzug mit doppelten Münzen beim Einsammeln & Schwebeflug.' },
-  { id: 'mario_magnet', category: 'mario', title: 'Münz-Magnet', icon: '🧲', badge: '🧲 AUTO-MAGNET', price: 4000, desc: 'Zieht alle Münzen im Umkreis automatisch magisch zu Mario an!' },
+  // 2. Cyber Upgrades
+  { id: 'cyber_star', category: 'cyber', title: 'Unbesiegbarkeits-Stern', icon: '⭐', badge: '⭐ 12s SCHUTZ', price: 2500, desc: 'Starte jeden Cyber Runner Ultra mit 12 Sekunden Unbesiegbarkeit durch Hindernisse!' },
+  { id: 'cyber_double_jump', category: 'cyber', title: 'Doppelsprung-Sneaker', icon: '👟✨', badge: '🦘 DOPPEL-SPRUNG', price: 3000, desc: 'Erlaubt einen zweiten Sprung mitten in der Luft, um jede Schlucht zu überwinden.' },
+  { id: 'cyber_gold_suit', category: 'cyber', title: 'Meister Gold-Anzug', icon: '👑🍄', badge: '🪙 2x COINS & GLEITEN', price: 8000, desc: 'Exklusiver goldener Anzug mit doppelten Münzen beim Einsammeln & Schwebeflug.' },
+  { id: 'cyber_magnet', category: 'cyber', title: 'Münz-Magnet', icon: '🧲', badge: '🧲 AUTO-MAGNET', price: 4000, desc: 'Zieht alle Münzen im Umkreis automatisch magisch zu Cyber an!' },
 
   // 3. Neon Skins & Effects
   { id: 'snake_rainbow', category: 'skins', title: 'Regenbogen-Schlange', icon: '🌈🐍', badge: '🌈 REGENBOGEN', price: 2000, desc: 'Die Schlange wechselt mit jedem gefressenen Apfel bunt ihre Regenbogenfarbe.' },
@@ -2368,7 +2368,7 @@ function updateShopBalanceDisplay() {
 }
 
 function renderShopItems() {
-  const categories = ['karts', 'mario', 'skins', 'titles', 'music'];
+  const categories = ['karts', 'cyber', 'skins', 'titles', 'music'];
   categories.forEach(cat => {
     const grid = document.getElementById(`shop-grid-${cat}`);
     if (!grid) return;
@@ -2471,16 +2471,16 @@ function toggleEquipShopItem(id) {
 function applyShopPerks() {
   if (!appState.equipped) appState.equipped = {};
   
-  // 1. Mario Kart Gold / Rainbow / Turbo Perks
+  // 1. Cyber Kart Turbo Gold / Rainbow / Turbo Perks
   if (appState.equipped['kart_gold']) {
     appState.admin.kartAccelMultiplier = 1.25;
   } else {
     appState.admin.kartAccelMultiplier = 1.0;
   }
 
-  // 2. Mario Run Double Jump / Gold Suit
-  if (appState.equipped['mario_gold_suit']) {
-    appState.admin.marioGoldSuit = true;
+  // 2. Cyber Run Double Jump / Gold Suit
+  if (appState.equipped['cyber_gold_suit']) {
+    appState.admin.cyberGoldSuit = true;
   }
 
   // 3. Titles next to player name
@@ -2564,7 +2564,7 @@ function renderStatsModal() {
     <div class="stat-box"><span class="stat-box-num">${s.ttt.winsX}</span><span class="stat-box-label">Tic-Tac-Toe Siege</span></div>
     <div class="stat-box"><span class="stat-box-num">${s.ttt.winsO}</span><span class="stat-box-label">KI Siege</span></div>
     <div class="stat-box"><span class="stat-box-num">${s.memory.bestTime === 999 ? '-' : s.memory.bestTime + 's'}</span><span class="stat-box-label">Beste Memory Zeit</span></div>
-    <div class="stat-box"><span class="stat-box-num">${Math.floor(s.mario.highscore)}</span><span class="stat-box-label">Mario Rekord</span></div>
+    <div class="stat-box"><span class="stat-box-num">${Math.floor(s.cyber.highscore)}</span><span class="stat-box-label">Cyber Rekord</span></div>
     <div class="stat-box"><span class="stat-box-num">${s.kart.firstPlaces}</span><span class="stat-box-label">Kart Siege (#1)</span></div>
     <div class="stat-box"><span class="stat-box-num">${s.rps.userWins}</span><span class="stat-box-label">RPSLS Siege</span></div>
     <div class="stat-box"><span class="stat-box-num">${s.snake.highscore}</span><span class="stat-box-label">Snake Highscore</span></div>
@@ -2686,7 +2686,7 @@ function initWelcomeFlow() {
       document.getElementById('welcome-screen').classList.add('hidden');
       unfreezeApp();
       showMainApp();
-      switchGame('mariokart');
+      switchGame('cyberkart');
       if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
         try { window.CrazyGames.SDK.game.gameplayStart(); } catch(e) {}
       }
@@ -2702,7 +2702,7 @@ function initWelcomeFlow() {
     document.getElementById('welcome-screen').classList.add('hidden');
     unfreezeApp();
     showMainApp();
-    switchGame('mariokart');
+    switchGame('cyberkart');
     if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
       try { window.CrazyGames.SDK.game.gameplayStart(); } catch(e) {}
     }
@@ -2722,7 +2722,7 @@ function showMainApp() {
   document.getElementById('topbar-avatar').textContent = appState.playerAvatar || '👾';
   updateTrophyCountBadge();
   updateVipVisualState();
-  switchGame('mariokart');
+  switchGame('cyberkart');
 }
 
 /* ==========================================================================
@@ -2767,15 +2767,15 @@ function switchGame(gameId) {
 
   SFX.click();
 
-  if (gameId === 'mariokart') {
+  if (gameId === 'cyberkart') {
     if (!kartPlayer || kartGameOver || kartPlayer.progress === 0) {
-      resetMarioKart();
+      resetCyberKart();
     }
   }
 
-  if (gameId === 'supermario') {
-    if (marioGameOver || marioScore === 0) {
-      resetMarioRun();
+  if (gameId === 'cyberrunner') {
+    if (cyberGameOver || cyberScore === 0) {
+      resetCyberRun();
     }
   }
 
@@ -2785,10 +2785,10 @@ function switchGame(gameId) {
 }
 
 function requestGameLoop(gameId) {
-  if (gameId === 'supermario') {
-    startMarioRunLoop();
-  } else if (gameId === 'mariokart') {
-    startMarioKartLoop();
+  if (gameId === 'cyberrunner') {
+    startCyberRunLoop();
+  } else if (gameId === 'cyberkart') {
+    startCyberKartLoop();
   } else if (gameId === 'snake') {
     startSnakeLoop();
   } else if (gameId === 'brickbreaker') {
@@ -3207,8 +3207,8 @@ function initAdminConsole() {
   });
 
   document.getElementById('admin-max-stats-btn').addEventListener('click', () => {
-    appState.stats.mario.highscore = 9999;
-    appState.stats.mario.totalCoins = 999999;
+    appState.stats.cyber.highscore = 9999;
+    appState.stats.cyber.totalCoins = 999999;
     appState.stats.kart.firstPlaces = 99;
     appState.stats.snake.highscore = 9990;
     appState.stats.bricks.highscore = 9999;
@@ -3231,13 +3231,13 @@ function initAdminConsole() {
       appState.admin[key] = e.target.checked;
       saveState();
       SFX.powerup();
-      if (key === 'godMario') {
-        document.getElementById('mario-god-aura').classList.toggle('hidden', !appState.admin.godMario);
+      if (key === 'godCyber') {
+        document.getElementById('cyber-god-aura').classList.toggle('hidden', !appState.admin.godCyber);
       }
     });
   };
 
-  bindAdminToggle('admin-god-mario', 'godMario');
+  bindAdminToggle('admin-god-cyber', 'godCyber');
   bindAdminToggle('admin-god-kart', 'godKart');
   bindAdminToggle('admin-god-bricks', 'godBricks');
   bindAdminToggle('admin-god-snake', 'godSnake');
@@ -3253,13 +3253,13 @@ function initAdminConsole() {
     saveState();
   });
 
-  const marioJumpSlider = document.getElementById('admin-mario-jump-slider');
-  const marioJumpVal = document.getElementById('admin-mario-jump-val');
-  marioJumpSlider.value = appState.admin.marioJumpVelocity * 10;
-  marioJumpVal.textContent = String(appState.admin.marioJumpVelocity);
-  marioJumpSlider.addEventListener('input', (e) => {
-    appState.admin.marioJumpVelocity = Number(e.target.value) / 10;
-    marioJumpVal.textContent = String(appState.admin.marioJumpVelocity.toFixed(1));
+  const cyberJumpSlider = document.getElementById('admin-cyber-jump-slider');
+  const cyberJumpVal = document.getElementById('admin-cyber-jump-val');
+  cyberJumpSlider.value = appState.admin.cyberJumpVelocity * 10;
+  cyberJumpVal.textContent = String(appState.admin.cyberJumpVelocity);
+  cyberJumpSlider.addEventListener('input', (e) => {
+    appState.admin.cyberJumpVelocity = Number(e.target.value) / 10;
+    cyberJumpVal.textContent = String(appState.admin.cyberJumpVelocity.toFixed(1));
     saveState();
   });
 
@@ -3486,7 +3486,7 @@ function initAdminConsole() {
   };
 
   setupPreset('preset-broadcast-pre-update', '⚡ Vorab-Ankündigung: Neues Update v0.0.34 wird gleich hochgeladen! Bitte Spielstand sichern.');
-  setupPreset('preset-broadcast-tournament', '🏎️ Großes Mario-Kart Turnier gestartet! Wer holt Platz 1?');
+  setupPreset('preset-broadcast-tournament', '🏎️ Großes Cyber-Kart Turnier gestartet! Wer holt Platz 1?');
   setupPreset('preset-broadcast-coins', '🪙 Doppel-Münzen Event aktiv! Hol dir 2x Bonus-Gold in allen Spielen!');
   setupPreset('preset-broadcast-boss', '👑 Admin Noel hat einen neuen Highscore aufgestellt! Schaffst du mehr?');
   setupPreset('preset-broadcast-ttt', '🤖 Minimax Challenge: Wer knackt die unbesiegbare Meister-KI?');
@@ -4005,43 +4005,43 @@ function initMemory() {
 }
 
 /* ==========================================================================
-   15. SUPER MARIO RUN (RAYCAST PREDICTIVE AI & DOUBLE JUMP)
+   15. SUPER cyber RUN (RAYCAST PREDICTIVE AI & DOUBLE JUMP)
    ========================================================================== */
-let marioScore = 0;
-let marioCoins = 0;
-let marioJumpVelocity = 0;
-let marioJumpHeight = 0;
-let marioJumpsRemaining = 2;
-let marioGameOver = false;
-let marioDifficulty = 'easy';
-let marioAiAutopilot = false;
-let marioObstacles = [];
-let marioCoinsList = [];
-let marioParallaxOffset = 0;
-let marioGoalDistance = 1500;
-let marioLoopRunning = false;
-let marioAutoRestartTimer = null;
-let marioCountdownActive = false;
-let marioCountdownTimers = [];
+let cyberScore = 0;
+let cyberCoins = 0;
+let cyberJumpVelocity = 0;
+let cyberJumpHeight = 0;
+let cyberJumpsRemaining = 2;
+let cyberGameOver = false;
+let cyberDifficulty = 'easy';
+let cyberAiAutopilot = false;
+let cyberObstacles = [];
+let cyberCoinsList = [];
+let cyberParallaxOffset = 0;
+let cyberGoalDistance = 1500;
+let cyberLoopRunning = false;
+let cyberAutoRestartTimer = null;
+let cyberCountdownActive = false;
+let cyberCountdownTimers = [];
 
-const marioSpeeds = { easy: 4.0, medium: 5.5, hard: 7.0 };
-const marioCanvasRay = document.getElementById('mario-raycast-canvas');
-const marioRayCtx = marioCanvasRay ? marioCanvasRay.getContext('2d') : null;
+const cyberSpeeds = { easy: 4.0, medium: 5.5, hard: 7.0 };
+const cyberCanvasRay = document.getElementById('runner-raycast-canvas');
+const cyberRayCtx = cyberCanvasRay ? cyberCanvasRay.getContext('2d') : null;
 
-function clearMarioCountdownTimers() {
-  marioCountdownTimers.forEach(t => clearTimeout(t));
-  marioCountdownTimers = [];
+function clearCyberCountdownTimers() {
+  cyberCountdownTimers.forEach(t => clearTimeout(t));
+  cyberCountdownTimers = [];
 }
 
-function runMarioCountdown(callback) {
-  clearMarioCountdownTimers();
-  marioCountdownActive = true;
+function runCyberCountdown(callback) {
+  clearCyberCountdownTimers();
+  cyberCountdownActive = true;
 
-  const overlay = document.getElementById('mario-countdown-overlay');
-  const textEl = document.getElementById('mario-countdown-text');
-  const l1 = document.getElementById('mario-light-1');
-  const l2 = document.getElementById('mario-light-2');
-  const l3 = document.getElementById('mario-light-3');
+  const overlay = document.getElementById('runner-countdown-overlay');
+  const textEl = document.getElementById('runner-countdown-text');
+  const l1 = document.getElementById('cyber-light-1');
+  const l2 = document.getElementById('cyber-light-2');
+  const l3 = document.getElementById('cyber-light-3');
 
   if (!overlay || !textEl || !l1 || !l2 || !l3) return;
 
@@ -4060,41 +4060,41 @@ function runMarioCountdown(callback) {
   l2.className = 'light';
   l3.className = 'light';
   showStep('3');
-  SFX.marioCountdownLow();
+  SFX.cyberCountdownLow();
 
   // Step 2: 1.0s -> "2" (Red 1 + Yellow 2)
-  marioCountdownTimers.push(setTimeout(() => {
+  cyberCountdownTimers.push(setTimeout(() => {
     l1.className = 'light active red';
     l2.className = 'light active yellow';
     l3.className = 'light';
     showStep('2');
-    SFX.marioCountdownLow();
+    SFX.cyberCountdownLow();
   }, 1000));
 
   // Step 3: 2.0s -> "1" (Red 1 + Yellow 2 + Green 3)
-  marioCountdownTimers.push(setTimeout(() => {
+  cyberCountdownTimers.push(setTimeout(() => {
     l1.className = 'light active red';
     l2.className = 'light active yellow';
     l3.className = 'light active green';
     showStep('1');
-    SFX.marioCountdownLow();
+    SFX.cyberCountdownLow();
   }, 2000));
 
   // Step 4: 3.0s -> "RUN! 🍄💨" (All Green Lights + Fanfare + Launch)
-  marioCountdownTimers.push(setTimeout(() => {
+  cyberCountdownTimers.push(setTimeout(() => {
     l1.className = 'light active green flash';
     l2.className = 'light active green flash';
     l3.className = 'light active green flash';
     showStep('RUN! 🍄💨');
-    SFX.marioCountdownGo();
-    createMarioDust();
+    SFX.cyberCountdownGo();
+    createCyberDust();
 
-    marioCountdownActive = false;
+    cyberCountdownActive = false;
 
     // Smoothly fade out overlay
-    marioCountdownTimers.push(setTimeout(() => {
+    cyberCountdownTimers.push(setTimeout(() => {
       overlay.style.opacity = '0';
-      marioCountdownTimers.push(setTimeout(() => {
+      cyberCountdownTimers.push(setTimeout(() => {
         overlay.classList.add('hidden');
         overlay.style.opacity = '1';
         if (callback) callback();
@@ -4103,103 +4103,103 @@ function runMarioCountdown(callback) {
   }, 3000));
 }
 
-let marioStarTimer = 0;
+let cyberStarTimer = 0;
 
-function startMarioRunLoop() {
-  if (marioLoopRunning) return;
-  marioLoopRunning = true;
-  requestAnimationFrame(tickMarioRun);
+function startCyberRunLoop() {
+  if (cyberLoopRunning) return;
+  cyberLoopRunning = true;
+  requestAnimationFrame(tickCyberRun);
 }
 
-function resetMarioRun() {
-  if (marioAutoRestartTimer) clearTimeout(marioAutoRestartTimer);
-  clearMarioCountdownTimers();
-  marioScore = 0;
-  marioCoins = 0;
-  marioJumpVelocity = 0;
-  marioJumpHeight = 0;
-  marioJumpsRemaining = (appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit'])) ? 3 : 2;
-  marioGameOver = false;
-  marioParallaxOffset = 0;
+function resetCyberRun() {
+  if (cyberAutoRestartTimer) clearTimeout(cyberAutoRestartTimer);
+  clearCyberCountdownTimers();
+  cyberScore = 0;
+  cyberCoins = 0;
+  cyberJumpVelocity = 0;
+  cyberJumpHeight = 0;
+  cyberJumpsRemaining = (appState.admin.cyberGoldSuit || (appState.equipped && appState.equipped['cyber_gold_suit'])) ? 3 : 2;
+  cyberGameOver = false;
+  cyberParallaxOffset = 0;
 
   // Shop Star Perk
-  if (appState.equipped && appState.equipped['mario_star']) {
-    marioStarTimer = 720; // 12 seconds invincibility
+  if (appState.equipped && appState.equipped['cyber_star']) {
+    cyberStarTimer = 720; // 12 seconds invincibility
   } else {
-    marioStarTimer = 0;
+    cyberStarTimer = 0;
   }
 
-  document.getElementById('mario-score').textContent = '0';
-  document.getElementById('mario-coins').textContent = '0';
-  document.getElementById('mario-highscore').textContent = String(Math.floor(appState.stats.mario.highscore));
-  document.getElementById('mario-progress-fill').style.width = '0%';
-  document.getElementById('mario-progress-label').textContent = '0%';
-  document.getElementById('mario-status').textContent = 'Tippe oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)';
+  document.getElementById('runner-score').textContent = '0';
+  document.getElementById('runner-coins').textContent = '0';
+  document.getElementById('runner-highscore').textContent = String(Math.floor(appState.stats.cyber.highscore));
+  document.getElementById('runner-progress-fill').style.width = '0%';
+  document.getElementById('runner-progress-label').textContent = '0%';
+  document.getElementById('runner-status').textContent = 'Tippe oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)';
 
-  const world = document.getElementById('mario-world');
+  const world = document.getElementById('runner-world-view');
   world.querySelectorAll('.runner-obstacle, .runner-coin').forEach(el => el.remove());
-  marioObstacles = [];
-  marioCoinsList = [];
+  cyberObstacles = [];
+  cyberCoinsList = [];
 
-  const runner = document.getElementById('mario-runner');
+  const runner = document.getElementById('cyber-runner');
   if (runner) {
     runner.style.transform = 'translateY(0px)';
-    runner.classList.toggle('mario-gold-active', !!(appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit'])));
-    runner.classList.toggle('mario-star-active', marioStarTimer > 0);
+    runner.classList.toggle('cyber-gold-active', !!(appState.admin.cyberGoldSuit || (appState.equipped && appState.equipped['cyber_gold_suit'])));
+    runner.classList.toggle('cyber-star-active', cyberStarTimer > 0);
   }
 
-  spawnMarioObstacle(world.clientWidth + 160);
-  spawnMarioCoin(world.clientWidth + 320);
+  spawnCyberObstacle(world.clientWidth + 160);
+  spawnCyberCoin(world.clientWidth + 320);
 
-  runMarioCountdown();
-  startMarioRunLoop();
+  runCyberCountdown();
+  startCyberRunLoop();
 }
 
-function spawnMarioObstacle(x) {
-  const world = document.getElementById('mario-world');
+function spawnCyberObstacle(x) {
+  const world = document.getElementById('runner-world-view');
   const el = document.createElement('div');
   el.className = 'runner-obstacle';
   el.style.left = `${x}px`;
   world.appendChild(el);
-  marioObstacles.push({ el, x, width: 28 });
+  cyberObstacles.push({ el, x, width: 28 });
 }
 
-function spawnMarioCoin(x) {
-  const world = document.getElementById('mario-world');
+function spawnCyberCoin(x) {
+  const world = document.getElementById('runner-world-view');
   const el = document.createElement('div');
   el.className = 'runner-coin';
   el.style.left = `${x}px`;
   el.style.bottom = `${58 + Math.random() * 50}px`;
   world.appendChild(el);
-  marioCoinsList.push({ el, x, y: parseFloat(el.style.bottom) });
+  cyberCoinsList.push({ el, x, y: parseFloat(el.style.bottom) });
 }
 
-function triggerMarioJump() {
-  if (marioCountdownActive) return;
-  if (marioGameOver) {
-    resetMarioRun();
+function triggerCyberJump() {
+  if (cyberCountdownActive) return;
+  if (cyberGameOver) {
+    resetCyberRun();
     return;
   }
-  const isGold = (appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit']));
+  const isGold = (appState.admin.cyberGoldSuit || (appState.equipped && appState.equipped['cyber_gold_suit']));
   const maxJumps = isGold ? 3 : 2;
-  if (marioJumpsRemaining > 0) {
-    const jumpPower = (appState.admin.marioJumpVelocity || 12.5) * (isGold ? 1.2 : 1.0);
-    marioJumpVelocity = jumpPower;
-    marioJumpsRemaining -= 1;
+  if (cyberJumpsRemaining > 0) {
+    const jumpPower = (appState.admin.cyberJumpVelocity || 12.5) * (isGold ? 1.2 : 1.0);
+    cyberJumpVelocity = jumpPower;
+    cyberJumpsRemaining -= 1;
     SFX.jump();
 
     if (!appState.lowEndMode) {
-      createMarioDust();
+      createCyberDust();
     }
   }
 }
 
-function createMarioDust() {
-  const container = document.getElementById('mario-particles');
+function createCyberDust() {
+  const container = document.getElementById('runner-particles');
   if (!container) return;
   for (let i = 0; i < 4; i++) {
     const p = document.createElement('div');
-    p.className = 'mario-dust-particle';
+    p.className = 'cyber-dust-particle';
     p.style.left = '48px';
     p.style.bottom = '36px';
     p.style.setProperty('--dx', `${(Math.random() - 0.5) * 30}px`);
@@ -4209,131 +4209,131 @@ function createMarioDust() {
   }
 }
 
-function tickMarioRun() {
-  if (activeGameId !== 'supermario' || isAppFrozen) {
-    marioLoopRunning = false;
+function tickCyberRun() {
+  if (activeGameId !== 'cyberrunner' || isAppFrozen) {
+    cyberLoopRunning = false;
     return;
   }
 
   const dt = appState.admin.gameSpeed || 1.0;
-  const isGold = (appState.admin.marioGoldSuit || (appState.equipped && appState.equipped['mario_gold_suit']));
+  const isGold = (appState.admin.cyberGoldSuit || (appState.equipped && appState.equipped['cyber_gold_suit']));
 
-  if (!marioGameOver && !marioCountdownActive) {
-    const speed = marioSpeeds[marioDifficulty] * dt;
+  if (!cyberGameOver && !cyberCountdownActive) {
+    const speed = cyberSpeeds[cyberDifficulty] * dt;
 
     // Star Invincibility Timer
-    if (marioStarTimer > 0) {
-      marioStarTimer -= dt;
-      document.getElementById('mario-runner')?.classList.add('mario-star-active');
+    if (cyberStarTimer > 0) {
+      cyberStarTimer -= dt;
+      document.getElementById('cyber-runner')?.classList.add('cyber-star-active');
     } else {
-      document.getElementById('mario-runner')?.classList.remove('mario-star-active');
+      document.getElementById('cyber-runner')?.classList.remove('cyber-star-active');
     }
 
     // Jump Physics (Hover gliding if Gold Suit active)
-    marioJumpHeight += marioJumpVelocity * dt;
+    cyberJumpHeight += cyberJumpVelocity * dt;
     const grav = isGold ? 0.55 : 0.75;
-    marioJumpVelocity -= grav * dt;
-    if (marioJumpHeight <= 0) {
-      marioJumpHeight = 0;
-      marioJumpVelocity = 0;
-      marioJumpsRemaining = isGold ? 3 : 2;
+    cyberJumpVelocity -= grav * dt;
+    if (cyberJumpHeight <= 0) {
+      cyberJumpHeight = 0;
+      cyberJumpVelocity = 0;
+      cyberJumpsRemaining = isGold ? 3 : 2;
     }
 
-    marioScore += 0.4 * dt;
-    document.getElementById('mario-score').textContent = String(Math.floor(marioScore));
-    const progress = Math.min(100, (marioScore / marioGoalDistance) * 100);
-    document.getElementById('mario-progress-fill').style.width = `${progress}%`;
-    document.getElementById('mario-progress-label').textContent = `${Math.round(progress)}%`;
+    cyberScore += 0.4 * dt;
+    document.getElementById('runner-score').textContent = String(Math.floor(cyberScore));
+    const progress = Math.min(100, (cyberScore / cyberGoalDistance) * 100);
+    document.getElementById('runner-progress-fill').style.width = `${progress}%`;
+    document.getElementById('runner-progress-label').textContent = `${Math.round(progress)}%`;
 
-    const runner = document.getElementById('mario-runner');
-    runner.style.transform = `translateY(${-marioJumpHeight}px)`;
+    const runner = document.getElementById('cyber-runner');
+    runner.style.transform = `translateY(${-cyberJumpHeight}px)`;
 
-    marioParallaxOffset += speed * 0.4;
-    document.getElementById('mario-mountains').style.backgroundPosition = `-${marioParallaxOffset * 0.3}px 0`;
-    document.getElementById('mario-hills').style.backgroundPosition = `-${marioParallaxOffset * 0.7}px 0`;
+    cyberParallaxOffset += speed * 0.4;
+    document.getElementById('runner-mountains').style.backgroundPosition = `-${cyberParallaxOffset * 0.3}px 0`;
+    document.getElementById('runner-hills').style.backgroundPosition = `-${cyberParallaxOffset * 0.7}px 0`;
 
     // ADVANCED RAYCAST PREDICTIVE AI AUTOPILOT
-    const marioX = 42;
-    const nextObs = marioObstacles.find(o => o.x + o.width > marioX);
+    const cyberX = 42;
+    const nextObs = cyberObstacles.find(o => o.x + o.width > cyberX);
 
-    if (marioRayCtx && appState.admin.showAiRaycast) {
-      marioRayCtx.clearRect(0, 0, marioCanvasRay.width, marioCanvasRay.height);
+    if (cyberRayCtx && appState.admin.showAiRaycast) {
+      cyberRayCtx.clearRect(0, 0, cyberCanvasRay.width, cyberCanvasRay.height);
     }
 
-    if (marioAiAutopilot && nextObs) {
-      const distance = nextObs.x - marioX;
+    if (cyberAiAutopilot && nextObs) {
+      const distance = nextObs.x - cyberX;
       const timeToImpact = distance / speed;
 
-      const telemetryEl = document.getElementById('mario-ai-telemetry');
+      const telemetryEl = document.getElementById('cyber-ai-telemetry');
       if (telemetryEl) {
         telemetryEl.textContent = `Hindernis: ${Math.round(distance)}px | T: ${timeToImpact.toFixed(1)}f`;
       }
 
-      const optimalJumpDistance = (appState.admin.marioJumpVelocity / 0.75) * speed * 0.92;
+      const optimalJumpDistance = (appState.admin.cyberJumpVelocity / 0.75) * speed * 0.92;
 
-      if (distance <= optimalJumpDistance && distance > 10 && marioJumpHeight === 0) {
-        triggerMarioJump();
+      if (distance <= optimalJumpDistance && distance > 10 && cyberJumpHeight === 0) {
+        triggerCyberJump();
       }
 
-      if (marioJumpVelocity < 0 && distance < 45 && distance > 0 && marioJumpHeight < 40 && marioJumpsRemaining > 0) {
-        triggerMarioJump();
+      if (cyberJumpVelocity < 0 && distance < 45 && distance > 0 && cyberJumpHeight < 40 && cyberJumpsRemaining > 0) {
+        triggerCyberJump();
       }
 
-      if (marioRayCtx && appState.admin.showAiRaycast && !appState.lowEndMode) {
-        marioRayCtx.strokeStyle = distance < optimalJumpDistance ? '#ec4899' : '#06b6d4';
-        marioRayCtx.lineWidth = 2;
-        marioRayCtx.setLineDash([4, 4]);
-        marioRayCtx.beginPath();
-        marioRayCtx.moveTo(marioX + 20, 220 - 36 - marioJumpHeight - 20);
-        marioRayCtx.lineTo(nextObs.x + 14, 220 - 36 - 20);
-        marioRayCtx.stroke();
-        marioRayCtx.setLineDash([]);
+      if (cyberRayCtx && appState.admin.showAiRaycast && !appState.lowEndMode) {
+        cyberRayCtx.strokeStyle = distance < optimalJumpDistance ? '#ec4899' : '#06b6d4';
+        cyberRayCtx.lineWidth = 2;
+        cyberRayCtx.setLineDash([4, 4]);
+        cyberRayCtx.beginPath();
+        cyberRayCtx.moveTo(cyberX + 20, 220 - 36 - cyberJumpHeight - 20);
+        cyberRayCtx.lineTo(nextObs.x + 14, 220 - 36 - 20);
+        cyberRayCtx.stroke();
+        cyberRayCtx.setLineDash([]);
       }
     }
 
     // Move Obstacles
-    const worldWidth = document.getElementById('mario-world').clientWidth;
-    for (let i = marioObstacles.length - 1; i >= 0; i--) {
-      const obs = marioObstacles[i];
+    const worldWidth = document.getElementById('runner-world-view').clientWidth;
+    for (let i = cyberObstacles.length - 1; i >= 0; i--) {
+      const obs = cyberObstacles[i];
       obs.x -= speed;
       obs.el.style.left = `${obs.x}px`;
 
-      if (!appState.admin.godMario && marioStarTimer <= 0 && obs.x < 68 && obs.x > 24 && marioJumpHeight < 34) {
-        marioGameOver = true;
+      if (!appState.admin.godCyber && cyberStarTimer <= 0 && obs.x < 68 && obs.x > 24 && cyberJumpHeight < 34) {
+        cyberGameOver = true;
         SFX.hit();
-        document.getElementById('mario-status').textContent = `💥 Kollision! Score: ${Math.floor(marioScore)}.`;
+        document.getElementById('runner-status').textContent = `💥 Kollision! Score: ${Math.floor(cyberScore)}.`;
         
-        if (marioScore > appState.stats.mario.highscore) {
-          appState.stats.mario.highscore = marioScore;
+        if (cyberScore > appState.stats.cyber.highscore) {
+          appState.stats.cyber.highscore = cyberScore;
           saveState();
-          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Super Mario Run: ${Math.floor(marioScore)} Punkte!`, 'icon-192.png', 'mario-highscore');
+          sendArcadeNotification('🌟 Neuer Highscore!', `Neuer Rekord in Cyber Runner Ultra: ${Math.floor(cyberScore)} Punkte!`, 'icon-192.png', 'runner-highscore');
         }
-        if (marioScore >= 500) unlockTrophy('mario_runner');
+        if (cyberScore >= 500) unlockTrophy('cyber_runner');
 
-        if (marioAiAutopilot) {
-          document.getElementById('mario-status').textContent = '🤖 Autopilot startet in 1.2s neu…';
-          marioAutoRestartTimer = setTimeout(() => resetMarioRun(), 1200);
+        if (cyberAiAutopilot) {
+          document.getElementById('runner-status').textContent = '🤖 Autopilot startet in 1.2s neu…';
+          cyberAutoRestartTimer = setTimeout(() => resetCyberRun(), 1200);
         }
       }
 
       if (obs.x < -40) {
         obs.el.remove();
-        marioObstacles.splice(i, 1);
-        spawnMarioObstacle(worldWidth + Math.random() * 140 + 90);
+        cyberObstacles.splice(i, 1);
+        spawnCyberObstacle(worldWidth + Math.random() * 140 + 90);
       }
     }
 
     // Move Coins & Magnet Perk
-    for (let i = marioCoinsList.length - 1; i >= 0; i--) {
-      const coin = marioCoinsList[i];
+    for (let i = cyberCoinsList.length - 1; i >= 0; i--) {
+      const coin = cyberCoinsList[i];
       coin.x -= speed;
 
       // Shop Coin Magnet Perk
-      if (appState.equipped && appState.equipped['mario_magnet']) {
-        const marioCenterY = 36 + marioJumpHeight;
+      if (appState.equipped && appState.equipped['cyber_magnet']) {
+        const cyberCenterY = 36 + cyberJumpHeight;
         if (coin.x < 220 && coin.x > 30) {
           coin.x -= speed * 1.5;
-          const dy = marioCenterY - coin.y;
+          const dy = cyberCenterY - coin.y;
           coin.y += dy * 0.12;
         }
       }
@@ -4341,85 +4341,85 @@ function tickMarioRun() {
       coin.el.style.left = `${coin.x}px`;
       coin.el.style.bottom = `${coin.y}px`;
 
-      if (coin.x < 68 && coin.x > 24 && Math.abs(marioJumpHeight + 36 - coin.y) < 32) {
+      if (coin.x < 68 && coin.x > 24 && Math.abs(cyberJumpHeight + 36 - coin.y) < 32) {
         SFX.coin();
         let multiplier = isGold ? 2 : 1;
         const coinVal = (appState.admin.infiniteCoins ? 100 : 1) * multiplier;
-        marioCoins += coinVal;
-        appState.stats.mario.totalCoins += coinVal;
+        cyberCoins += coinVal;
+        appState.stats.cyber.totalCoins += coinVal;
         if (appState.isVip) appState.vipCoins += coinVal;
         updateVipVisualState();
         updateShopBalanceDisplay();
-        document.getElementById('mario-coins').textContent = String(marioCoins);
+        document.getElementById('runner-coins').textContent = String(cyberCoins);
         coin.el.remove();
-        marioCoinsList.splice(i, 1);
-        spawnMarioCoin(worldWidth + Math.random() * 200 + 120);
+        cyberCoinsList.splice(i, 1);
+        spawnCyberCoin(worldWidth + Math.random() * 200 + 120);
       } else if (coin.x < -30) {
         coin.el.remove();
-        marioCoinsList.splice(i, 1);
-        spawnMarioCoin(worldWidth + Math.random() * 200 + 120);
+        cyberCoinsList.splice(i, 1);
+        spawnCyberCoin(worldWidth + Math.random() * 200 + 120);
       }
     }
 
-    if (marioScore >= marioGoalDistance) {
-      marioGameOver = true;
+    if (cyberScore >= cyberGoalDistance) {
+      cyberGameOver = true;
       SFX.win();
-      document.getElementById('mario-status').textContent = '🏁 Ziel erreicht! Fantastischer Lauf!';
-      unlockTrophy('mario_runner');
+      document.getElementById('runner-status').textContent = '🏁 Ziel erreicht! Fantastischer Lauf!';
+      unlockTrophy('cyber_runner');
       if (appState.isVip) mintVipCoins(2000);
     }
   }
 
-  requestAnimationFrame(tickMarioRun);
+  requestAnimationFrame(tickCyberRun);
 }
 
-function initSuperMario() {
-  const world = document.getElementById('mario-world');
-  world.addEventListener('click', triggerMarioJump);
+function initSuperCyber() {
+  const world = document.getElementById('runner-world-view');
+  world.addEventListener('click', triggerCyberJump);
   window.addEventListener('keydown', (e) => {
-    if (activeGameId === 'supermario' && (e.code === 'Space' || e.code === 'ArrowUp')) {
+    if (activeGameId === 'cyberrunner' && (e.code === 'Space' || e.code === 'ArrowUp')) {
       e.preventDefault();
-      triggerMarioJump();
+      triggerCyberJump();
     }
   });
 
-  document.getElementById('reset-supermario').addEventListener('click', resetMarioRun);
+  document.getElementById('reset-runner').addEventListener('click', resetCyberRun);
 
-  document.querySelectorAll('.mario-mode-button').forEach(btn => {
+  document.querySelectorAll('.cyber-mode-button').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.mario-mode-button').forEach(b => b.classList.remove('active-mode'));
+      document.querySelectorAll('.cyber-mode-button').forEach(b => b.classList.remove('active-mode'));
       btn.classList.add('active-mode');
-      marioDifficulty = btn.dataset.marioMode;
-      resetMarioRun();
+      cyberDifficulty = btn.dataset.cyberMode;
+      resetCyberRun();
       SFX.click();
     });
   });
 
-  document.getElementById('mario-ai-toggle').addEventListener('click', (e) => {
-    marioAiAutopilot = !marioAiAutopilot;
-    e.currentTarget.classList.toggle('active-mode', marioAiAutopilot);
-    document.getElementById('mario-ai-hud').classList.toggle('hidden', !marioAiAutopilot);
+  document.getElementById('cyber-ai-toggle').addEventListener('click', (e) => {
+    cyberAiAutopilot = !cyberAiAutopilot;
+    e.currentTarget.classList.toggle('active-mode', cyberAiAutopilot);
+    document.getElementById('cyber-ai-hud').classList.toggle('hidden', !cyberAiAutopilot);
     SFX.click();
   });
 
-  document.getElementById('mario-gold-suit-toggle').addEventListener('click', () => {
+  document.getElementById('cyber-gold-suit-toggle').addEventListener('click', () => {
     if (!appState.isVip) {
       openVipTrigger('🔒 VIP Gold-Anzug - Bitte VIP Master-Code eingeben!');
       return;
     }
-    appState.admin.marioGoldSuit = !appState.admin.marioGoldSuit;
-    document.getElementById('mario-runner').classList.toggle('mario-gold-active', appState.admin.marioGoldSuit);
+    appState.admin.cyberGoldSuit = !appState.admin.cyberGoldSuit;
+    document.getElementById('cyber-runner').classList.toggle('cyber-gold-active', appState.admin.cyberGoldSuit);
     SFX.powerup();
     triggerConfetti(50, true);
   });
 
-  resetMarioRun();
+  resetCyberRun();
 }
 
 /* ==========================================================================
-   16. MARIO KART RUSH EXPANDED (50cc-300cc, ITEMS, COUNTDOWN & AUTO-GAS)
+   16. cyber KART RUSH EXPANDED (50cc-300cc, ITEMS, COUNTDOWN & AUTO-GAS)
    ========================================================================== */
-const kartCanvas = document.getElementById('mario-kart-canvas');
+const kartCanvas = document.getElementById('kart-canvas-elem');
 const kartCtx = kartCanvas.getContext('2d');
 
 let kartPlayer = null;
@@ -4447,10 +4447,10 @@ const kartCCSpecs = {
 
 const kartKeys = { left: false, right: false, up: false, down: false, drift: false };
 
-function startMarioKartLoop() {
+function startCyberKartLoop() {
   if (kartLoopRunning) return;
   kartLoopRunning = true;
-  requestAnimationFrame(tickMarioKart);
+  requestAnimationFrame(tickCyberKart);
 }
 
 let kartCountdownTimers = [];
@@ -4535,7 +4535,7 @@ function runKartCountdown(callback) {
   }, 3000));
 }
 
-function resetMarioKart() {
+function resetCyberKart() {
   clearKartCountdownTimers();
   const specs = kartCCSpecs[kartSelectedCC] || kartCCSpecs[50];
   
@@ -4554,7 +4554,7 @@ function resetMarioKart() {
     invincibleTimer: 0
   };
 
-  const botNames = ['Mario', 'Luigi', 'Peach', 'Bowser', 'Yoshi', 'Toad'];
+  const botNames = ['Cyber', 'Luigi', 'Peach', 'Bowser', 'Yoshi', 'Toad'];
   const botColors = ['#ef4444', '#22c55e', '#ec4899', '#78350f', '#10b981', '#38bdf8'];
   
   kartBots = botNames.map((name, i) => ({
@@ -4581,7 +4581,7 @@ function resetMarioKart() {
   kartDriftLevel = 0;
 
   document.getElementById('kart-item-pill').textContent = 'LEER';
-  document.getElementById('mario-kart-status').textContent = `Cup: ${kartSelectedCC}cc. Besiege alle 6 KI-Fahrer!`;
+  document.getElementById('kart-status-banner').textContent = `Cup: ${kartSelectedCC}cc. Besiege alle 6 KI-Fahrer!`;
 
   runKartCountdown();
 }
@@ -4605,8 +4605,8 @@ function useKartItem() {
   document.getElementById('kart-item-pill').textContent = 'LEER';
 }
 
-function tickMarioKart() {
-  if (activeGameId !== 'mariokart' || isAppFrozen) {
+function tickCyberKart() {
+  if (activeGameId !== 'cyberkart' || isAppFrozen) {
     kartLoopRunning = false;
     return;
   }
@@ -4714,18 +4714,18 @@ function tickMarioKart() {
         SFX.win();
         triggerConfetti(90, true);
         if (appState.isVip) mintVipCoins(3000);
-        document.getElementById('mario-kart-status').textContent = `🏆 PLATZ 1! Du hast den ${kartSelectedCC}cc Grand Prix gewonnen!`;
+        document.getElementById('kart-status-banner').textContent = `🏆 PLATZ 1! Du hast den ${kartSelectedCC}cc Grand Prix gewonnen!`;
         unlockTrophy('kart_champion');
       } else {
         SFX.loss();
-        document.getElementById('mario-kart-status').textContent = `🏁 Ziel erreicht auf Platz ${playerRank}. Drücke Neu starten für ein Revanche!`;
+        document.getElementById('kart-status-banner').textContent = `🏁 Ziel erreicht auf Platz ${playerRank}. Drücke Neu starten für ein Revanche!`;
       }
       saveState();
     }
   }
 
   drawKartScene();
-  requestAnimationFrame(tickMarioKart);
+  requestAnimationFrame(tickCyberKart);
 }
 
 function updateKartRadar() {
@@ -4844,9 +4844,9 @@ function drawRacerCar(car, y, isPlayer = false) {
   kartCtx.restore();
 }
 
-function initMarioKart() {
+function initCyberKart() {
   window.addEventListener('keydown', (e) => {
-    if (activeGameId !== 'mariokart') return;
+    if (activeGameId !== 'cyberkart') return;
     const key = e.key.toLowerCase();
     if (['arrowup', 'w'].includes(key)) kartKeys.up = true;
     if (['arrowdown', 's'].includes(key)) kartKeys.down = true;
@@ -4888,7 +4888,7 @@ function initMarioKart() {
       document.querySelectorAll('[data-kart-cc]').forEach(b => b.classList.remove('active-mode'));
       btn.classList.add('active-mode');
       kartSelectedCC = cc;
-      resetMarioKart();
+      resetCyberKart();
       SFX.click();
     });
   });
@@ -4899,8 +4899,8 @@ function initMarioKart() {
     SFX.click();
   });
 
-  document.getElementById('reset-mariokart').addEventListener('click', resetMarioKart);
-  resetMarioKart();
+  document.getElementById('reset-kart').addEventListener('click', resetCyberKart);
+  resetCyberKart();
 }
 
 /* ==========================================================================
@@ -5554,8 +5554,8 @@ window.addEventListener('keydown', (e) => {
     const quickLaunch = {
       '1': 'tictactoe',
       '2': 'memory',
-      '3': 'supermario',
-      '4': 'mariokart',
+      '3': 'cyberrunner',
+      '4': 'cyberkart',
       '5': 'rps',
       '6': 'snake',
       '7': 'brickbreaker'
@@ -6023,15 +6023,15 @@ const GAME_GUIDES = {
       es: '💡 <strong>Consejo Pro:</strong> ¡Memoriza también las cartas que tu oponente voltea para emparejarlas en tu turno!'
     }
   },
-  supermario: {
+  cyberrunner: {
     icon: '🍄🏃',
     title: {
-      de: 'Super Mario Run',
-      en: 'Super Mario Run',
-      fr: 'Super Mario Run',
-      pt: 'Super Mario Run',
-      tr: 'Super Mario Koşusu',
-      es: 'Super Mario Run'
+      de: 'Cyber Runner Ultra',
+      en: 'Cyber Runner Ultra',
+      fr: 'Cyber Runner Ultra',
+      pt: 'Cyber Runner Ultra',
+      tr: 'Super Cyber Koşusu',
+      es: 'Cyber Runner Ultra'
     },
     sections: {
       de: [
@@ -6119,15 +6119,15 @@ const GAME_GUIDES = {
       es: '💡 <strong>Consejo Pro:</strong> ¡Activa el segundo salto en la cúspide del primero para superar grandes distancias!'
     }
   },
-  mariokart: {
+  cyberkart: {
     icon: '🏁🏎️',
     title: {
-      de: 'Mario Kart Rush',
-      en: 'Mario Kart Rush',
-      fr: 'Mario Kart Rush',
-      pt: 'Mario Kart Rush',
-      tr: 'Mario Kart Rush',
-      es: 'Mario Kart Rush'
+      de: 'Cyber Kart Turbo 2D',
+      en: 'Cyber Kart Turbo 2D',
+      fr: 'Cyber Kart Turbo 2D',
+      pt: 'Cyber Kart Turbo 2D',
+      tr: 'Cyber Kart Turbo 2D',
+      es: 'Cyber Kart Turbo 2D'
     },
     sections: {
       de: [
@@ -7245,8 +7245,8 @@ window.addEventListener('DOMContentLoaded', () => {
   initMultiplayerLobby();
   initTicTacToe();
   initMemory();
-  initSuperMario();
-  initMarioKart();
+  initSuperCyber();
+  initCyberKart();
   initRPS();
   initSnake();
   initBrickBreaker();
@@ -7306,3 +7306,51 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+
+
+// ==========================================================================
+// CRAZYGAMES SDK v3: USER AUTH & ACCOUNT SYNC + AUTO ENGLISH LOCALE
+// ==========================================================================
+async function initCrazyGamesIntegration() {
+  // 1. Auto-detect CrazyGames / iframe environment
+  const isIframe = window.self !== window.top || document.referrer.includes('crazygames') || window.location.ancestorOrigins?.length > 0;
+  
+  if (isIframe && !localStorage.getItem('arcade_lang_user_set')) {
+    // Default to English on CrazyGames platform
+    setLanguage('en');
+  }
+
+  if (typeof window.CrazyGames !== 'undefined' && window.CrazyGames.SDK) {
+    try {
+      // Notify SDK that initial load completed
+      if (window.CrazyGames.SDK.game) {
+        window.CrazyGames.SDK.game.loadingStop();
+      }
+
+      // Check user account availability
+      if (window.CrazyGames.SDK.user) {
+        const available = await window.CrazyGames.SDK.user.isUserAccountAvailable();
+        if (available) {
+          const user = await window.CrazyGames.SDK.user.getUser();
+          if (user && user.username) {
+            appState.playerName = user.username;
+            appState.playerAvatar = '🎮';
+            localStorage.setItem('arcade_welcomed', 'true');
+            saveState();
+            const label = document.getElementById('player-label');
+            if (label) label.textContent = user.username;
+            const avatar = document.getElementById('topbar-avatar');
+            if (avatar) avatar.textContent = '🎮';
+            console.log('✅ CrazyGames User Logged In:', user.username);
+          }
+        }
+      }
+    } catch (err) {
+      console.log('CrazyGames SDK User Init Info:', err);
+    }
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  initCrazyGamesIntegration();
+});
