@@ -29,7 +29,7 @@ const I18N_DATA = {
     tut_step1: '7 Retro- & Arcade-Spiele mit intelligenter KI.',
     tut_step2: 'Unbesiegbarer Minimax, Markov KI & VIP Admin Menü.',
     tut_step3: 'Offline-fähig, 6 Themes, 4 Animationsstile & Low-End Sparmodus.',
-    continue_btn: 'Weiter',
+    continue_btn: 'Profil anpassen & Weiter',
     what_is_your_name: 'Wie heißt du?',
     start_game_btn: "Los geht's",
     brand_title: 'Noel Arcade',
@@ -124,16 +124,24 @@ const I18N_DATA = {
     install_title: 'Noel Arcade installieren',
     install_desc: 'Schneller starten und 100% offline spielen!',
     install_btn: 'Installieren',
+    nav_shop: 'Coin-Shop',
+    nav_settings: 'Einstellungen',
+    nav_vip: 'VIP Admin',
+    nav_trophies: 'Trophäen',
     nav_stats: 'Statistiken',
     nav_reset_all: 'Alle Scores zurücksetzen',
+    multiplayer_title: 'Online Multiplayer Lobby',
+    multiplayer_sub: 'Live-Duelle & Turniere mit 2 bis 10 Spielern',
     established_2026: 'ESTABLISHED 2026',
     created_by: 'Erstellt von',
     whats_new: 'Was ist neu?',
     privacy: 'Datenschutz',
-    whats_new_title: 'Was ist neu in v0.0.38?',
+    whats_new_title: 'Was ist neu in v0.0.50?',
     privacy_title: 'Datenschutzerklärung'
   },
   en: {
+    notifications_title: 'Push Notifications',
+    notifications_desc: 'Receive instant notifications for trophies, multiplayer challenges and daily rewards.',
     confirm_language: 'Confirm Language',
     arcade_edition: 'Noel Arcade Universe',
     game_lounge_title: 'Game Lounge',
@@ -141,7 +149,7 @@ const I18N_DATA = {
     tut_step1: '7 Retro & Arcade games powered by smart AI.',
     tut_step2: 'Unbeatable Minimax, Markov AI & VIP Admin Menu.',
     tut_step3: 'Offline-ready, 6 themes, 4 animation styles & Eco mode.',
-    continue_btn: 'Continue',
+    continue_btn: 'Customize Profile & Continue',
     what_is_your_name: "What's your name?",
     start_game_btn: "Let's Play",
     brand_title: 'Noel Arcade',
@@ -236,146 +244,158 @@ const I18N_DATA = {
     install_title: 'Install Noel Arcade',
     install_desc: 'Faster launch and 100% offline gaming!',
     install_btn: 'Install',
+    nav_shop: 'Coin Shop',
+    nav_settings: 'Settings',
+    nav_vip: 'VIP Admin',
+    nav_trophies: 'Trophies',
     nav_stats: 'Statistics',
     nav_reset_all: 'Reset All Scores',
+    multiplayer_title: 'Online Multiplayer Lobby',
+    multiplayer_sub: 'Live Duels & Tournaments with 2 to 10 players',
     established_2026: 'ESTABLISHED 2026',
     created_by: 'Created by',
     whats_new: "What's new?",
     privacy: 'Privacy Policy',
-    whats_new_title: "What's new in v0.0.38?",
+    whats_new_title: "What's new in v0.0.50?",
     privacy_title: 'Privacy Policy'
   },
   fr: {
     confirm_language: 'Confirmer la langue',
     arcade_edition: 'Noel Arcade Universe',
-    game_lounge_title: 'Game Lounge',
+    game_lounge_title: 'Salon de jeu',
     how_it_works: 'Comment ça marche',
-    tut_step1: '7 jeux rétro & arcade avec IA intelligente.',
-    tut_step2: 'Minimax imbattable, IA Markov & Menu VIP Admin.',
-    tut_step3: '100% hors ligne, 6 thèmes, 4 styles & mode éco.',
+    tut_step1: '7 jeux rétro et d arcade propulsés par IA.',
+    tut_step2: 'Minimax invincible, IA Markov et menu VIP Admin.',
+    tut_step3: 'Hors-ligne, 6 thèmes, 4 styles et mode Éco.',
     continue_btn: 'Continuer',
-    what_is_your_name: 'Quel est votre nom ?',
-    start_game_btn: "C'est parti",
+    what_is_your_name: 'Quel est votre nom?',
+    start_game_btn: 'Jouer',
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'IA Minimax',
     card_memory_sub: 'Trouver les paires',
-    card_cyber_sub: 'IA Raycast & Saut',
-    card_kart_sub: '50cc-300cc & Items',
-    card_rps_title: 'PFCEL',
+    card_cyber_sub: 'IA Raycast et Saut',
+    card_kart_sub: '50cc-300cc et Objets',
+    card_rps_title: 'RPSLS',
     card_rps_sub: 'IA Prédictive Markov',
     card_snake_sub: 'Chasse au serpent',
-    card_bricks_sub: 'Casse-briques laser',
+    card_bricks_sub: 'Casse-briques Laser',
     restart_btn: 'Recommencer',
     reshuffle_btn: 'Mélanger',
-    mode_human: 'Joueur vs Joueur',
-    mode_ai: 'Joueur vs IA',
+    mode_human: 'Humain vs Humain',
+    mode_ai: 'Humain vs IA',
     diff_easy: 'Facile',
     diff_medium: 'Moyen',
     diff_hard: 'Difficile',
     diff_master: 'Maître (Minimax)',
-    ttt_desc: 'Morpion classique avec IA au choix',
-    stat_player_wins: 'Victoires :',
-    stat_draws: 'Égalités :',
-    stat_ai_wins: 'Victoires IA :',
-    memory_desc: 'Trouvez toutes les paires en un minimum de coups',
-    stat_pairs_found: 'Paires :',
-    stat_attempts: 'Essais :',
-    stat_combo: 'Série :',
-    stat_time: 'Temps :',
-    cyber_desc: 'IA Raycast prédictive, double saut et pièces',
+    ttt_desc: 'Morpion classique avec IA ajustable',
+    stat_player_wins: 'Victoires:',
+    stat_draws: 'Nuls:',
+    stat_ai_wins: 'IA Victoires:',
+    memory_desc: 'Associez toutes les paires avec le moins de coups',
+    stat_pairs_found: 'Paires:',
+    stat_attempts: 'Essais:',
+    stat_combo: 'Série:',
+    stat_time: 'Temps:',
+    cyber_desc: 'IA prédictive, double saut et chasse aux pièces',
     ai_autopilot: 'Pilote auto',
-    stat_score: 'Score :',
-    stat_coins: 'Pièces :',
-    stat_highscore: 'Record :',
-    cyber_hint: 'Appuyez ou barre [ESPACE] pour sauter ! (Double saut actif)',
-    kart_desc: '50cc-300cc, boîtes mystères, drift et 6 bots',
-    stat_position: 'Rang :',
-    stat_speed: 'Vitesse :',
-    stat_drift_boost: 'Turbo Drift :',
-    stat_item: 'Objet :',
-    stat_distance: 'Distance :',
-    kart_controls_hint: '⌨️ W/↑ Gaz | S/↓ Frein | A/D Tourner | ESPACE Drift | E Objet',
-    auto_gas_label: 'Auto-Gaz :',
-    how_to_play: 'Aide',
-    rps_title: 'Pierre, Feuille, Ciseaux',
-    rps_desc: 'Équipé d’une IA prédictive à chaîne de Markov',
+    stat_score: 'Score:',
+    stat_coins: 'Pièces:',
+    stat_highscore: 'Record:',
+    cyber_hint: 'Touchez l écran ou [ESPACE] pour sauter! (Double saut actif)',
+    kart_desc: 'Coupes 50cc-300cc, Boîtes mystères, Drift et 6 IA',
+    stat_position: 'Rang:',
+    stat_speed: 'Vitesse:',
+    stat_drift_boost: 'Turbo Drift:',
+    stat_item: 'Objet:',
+    stat_distance: 'Distance:',
+    kart_controls_hint: '⌨️ Z/↑ Gaz | S/↓ Frein | Q/D Direction | ESPACE Drift | E Objet',
+    auto_gas_label: 'Auto-Gaz:',
+    how_to_play: 'Guide',
+    rps_title: 'Pierre, Papier, Ciseaux',
+    rps_desc: 'Avec IA prédictive de chaînes de Markov',
     reset_points_btn: 'Réinitialiser',
-    rps_mode_classic: 'Classique (3 choix)',
-    rps_mode_spock: 'Étendu (5 choix)',
-    stat_you: 'Vous :',
-    stat_computer: 'Ordinateur :',
-    stat_streak: 'Série :',
-    your_pick: 'Votre choix',
+    rps_mode_classic: 'Classique (3 Choix)',
+    rps_mode_spock: 'Étendu (RPSLS - 5 Choix)',
+    stat_you: 'Vous:',
+    stat_computer: 'Robot:',
+    stat_streak: 'Série:',
+    your_pick: 'Votre Choix',
     ai_pick: 'Choix IA',
     choice_rock: 'Pierre',
-    choice_paper: 'Feuille',
+    choice_paper: 'Papier',
     choice_scissors: 'Ciseaux',
     choice_lizard: 'Lézard',
     choice_spock: 'Spock',
-    rps_prompt: 'Choisissez votre coup et défiez l’IA !',
-    snake_desc: 'Ramassez les pommes néon et grandissez',
-    snake_hint: 'Flèches, WASD ou pavé tactile pour diriger.',
+    rps_prompt: 'Choisissez votre coup et défiez l IA!',
+    snake_desc: 'Mangez les pommes néon et grandissez',
+    snake_hint: 'Utilisez les flèches ou le pavé tactile.',
     play_again: 'Rejouer',
-    bricks_desc: 'Détruisez les briques et récupérez les lasers',
-    stat_lives: 'Vies :',
-    stat_level: 'Niveau :',
-    bricks_hint: 'Déplacez la raquette avec la souris ou touches. [ESPACE] pour lancer.',
+    bricks_desc: 'Détruisez les briques et prenez les bonus',
+    stat_lives: 'Vies:',
+    stat_level: 'Niveau:',
+    bricks_hint: 'Déplacez la raquette avec la souris ou Q/D. [ESPACE] pour lancer.',
     settings_title: 'Paramètres',
-    theme_select_label: 'Thème visuel',
-    anim_style_label: 'Style d’animation',
-    low_end_mode_title: 'Mode Éco / Basse consommation',
-    low_end_mode_desc: 'Désactive les flous et économise la batterie.',
-    scanlines_title: 'Lignes CRT Retro',
-    scanlines_desc: 'Filtre écran cathodique vintage.',
-    sound_volume_label: 'Volume des effets',
-    haptic_label: 'Retour haptique',
-    haptic_desc: 'Vibrations tactiles sur mobile.',
-    trophies_title: 'Trophées Arcade',
-    trophies_subtitle: 'Débloquez des succès en réussissant des exploits !',
+    theme_select_label: 'Thème',
+    anim_style_label: 'Animations',
+    low_end_mode_title: 'Mode Économie / Basse conso',
+    low_end_mode_desc: 'Désactive le flou et économise la batterie.',
+    scanlines_title: 'Lignes CRT',
+    scanlines_desc: 'Filtre écran rétro CRT.',
+    sound_volume_label: 'Volume Sonore',
+    haptic_label: 'Vibrations',
+    haptic_desc: 'Retours haptiques sur mobile.',
+    trophies_title: 'Succès Arcade',
+    trophies_subtitle: 'Débloquez des trophées en battant des records!',
     stats_title: 'Statistiques Joueur',
-    admin_title: 'Console VIP & Administrateur',
-    admin_subtitle: 'Outils Développeur & Mode Invincible',
+    admin_title: 'Console VIP et Admin',
+    admin_subtitle: 'Outils dev, déblocages et Mode Dieu',
     admin_unlock_title: 'Déblocage Instantané',
-    admin_unlock_desc: 'Débloquez tous les niveaux, coupes et trophées en 1 clic.',
+    admin_unlock_desc: 'Débloquez tous les modes et trophées en 1 clic.',
     admin_btn_all_levels: 'Débloquer tous les niveaux',
     admin_btn_all_trophies: 'Débloquer les 10 trophées',
-    admin_btn_max_stats: 'Statistiques Maximales',
-    admin_godmode_title: 'Mode Dieu / Invincibilité',
+    admin_btn_max_stats: 'Attribuer stats max',
+    admin_godmode_title: 'Mode Dieu et Invincibilité',
     vip_auth_title: 'Sécurité Quantique VIP',
-    vip_auth_subtitle: 'Vérification 256-Bit Branching',
-    vip_auth_prompt: 'Entrez le code maître VIP à 6 chiffres :',
-    verify_code_btn: 'Vérifier la clé',
+    vip_auth_subtitle: 'Vérification 256-Bit',
+    vip_auth_prompt: 'Entrez le code maître VIP à 6 chiffres:',
+    verify_code_btn: 'Vérifier',
     install_title: 'Installer Noel Arcade',
-    install_desc: 'Lancement rapide et jeu 100% hors ligne !',
+    install_desc: 'Lancement rapide et 100% hors-ligne!',
     install_btn: 'Installer',
+    nav_shop: 'Boutique',
+    nav_settings: 'Paramètres',
+    nav_vip: 'VIP Admin',
+    nav_trophies: 'Trophées',
     nav_stats: 'Statistiques',
-    nav_reset_all: 'Tout réinitialiser',
+    nav_reset_all: 'Réinitialiser',
+    multiplayer_title: 'Lobby Multijoueur En Ligne',
+    multiplayer_sub: 'Duels et tournois en direct de 2 à 10 joueurs',
     established_2026: 'ESTABLISHED 2026',
     created_by: 'Créé par',
     whats_new: 'Nouveautés',
     privacy: 'Confidentialité',
-    whats_new_title: 'Was ist neu in v0.0.38?',
-    privacy_title: 'Politique de confidentialité'
+    whats_new_title: 'Nouveautés v0.0.50',
+    privacy_title: 'Politique de Confidentialité'
   },
   pt: {
     confirm_language: 'Confirmar Idioma',
     arcade_edition: 'Noel Arcade Universe',
     game_lounge_title: 'Game Lounge',
-    how_it_works: 'Como funciona',
-    tut_step1: '7 jogos retrô e arcade com IA inteligente.',
-    tut_step2: 'Minimax imbatível, IA Markov e Menu VIP Admin.',
-    tut_step3: 'Offline, 6 temas, 4 estilos e modo econômico.',
+    how_it_works: 'Como Funciona',
+    tut_step1: '7 jogos retrô com IA inteligente.',
+    tut_step2: 'Minimax invencível, IA Markov e menu VIP Admin.',
+    tut_step3: 'Offline, 6 temas e modo econômico.',
     continue_btn: 'Continuar',
     what_is_your_name: 'Qual é o seu nome?',
-    start_game_btn: 'Jogar Agora',
+    start_game_btn: 'Jogar',
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'IA Minimax',
-    card_memory_sub: 'Achar pares',
-    card_cyber_sub: 'IA Raycast & Pulo',
+    card_memory_sub: 'Encontrar pares',
+    card_cyber_sub: 'IA Raycast & Salto',
     card_kart_sub: '50cc-300cc & Itens',
-    card_rps_title: 'Jokenpô+',
+    card_rps_title: 'RPSLS',
     card_rps_sub: 'IA Preditiva Markov',
-    card_snake_sub: 'Cobrinha Neon',
+    card_snake_sub: 'Cobrinha Retrô',
     card_bricks_sub: 'Quebra-Blocos Laser',
     restart_btn: 'Reiniciar',
     reshuffle_btn: 'Embaralhar',
@@ -385,261 +405,273 @@ const I18N_DATA = {
     diff_medium: 'Médio',
     diff_hard: 'Difícil',
     diff_master: 'Mestre (Minimax)',
-    ttt_desc: 'Jogo da Velha clássico com inteligência ajustável',
+    ttt_desc: 'Jogo da Velha clássico com IA ajustável',
     stat_player_wins: 'Vitórias:',
     stat_draws: 'Empates:',
-    stat_ai_wins: 'Vitórias IA:',
-    memory_desc: 'Encontre todos os pares com menor número de tentativas',
+    stat_ai_wins: 'IA Vitórias:',
+    memory_desc: 'Encontre todos os pares no menor número de tentativas',
     stat_pairs_found: 'Pares:',
     stat_attempts: 'Tentativas:',
     stat_combo: 'Combo:',
     stat_time: 'Tempo:',
-    cyber_desc: 'IA Raycast preditiva, pulo duplo e moedas',
+    cyber_desc: 'IA preditiva, salto duplo e moedas',
     ai_autopilot: 'Piloto Auto',
     stat_score: 'Pontos:',
     stat_coins: 'Moedas:',
     stat_highscore: 'Recorde:',
-    cyber_hint: 'Toque na tela ou pressione [ESPAÇO] para pular! (Pulo duplo ativo)',
-    kart_desc: '50cc-300cc, caixas de itens, drift e 6 bots',
+    cyber_hint: 'Toque na tela ou [ESPAÇO] para pular!',
+    kart_desc: '50cc-300cc, Itens, Drift e 6 IAs',
     stat_position: 'Posição:',
     stat_speed: 'Velocidade:',
     stat_drift_boost: 'Turbo Drift:',
     stat_item: 'Item:',
     stat_distance: 'Distância:',
-    kart_controls_hint: '⌨️ W/↑ Acelerar | S/↓ Freio | A/D Curva | ESPAÇO Drift | E Item',
+    kart_controls_hint: '⌨️ W/↑ Acelerar | S/↓ Frear | A/D Virar | ESPAÇO Drift | E Item',
     auto_gas_label: 'Auto-Gas:',
-    how_to_play: 'Como Jogar',
+    how_to_play: 'Guia',
     rps_title: 'Pedra, Papel, Tesoura',
-    rps_desc: 'Equipado com IA preditiva de Cadeias de Markov',
-    reset_points_btn: 'Zerar Placar',
+    rps_desc: 'Equipado com IA de Cadeia de Markov',
+    reset_points_btn: 'Zerar Pontos',
     rps_mode_classic: 'Clássico (3 Opções)',
-    rps_mode_spock: 'Expandido (5 Opções)',
+    rps_mode_spock: 'Expandido (RPSLS - 5 Opções)',
     stat_you: 'Você:',
     stat_computer: 'Computador:',
     stat_streak: 'Sequência:',
     your_pick: 'Sua Escolha',
-    ai_pick: 'Escolha da IA',
+    ai_pick: 'Escolha IA',
     choice_rock: 'Pedra',
     choice_paper: 'Papel',
     choice_scissors: 'Tesoura',
     choice_lizard: 'Lagarto',
     choice_spock: 'Spock',
     rps_prompt: 'Faça sua jogada e desafie a IA!',
-    snake_desc: 'Colete maçãs neon e cresça sem parar',
-    snake_hint: 'Use setas, WASD ou controle virtual.',
+    snake_desc: 'Colete maçãs neon e cresça',
+    snake_hint: 'Use as setas ou o direcional touch.',
     play_again: 'Jogar Novamente',
-    bricks_desc: 'Destrua os blocos e pegue tiros de laser',
+    bricks_desc: 'Destrua todos os blocos com laser',
     stat_lives: 'Vidas:',
     stat_level: 'Nível:',
-    bricks_hint: 'Mova com mouse, touch ou A/D. [ESPAÇO] para lançar.',
+    bricks_hint: 'Mova a raquete com mouse ou A/D. [ESPAÇO] para lançar.',
     settings_title: 'Configurações',
     theme_select_label: 'Tema Visual',
     anim_style_label: 'Estilo de Animação',
-    low_end_mode_title: 'Modo Econômico / Bateria',
-    low_end_mode_desc: 'Desativa filtros pesados e economiza bateria.',
-    scanlines_title: 'Linhas CRT Retrô',
-    scanlines_desc: 'Visual de monitor arcade antigo.',
+    low_end_mode_title: 'Modo Econômico',
+    low_end_mode_desc: 'Desativa efeitos para economizar bateria.',
+    scanlines_title: 'Efeito Linhas CRT',
+    scanlines_desc: 'Filtro retrô de monitor de tubo.',
     sound_volume_label: 'Volume dos Efeitos',
-    haptic_label: 'Vibração Tátil',
-    haptic_desc: 'Respostas táteis no celular.',
-    trophies_title: 'Conquistas do Arcade',
-    trophies_subtitle: 'Desbloqueie troféus batendo recordes nos jogos!',
-    stats_title: 'Estatísticas do Jogador',
-    admin_title: 'Console VIP & Administrador',
-    admin_subtitle: 'Ferramentas de Desenvolvedor e Modo Deus',
-    admin_unlock_title: 'Desbloqueio Imediato',
-    admin_unlock_desc: 'Desbloqueie todos os níveis, copas e troféus em 1 clique.',
-    admin_btn_all_levels: 'Desbloquear Todos os Níveis',
-    admin_btn_all_trophies: 'Desbloquear os 10 Troféus',
-    admin_btn_max_stats: 'Conceder Estatísticas Máximas',
-    admin_godmode_title: 'Modo Deus / Invencibilidade',
+    haptic_label: 'Vibração',
+    haptic_desc: 'Resposta tátil no celular.',
+    trophies_title: 'Conquistas Arcade',
+    trophies_subtitle: 'Desbloqueie troféus ao bater recordes!',
+    stats_title: 'Estatísticas',
+    admin_title: 'Painel VIP & Admin',
+    admin_subtitle: 'Ferramentas de desenvolvedor e Modo Deus',
+    admin_unlock_title: 'Desbloqueio Total',
+    admin_unlock_desc: 'Desbloqueie todos os modos com 1 clique.',
+    admin_btn_all_levels: 'Desbloquear Tudo',
+    admin_btn_all_trophies: 'Desbloquear 10 Troféus',
+    admin_btn_max_stats: 'Conceder Stats Máximos',
+    admin_godmode_title: 'Modo Deus',
     vip_auth_title: 'Segurança Quântica VIP',
-    vip_auth_subtitle: 'Verificação 256-Bit Branching',
-    vip_auth_prompt: 'Digite o código mestre VIP de 6 dígitos:',
-    verify_code_btn: 'Verificar Chave',
+    vip_auth_subtitle: 'Verificação de 256 Bits',
+    vip_auth_prompt: 'Digite a chave mestra VIP de 6 dígitos:',
+    verify_code_btn: 'Verificar',
     install_title: 'Instalar Noel Arcade',
-    install_desc: 'Início rápido e 100% offline!',
+    install_desc: 'Inicie mais rápido e jogue 100% offline!',
     install_btn: 'Instalar',
+    nav_shop: 'Loja',
+    nav_settings: 'Configurações',
+    nav_vip: 'VIP Admin',
+    nav_trophies: 'Troféus',
     nav_stats: 'Estatísticas',
-    nav_reset_all: 'Zerar Tudo',
+    nav_reset_all: 'Zerar Scores',
+    multiplayer_title: 'Lobby Multijogador Online',
+    multiplayer_sub: 'Duelos ao vivo de 2 a 10 jogadores',
     established_2026: 'ESTABLISHED 2026',
     created_by: 'Criado por',
     whats_new: 'Novidades',
     privacy: 'Privacidade',
-    whats_new_title: 'Was ist neu in v0.0.38?',
+    whats_new_title: 'Novidades v0.0.50',
     privacy_title: 'Política de Privacidade'
   },
   tr: {
     confirm_language: 'Dili Onayla',
     arcade_edition: 'Noel Arcade Universe',
-    game_lounge_title: 'Oyun Salonu',
-    how_it_works: 'Nasıl Oynanır',
-    tut_step1: 'Akıllı yapay zekaya sahip 7 retro ve arcade oyunu.',
-    tut_step2: 'Yenilmez Minimax, Markov YZ ve VIP Yönetici Menüsü.',
-    tut_step3: 'Çevrimdışı, 6 tema, 4 animasyon stili & Eko modu.',
+    game_lounge_title: 'Oyun Alanı',
+    how_it_works: 'Nasıl Çalışır',
+    tut_step1: 'Akıllı Yapay Zekalı 7 Retro Arcade Oyunu.',
+    tut_step2: 'Yenilmez Minimax, Markov YZ ve VIP Admin.',
+    tut_step3: 'Çevrimdışı, 6 tema ve eko modu.',
     continue_btn: 'Devam Et',
-    what_is_your_name: 'Adın nedir?',
-    start_game_btn: 'Başlayalım',
+    what_is_your_name: 'Adınız nedir?',
+    start_game_btn: 'Başla',
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'Minimax YZ',
     card_memory_sub: 'Çiftleri Bul',
-    card_cyber_sub: 'Raycast YZ & Zıpla',
-    card_kart_sub: '50cc-300cc & Nesneler',
-    card_rps_title: 'Taş-Kağıt-Makas+',
+    card_cyber_sub: 'Raycast YZ & Zıplama',
+    card_kart_sub: '50cc-300cc & Eşyalar',
+    card_rps_title: 'RPSLS',
     card_rps_sub: 'Markov Tahmin YZ',
-    card_snake_sub: 'Neon Yılan',
-    card_bricks_sub: 'Lazerli Tuğla Kırma',
+    card_snake_sub: 'Retro Yılan',
+    card_bricks_sub: 'Lazer Tuğla Kırma',
     restart_btn: 'Yeniden Başlat',
     reshuffle_btn: 'Karıştır',
     mode_human: 'İnsan vs İnsan',
-    mode_ai: 'İnsan vs YZ',
+    mode_ai: 'İnsan vs Yapay Zeka',
     diff_easy: 'Kolay',
     diff_medium: 'Orta',
     diff_hard: 'Zor',
     diff_master: 'Usta (Minimax)',
-    ttt_desc: 'Akıllı yapay zeka ile klasik 3 taş oyunu',
+    ttt_desc: 'Seçilebilir yapay zekalı klasik 3-sıra oyunu',
     stat_player_wins: 'Galibiyet:',
     stat_draws: 'Beraberlik:',
-    stat_ai_wins: 'YZ Galibiyeti:',
-    memory_desc: 'En az denemede tüm kart çiftlerini bulun',
+    stat_ai_wins: 'YZ Galibiyet:',
+    memory_desc: 'Tüm kart çiftlerini en az hamlede eşleştirin',
     stat_pairs_found: 'Çiftler:',
     stat_attempts: 'Deneme:',
     stat_combo: 'Seri:',
     stat_time: 'Süre:',
-    cyber_desc: 'Öngörülü Raycast YZ, çift zıplama ve altınlar',
+    cyber_desc: 'Tahmin YZ, çift zıplama ve altın avı',
     ai_autopilot: 'Otopilot',
     stat_score: 'Puan:',
     stat_coins: 'Altın:',
     stat_highscore: 'En İyi:',
-    cyber_hint: 'Zıplamak için ekrana dokun veya [BOŞLUK] tuşuna bas! (Çift zıplama aktif)',
-    kart_desc: '50cc-300cc, gizemli kutular, drift ve 6 bot',
+    cyber_hint: 'Zıplamak için ekrana dokunun veya [BOŞLUK] tuşuna basın!',
+    kart_desc: '50cc-300cc, Gizemli Kutular, Drift ve 6 Bot',
     stat_position: 'Sıra:',
     stat_speed: 'Hız:',
-    stat_drift_boost: 'Drift Turbosu:',
-    stat_item: 'Öğe:',
+    stat_drift_boost: 'Drift Turbo:',
+    stat_item: 'Eşya:',
     stat_distance: 'Mesafe:',
-    kart_controls_hint: '⌨️ W/↑ Gaz | S/↓ Fren | A/D Direksiyon | BOŞLUK Drift | E Öğe',
-    auto_gas_label: 'Otomatik Gaz:',
-    how_to_play: 'Nasıl Oynanır',
+    kart_controls_hint: '⌨️ W/↑ Gaz | S/↓ Fren | A/D Yön | BOŞLUK Drift | E Eşya',
+    auto_gas_label: 'Oto-Gaz:',
+    how_to_play: 'Kılavuz',
     rps_title: 'Taş, Kağıt, Makas',
-    rps_desc: 'Markov Zinciri tahmin yapay zekası ile donatıldı',
+    rps_desc: 'Markov Zinciri tahmin yapay zekası',
     reset_points_btn: 'Puanları Sıfırla',
     rps_mode_classic: 'Klasik (3 Seçenek)',
-    rps_mode_spock: 'Gelişmiş (5 Seçenek)',
+    rps_mode_spock: 'Gelişmiş (RPSLS - 5 Seçenek)',
     stat_you: 'Sen:',
     stat_computer: 'Bilgisayar:',
     stat_streak: 'Seri:',
-    your_pick: 'Seçimin',
+    your_pick: 'Senin Seçimin',
     ai_pick: 'YZ Seçimi',
     choice_rock: 'Taş',
     choice_paper: 'Kağıt',
     choice_scissors: 'Makas',
     choice_lizard: 'Kertenkele',
     choice_spock: 'Spock',
-    rps_prompt: 'Hamleni yap ve tahmin yapay zekasına meydan oku!',
-    snake_desc: 'Neon elmaları topla ve sonsuza kadar büyü',
-    snake_hint: 'Yön tuşları, WASD veya dokunmatik D-Pad kullanın.',
+    rps_prompt: 'Sembolünü seç ve yapay zekaya meydan oku!',
+    snake_desc: 'Neon elmaları topla ve büyü',
+    snake_hint: 'Yön tuşlarını veya dokunmatik kontrolleri kullanın.',
     play_again: 'Tekrar Oyna',
-    bricks_desc: 'Tüm tuğlaları kır ve lazer güçlendirmelerini kap',
+    bricks_desc: 'Tüm tuğlaları kır ve güçlendirmeleri topla',
     stat_lives: 'Can:',
     stat_level: 'Seviye:',
-    bricks_hint: 'Fare, dokunmatik veya A/D ile hareket ettir. [BOŞLUK] Başlat.',
+    bricks_hint: 'Raketi fare veya A/D ile kontrol et. [BOŞLUK] ile fırlat.',
     settings_title: 'Ayarlar',
-    theme_select_label: 'Tasarım Teması',
-    anim_style_label: 'Animasyon Stili',
-    low_end_mode_title: 'Eko / Pil Tasarruf Modu',
-    low_end_mode_desc: 'Ağır efektleri kapatır, pil ve işlemciyi korur.',
-    scanlines_title: 'CRT Retro Çizgiler',
-    scanlines_desc: 'Retro tüplü televizyon efekti.',
-    sound_volume_label: 'Ses Efekti Seviyesi',
-    haptic_label: 'Dokunsal Titreşim',
-    haptic_desc: 'Akıllı telefonlarda dokunma tepkisi.',
-    trophies_title: 'Arcade Başarıları',
-    trophies_subtitle: 'Oyunlarda rekor kırarak kupaların kilidini açın!',
-    stats_title: 'Oyuncu İstatistikleri',
-    admin_title: 'VIP & Yönetici Konsolu',
-    admin_subtitle: 'Geliştirici Araçları ve Tanrı Modu',
-    admin_unlock_title: 'Anında Kilit Açma',
-    admin_unlock_desc: 'Tek tıkla tüm seviyelerin, kupaların ve başarıların kilidini açın.',
+    theme_select_label: 'Renk Teması',
+    anim_style_label: 'Animasyon Tarzı',
+    low_end_mode_title: 'Tasarruf Modu',
+    low_end_mode_desc: 'Pil tasarrufu için efektleri kapatır.',
+    scanlines_title: 'CRT Efekti',
+    scanlines_desc: 'Retro tüplü televizyon çizgileri.',
+    sound_volume_label: 'Ses Seviyesi',
+    haptic_label: 'Titreşim',
+    haptic_desc: 'Dokunmatik geri bildirim.',
+    trophies_title: 'Başarımlar',
+    trophies_subtitle: 'Rekorlar kırarak kupaları aç!',
+    stats_title: 'İstatistikler',
+    admin_title: 'VIP & Admin Konsolu',
+    admin_subtitle: 'Geliştirici araçları ve Ölümsüzlük Modu',
+    admin_unlock_title: 'Anında Kilit Aç',
+    admin_unlock_desc: 'Tek tıkla tüm kilitleri aç.',
     admin_btn_all_levels: 'Tüm Seviyeleri Aç',
-    admin_btn_all_trophies: '10 Kupayı Aç',
-    admin_btn_max_stats: 'Maksimum İstatistikler Ver',
-    admin_godmode_title: 'Tanrı Modu / Ölümsüzlük',
-    vip_auth_title: 'VIP Kuantum Güvenliği',
-    vip_auth_subtitle: '256-Bit Dallanmış Doğrulama',
-    vip_auth_prompt: '6 haneli şifreli VIP Anahtarını girin:',
-    verify_code_btn: 'Anahtarı Doğrula',
+    admin_btn_all_trophies: '10 Başarımı Aç',
+    admin_btn_max_stats: 'Maksimum İstatistik Ver',
+    admin_godmode_title: 'Ölümsüzlük Modu',
+    vip_auth_title: 'VIP Kuantum Güvenlik',
+    vip_auth_subtitle: '256-Bit Doğrulama',
+    vip_auth_prompt: '6 haneli VIP anahtarını girin:',
+    verify_code_btn: 'Doğrula',
     install_title: 'Noel Arcade Yükle',
-    install_desc: 'Daha hızlı başlatın ve %100 çevrimdışı oynayın!',
+    install_desc: 'Hızlı başlatın ve %100 çevrimdışı oynayın!',
     install_btn: 'Yükle',
+    nav_shop: 'Mağaza',
+    nav_settings: 'Ayarlar',
+    nav_vip: 'VIP Admin',
+    nav_trophies: 'Başarımlar',
     nav_stats: 'İstatistikler',
-    nav_reset_all: 'Tüm Skorları Sıfırla',
+    nav_reset_all: 'Skorları Sıfırla',
+    multiplayer_title: 'Çok Oyunculu Lobi',
+    multiplayer_sub: '2-10 oyunculu canlı maçlar',
     established_2026: 'ESTABLISHED 2026',
-    created_by: 'Hazırlayan',
+    created_by: 'Geliştirici',
     whats_new: 'Yenilikler',
     privacy: 'Gizlilik',
-    whats_new_title: 'Was ist neu in v0.0.38?',
+    whats_new_title: 'v0.0.50 Yenilikleri',
     privacy_title: 'Gizlilik Politikası'
   },
   es: {
     confirm_language: 'Confirmar Idioma',
     arcade_edition: 'Noel Arcade Universe',
-    game_lounge_title: 'Game Lounge',
-    how_it_works: 'Cómo funciona',
-    tut_step1: '7 juegos retro y arcade con IA inteligente.',
-    tut_step2: 'Minimax invencible, IA Markov y Menú VIP Admin.',
-    tut_step3: '100% offline, 6 temas, 4 estilos y modo ahorro.',
+    game_lounge_title: 'Salón de Juegos',
+    how_it_works: 'Cómo Funciona',
+    tut_step1: '7 Juegos retro con IA inteligente.',
+    tut_step2: 'Minimax invencible, IA Markov y panel VIP.',
+    tut_step3: 'Modo sin conexión, 6 temas y ahorro de energía.',
     continue_btn: 'Continuar',
     what_is_your_name: '¿Cómo te llamas?',
-    start_game_btn: '¡A Jugar!',
+    start_game_btn: 'Jugar',
     brand_title: 'Noel Arcade',
     card_ttt_sub: 'IA Minimax',
-    card_memory_sub: 'Encontrar parejas',
-    card_cyber_sub: 'IA Raycast & Salto',
-    card_kart_sub: '50cc-300cc & Objetos',
-    card_rps_title: 'Piedra-Papel+',
+    card_memory_sub: 'Buscar Parejas',
+    card_cyber_sub: 'IA Raycast y Salto',
+    card_kart_sub: '50cc-300cc y Objetos',
+    card_rps_title: 'RPSLS',
     card_rps_sub: 'IA Predictiva Markov',
-    card_snake_sub: 'Serpiente Neón',
+    card_snake_sub: 'Serpiente Retro',
     card_bricks_sub: 'Rompe-Bloques Láser',
     restart_btn: 'Reiniciar',
-    reshuffle_btn: 'Barajar',
+    reshuffle_btn: 'Reorganizar',
     mode_human: 'Humano vs Humano',
     mode_ai: 'Humano vs IA',
     diff_easy: 'Fácil',
     diff_medium: 'Medio',
     diff_hard: 'Difícil',
     diff_master: 'Maestro (Minimax)',
-    ttt_desc: 'Tres en raya clásico con inteligencia ajustable',
+    ttt_desc: 'Tres en raya clásico con IA ajustable',
     stat_player_wins: 'Victorias:',
     stat_draws: 'Empates:',
-    stat_ai_wins: 'Victorias IA:',
-    memory_desc: 'Encuentra todas las parejas con los mínimos intentos',
+    stat_ai_wins: 'IA Victorias:',
+    memory_desc: 'Encuentra todas las parejas en el menor número de intentos',
     stat_pairs_found: 'Parejas:',
     stat_attempts: 'Intentos:',
     stat_combo: 'Racha:',
     stat_time: 'Tiempo:',
-    cyber_desc: 'IA Raycast predictiva, doble salto y monedas',
+    cyber_desc: 'IA predictiva, doble salto y monedas',
     ai_autopilot: 'Piloto Auto',
     stat_score: 'Puntos:',
     stat_coins: 'Monedas:',
     stat_highscore: 'Récord:',
-    cyber_hint: '¡Toca o pulsa [ESPACIO] para saltar! (Doble salto disponible)',
-    kart_desc: '50cc-300cc, cajas sorpresa, drift y 6 bots IA',
-    stat_position: 'Puesto:',
+    cyber_hint: '¡Toca la pantalla o presiona [ESPACIO] para saltar!',
+    kart_desc: '50cc-300cc, Cajas misteriosas, Drift y 6 Bots',
+    stat_position: 'Posición:',
     stat_speed: 'Velocidad:',
     stat_drift_boost: 'Turbo Drift:',
     stat_item: 'Objeto:',
     stat_distance: 'Distancia:',
-    kart_controls_hint: '⌨️ W/↑ Gas | S/↓ Freno | A/D Girar | ESPACIO Derrape | E Objeto',
+    kart_controls_hint: '⌨️ W/↑ Acelerar | S/↓ Frenar | A/D Girar | ESPACIO Drift | E Objeto',
     auto_gas_label: 'Auto-Gas:',
-    how_to_play: 'Cómo Jugar',
+    how_to_play: 'Guía',
     rps_title: 'Piedra, Papel, Tijera',
-    rps_desc: 'Con IA predictiva de Cadenas de Markov',
-    reset_points_btn: 'Reiniciar Puntos',
+    rps_desc: 'Con IA de predicción de cadenas de Markov',
+    reset_points_btn: 'Restablecer',
     rps_mode_classic: 'Clásico (3 Opciones)',
-    rps_mode_spock: 'Extendido (5 Opciones)',
+    rps_mode_spock: 'Extendido (RPSLS - 5 Opciones)',
     stat_you: 'Tú:',
-    stat_computer: 'Ordenador:',
+    stat_computer: 'Computadora:',
     stat_streak: 'Racha:',
     your_pick: 'Tu Elección',
     ai_pick: 'Elección IA',
@@ -648,56 +680,59 @@ const I18N_DATA = {
     choice_scissors: 'Tijera',
     choice_lizard: 'Lagarto',
     choice_spock: 'Spock',
-    rps_prompt: '¡Haz tu jugada y desafía a la IA predictiva!',
-    snake_desc: 'Recoge manzanas de neón y crece sin límite',
-    snake_hint: 'Usa las flechas, WASD o la cruceta táctil.',
-    play_again: 'Jugar de nuevo',
-    bricks_desc: 'Rompe todos los ladrillos y atrapa los láseres',
+    rps_prompt: '¡Elige tu jugada y desafía a la IA!',
+    snake_desc: 'Recoge manzanas de neón y crece',
+    snake_hint: 'Usa las teclas de flecha o los controles táctiles.',
+    play_again: 'Jugar de Nuevo',
+    bricks_desc: 'Destruye todos los ladrillos con láser',
     stat_lives: 'Vidas:',
     stat_level: 'Nivel:',
-    bricks_hint: 'Mueve la pala con el ratón o teclas. [ESPACIO] para lanzar.',
+    bricks_hint: 'Mueve la pala con el ratón o A/D. [ESPACIO] para lanzar.',
     settings_title: 'Ajustes',
     theme_select_label: 'Tema Visual',
     anim_style_label: 'Estilo de Animación',
-    low_end_mode_title: 'Modo Ahorro / Rendimiento',
-    low_end_mode_desc: 'Desactiva desenfoques y ahorra batería.',
-    scanlines_title: 'Líneas CRT Retro',
-    scanlines_desc: 'Efecto de monitor arcade clásico.',
+    low_end_mode_title: 'Modo Ahorro de Energía',
+    low_end_mode_desc: 'Desactiva efectos para ahorrar batería.',
+    scanlines_title: 'Líneas CRT',
+    scanlines_desc: 'Filtro de monitor retro.',
     sound_volume_label: 'Volumen de Efectos',
-    haptic_label: 'Vibración Háptica',
-    haptic_desc: 'Respuesta táctil en teléfonos móviles.',
-    trophies_title: 'Logros del Arcade',
-    trophies_subtitle: '¡Desbloquea trofeos superando récords en los juegos!',
-    stats_title: 'Estadísticas del Jogador',
-    admin_title: 'Consola VIP & Administrador',
-    admin_subtitle: 'Herramientas de Desarrollador y Modo Dios',
-    admin_unlock_title: 'Desbloqueo Inmediato',
-    admin_unlock_desc: 'Desbloquea todos los niveles, copas y trofeos en 1 clic.',
-    admin_btn_all_levels: 'Desbloquear Todos os Níveis',
-    admin_btn_all_trophies: 'Desbloquear os 10 Troféus',
-    admin_btn_max_stats: 'Conceder Estatísticas Máximas',
-    admin_godmode_title: 'Modo Dios / Invencibilidad',
+    haptic_label: 'Vibración',
+    haptic_desc: 'Respuesta táctil en móviles.',
+    trophies_title: 'Logros Arcade',
+    trophies_subtitle: '¡Desbloquea trofeos logrando mejores puntuaciones!',
+    stats_title: 'Estadísticas',
+    admin_title: 'Panel VIP & Admin',
+    admin_subtitle: 'Herramientas de desarrollador y Modo Dios',
+    admin_unlock_title: 'Desbloqueo Total',
+    admin_unlock_desc: 'Desbloquea todo con un solo clic.',
+    admin_btn_all_levels: 'Desbloquear Todo',
+    admin_btn_all_trophies: 'Desbloquear 10 Trofeos',
+    admin_btn_max_stats: 'Otorgar Estadísticas Máximas',
+    admin_godmode_title: 'Modo Dios',
     vip_auth_title: 'Seguridad Cuántica VIP',
-    vip_auth_subtitle: 'Verificación 256-Bit Branching',
-    vip_auth_prompt: 'Introduce el código maestro VIP de 6 dígitos:',
-    verify_code_btn: 'Verificar Clave',
+    vip_auth_subtitle: 'Verificación de 256 Bits',
+    vip_auth_prompt: 'Ingresa la clave maestra VIP de 6 dígitos:',
+    verify_code_btn: 'Verificar',
     install_title: 'Instalar Noel Arcade',
-    install_desc: '¡Inicio rápido y juego 100% offline!',
+    install_desc: '¡Inicia más rápido y juega 100% sin conexión!',
     install_btn: 'Instalar',
+    nav_shop: 'Tienda',
+    nav_settings: 'Ajustes',
+    nav_vip: 'VIP Admin',
+    nav_trophies: 'Trofeos',
     nav_stats: 'Estadísticas',
-    nav_reset_all: 'Reiniciar Todo',
+    nav_reset_all: 'Restablecer Puntos',
+    multiplayer_title: 'Lobby Multijugador',
+    multiplayer_sub: 'Partidas en vivo de 2 a 10 jugadores',
     established_2026: 'ESTABLISHED 2026',
     created_by: 'Creado por',
-    whats_new: '¿Qué hay de nuevo?',
+    whats_new: 'Novedades',
     privacy: 'Privacidad',
-    whats_new_title: 'Was ist neu in v0.0.38?',
+    whats_new_title: 'Novedades v0.0.50',
     privacy_title: 'Política de Privacidad'
   }
 };
 
-/* ==========================================================================
-   2. APP STATE & PERSISTENCE
-   ========================================================================== */
 const DEFAULT_STATE = {
   notificationsEnabled: true,
   lastDailyBonus: 0,
@@ -2541,14 +2576,30 @@ function renderTrophiesModal() {
   if (!container) return;
   container.innerHTML = '';
   
+  const isDe = appState.language === 'de';
+  const trophyTranslations = {
+    first_step: { title: isDe ? 'Erster Schritt' : 'First Step', desc: isDe ? 'Spiele dein erstes Arcade-Spiel' : 'Play your first arcade game' },
+    ttt_master: { title: isDe ? 'Minimax Bezwinger' : 'Minimax Master', desc: isDe ? 'Erreiche ein Remis oder Sieg im Meister-Modus' : 'Achieve a draw or victory in Master Mode' },
+    memory_champ: { title: isDe ? 'Fotogedächtnis' : 'Photographic Memory', desc: isDe ? 'Memory in unter 20 Versuchen lösen' : 'Solve Memory in under 20 tries' },
+    cyber_runner: { title: isDe ? 'Marathon-Sprinter' : 'Marathon Sprinter', desc: isDe ? 'Erreiche 500 Punkte in Cyber Runner Ultra' : 'Score 500 points in Cyber Runner Ultra' },
+    kart_champion: { title: isDe ? 'Grand-Prix Sieger' : 'Grand Prix Champion', desc: isDe ? 'Erreiche Platz 1 in Cyber Kart Turbo 2D' : 'Finish 1st in Cyber Kart Turbo 2D' },
+    markov_mind: { title: isDe ? 'Gedankenleser' : 'Mind Reader', desc: isDe ? 'Erreiche eine 4er-Siegesserie in RPSLS' : 'Reach a 4-win streak in RPSLS' },
+    snake_length: { title: isDe ? 'Schlangenbändiger' : 'Snake Charmer', desc: isDe ? 'Erreiche 100 Punkte in Neon Snake' : 'Score 100 points in Neon Snake' },
+    brick_crusher: { title: isDe ? 'Ziegelmeister' : 'Brick Crusher', desc: isDe ? 'Erreiche Level 2 in Cyber Bricks' : 'Reach Level 2 in Cyber Bricks' },
+    customizer: { title: isDe ? 'Stilikone' : 'Style Icon', desc: isDe ? 'Passe Theme oder Animationsstil in den Einstellungen an' : 'Customize theme or animation style in Settings' },
+    vip_crown: { title: isDe ? 'VIP Administrator' : 'VIP Administrator', desc: isDe ? 'Öffne die geheime VIP & Admin Konsole' : 'Unlock the secret VIP Admin Console' },
+    vip_tycoon: { title: isDe ? 'VIP Münz-Milliardär' : 'VIP Coin Tycoon', desc: isDe ? 'Generiere über 100.000 Münzen im VIP Tresor' : 'Generate over 100,000 coins in VIP Vault' }
+  };
+  
   Object.values(appState.trophies).forEach(t => {
+    const info = trophyTranslations[t.id] || { title: t.title, desc: t.desc };
     const card = document.createElement('div');
     card.className = `trophy-card ${t.unlocked ? 'unlocked' : 'locked'}`;
     card.innerHTML = `
       <div class="trophy-icon">${t.icon}</div>
       <div class="trophy-info">
-        <div class="trophy-title">${t.title} ${t.unlocked ? '✅' : '🔒'}</div>
-        <div class="trophy-desc">${t.desc}</div>
+        <div class="trophy-title">${info.title} ${t.unlocked ? '✅' : '🔒'}</div>
+        <div class="trophy-desc">${info.desc}</div>
       </div>
     `;
     container.appendChild(card);
@@ -2559,19 +2610,19 @@ function renderStatsModal() {
   const container = document.getElementById('stats-overview-content');
   if (!container) return;
   const s = appState.stats;
+  const isDe = appState.language === 'de';
   container.innerHTML = `
-    <div class="stat-box"><span class="stat-box-num">🪙 ${Number(appState.vipCoins).toLocaleString()}</span><span class="stat-box-label">VIP Konto</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.ttt.winsX}</span><span class="stat-box-label">Tic-Tac-Toe Siege</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.ttt.winsO}</span><span class="stat-box-label">KI Siege</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.memory.bestTime === 999 ? '-' : s.memory.bestTime + 's'}</span><span class="stat-box-label">Beste Memory Zeit</span></div>
-    <div class="stat-box"><span class="stat-box-num">${Math.floor(s.cyber.highscore)}</span><span class="stat-box-label">Cyber Rekord</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.kart.firstPlaces}</span><span class="stat-box-label">Kart Siege (#1)</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.rps.userWins}</span><span class="stat-box-label">RPSLS Siege</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.snake.highscore}</span><span class="stat-box-label">Snake Highscore</span></div>
-    <div class="stat-box"><span class="stat-box-num">${s.bricks.highscore}</span><span class="stat-box-label">Bricks Highscore</span></div>
+    <div class="stat-box"><span class="stat-box-num">🪙 ${Number(appState.vipCoins).toLocaleString()}</span><span class="stat-box-label">${isDe ? 'VIP Konto' : 'VIP Wallet'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.ttt.winsX}</span><span class="stat-box-label">${isDe ? 'Tic-Tac-Toe Siege' : 'TTT Wins'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.ttt.winsO}</span><span class="stat-box-label">${isDe ? 'KI Siege' : 'AI Wins'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.memory.bestTime === 999 ? '-' : s.memory.bestTime + 's'}</span><span class="stat-box-label">${isDe ? 'Beste Memory Zeit' : 'Best Memory Time'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${Math.floor(s.cyber.highscore)}</span><span class="stat-box-label">${isDe ? 'Cyber Rekord' : 'Cyber Highscore'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.kart.firstPlaces}</span><span class="stat-box-label">${isDe ? 'Kart Siege (#1)' : 'Kart Wins (#1)'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.rps.userWins}</span><span class="stat-box-label">${isDe ? 'RPSLS Siege' : 'RPSLS Wins'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.snake.highscore}</span><span class="stat-box-label">${isDe ? 'Snake Highscore' : 'Snake Highscore'}</span></div>
+    <div class="stat-box"><span class="stat-box-num">${s.bricks.highscore}</span><span class="stat-box-label">${isDe ? 'Bricks Highscore' : 'Bricks Highscore'}</span></div>
   `;
 }
-
 /* ==========================================================================
    9. I18N & LANGUAGE OVERLAY LOGIC
    ========================================================================== */
@@ -2580,6 +2631,7 @@ function applyLanguage(langCode) {
   appState.language = langCode;
   document.documentElement.lang = langCode;
   
+  const isDe = langCode === 'de';
   const flagMap = { de: '🇩🇪 DE', en: '🇬🇧 EN', fr: '🇫🇷 FR', pt: '🇵🇹 PT', tr: '🇹🇷 TR', es: '🇪🇸 ES' };
   const tagEl = document.getElementById('current-lang-tag');
   if (tagEl) tagEl.textContent = flagMap[langCode] || '🌐';
@@ -2592,40 +2644,88 @@ function applyLanguage(langCode) {
     }
   });
 
-  // Dynamic Elements Translation
+  // Dynamic Navigation & Buttons
   const quickPlayBtn = document.getElementById('quick-play-instant-btn');
   if (quickPlayBtn) {
-    quickPlayBtn.textContent = langCode === 'de' ? '⚡ JETZT SPIELEN (Direktstart) ➔' : '⚡ PLAY NOW (Instant Start) ➔';
+    quickPlayBtn.textContent = isDe ? '⚡ JETZT SPIELEN (Direktstart) ➔' : '⚡ PLAY NOW (Instant Start) ➔';
   }
 
   const shopNavBtn = document.getElementById('launcher-shop-btn');
-  if (shopNavBtn) shopNavBtn.innerHTML = '<span>🛍️</span> ' + (langCode === 'de' ? 'Coin-Shop' : 'Coin Shop');
+  if (shopNavBtn) shopNavBtn.innerHTML = '<span>🛍️</span> ' + (isDe ? 'Coin-Shop' : 'Coin Shop');
 
   const settingsNavBtn = document.getElementById('launcher-settings-btn');
-  if (settingsNavBtn) settingsNavBtn.innerHTML = '<span>⚙️</span> ' + (langCode === 'de' ? 'Einstellungen' : 'Settings');
+  if (settingsNavBtn) settingsNavBtn.innerHTML = '<span>⚙️</span> ' + (isDe ? 'Einstellungen' : 'Settings');
 
   const vipNavBtn = document.getElementById('launcher-vip-btn');
   if (vipNavBtn) vipNavBtn.innerHTML = '<span>👑</span> VIP Admin';
 
   const trophiesNavBtn = document.getElementById('launcher-trophies-btn');
-  if (trophiesNavBtn) trophiesNavBtn.innerHTML = '<span>🏆</span> ' + (langCode === 'de' ? 'Trophäen' : 'Trophies');
+  if (trophiesNavBtn) trophiesNavBtn.innerHTML = '<span>🏆</span> ' + (isDe ? 'Trophäen' : 'Trophies');
 
-  // Kart Status Banner
-  const kartStatus = document.getElementById('kart-status-banner');
-  if (kartStatus) {
-    kartStatus.textContent = langCode === 'de' 
-      ? 'Rennziel: Besiege alle 6 KI-Fahrer und hole Platz 1!' 
-      : 'Race Goal: Defeat all 6 AI drivers and claim 1st place!';
+  const openSettingsBtn = document.getElementById('open-settings-btn');
+  if (openSettingsBtn) {
+    openSettingsBtn.title = isDe ? 'Einstellungen & Themes' : 'Settings & Themes';
+    openSettingsBtn.setAttribute('aria-label', isDe ? 'Einstellungen' : 'Settings');
   }
 
-  // Runner Status Banner
+  const footerSettingsBtn = document.getElementById('footer-settings-btn');
+  if (footerSettingsBtn) footerSettingsBtn.innerHTML = '⚙️ ' + (isDe ? 'Einstellungen' : 'Settings');
+
+  const footerStatsBtn = document.getElementById('footer-stats-btn');
+  if (footerStatsBtn) footerStatsBtn.innerHTML = '📊 ' + (isDe ? 'Statistiken' : 'Statistics');
+
+  const footerResetBtn = document.getElementById('footer-reset-all');
+  if (footerResetBtn) footerResetBtn.innerHTML = '🗑️ ' + (isDe ? 'Alle Scores zurücksetzen' : 'Reset All Scores');
+
+  const playerNameInput = document.getElementById('player-name');
+  if (playerNameInput) playerNameInput.placeholder = isDe ? 'Dein Spielername' : 'Enter player name';
+
+  const guideModalTitle = document.getElementById('guide-modal-title');
+  if (guideModalTitle) guideModalTitle.textContent = isDe ? 'Spielanleitung' : 'Game Guide';
+
+  // Game Status Banners
+  const kartStatus = document.getElementById('kart-status-banner');
+  if (kartStatus && !kartGameOver) {
+    kartStatus.textContent = isDe 
+      ? `Cup: ${kartSelectedCC}cc. Besiege alle 6 KI-Fahrer!`
+      : `Cup: ${kartSelectedCC}cc. Defeat all 6 AI drivers!`;
+  }
+
   const runnerStatus = document.getElementById('runner-status');
-  if (runnerStatus) {
-    runnerStatus.textContent = langCode === 'de'
+  if (runnerStatus && !cyberGameOver) {
+    runnerStatus.textContent = isDe
       ? 'Tippe in die Welt oder drücke [LEERTASTE] zum Springen! (Doppelsprung aktiv)'
       : 'Tap screen or press [SPACE] to jump! (Double jump active)';
   }
 
+  const snakeStatus = document.getElementById('snake-status');
+  if (snakeStatus && !snakeGameOver) {
+    snakeStatus.textContent = isDe
+      ? 'Nutze Pfeiltasten, WASD oder das Steuerkreuz zum Steuern.'
+      : 'Use arrow keys, WASD or touch D-Pad to control.';
+  }
+
+  const bricksStatus = document.getElementById('bricks-status');
+  if (bricksStatus && !bricksGameOver) {
+    bricksStatus.textContent = isDe
+      ? 'Bewege den Schläger mit Maus, Touch oder A/D. [LEERTASTE] zum Starten.'
+      : 'Move paddle with mouse, touch or A/D. [SPACE] to launch.';
+  }
+
+  const rpsStatus = document.getElementById('rps-status');
+  if (rpsStatus) {
+    rpsStatus.textContent = isDe
+      ? 'Wähle dein Symbol und fordere die Vorhersage-KI heraus!'
+      : 'Pick your move and challenge the predictive AI!';
+  }
+
+  const kartItemPill = document.getElementById('kart-item-pill');
+  if (kartItemPill && (!kartPlayerItem || kartGameOver)) {
+    kartItemPill.textContent = isDe ? 'LEER' : 'EMPTY';
+  }
+
+  renderTrophiesModal();
+  renderStatsModal();
   saveState();
 }
 
@@ -3810,7 +3910,7 @@ function finishTttGame(outcome) {
   appState.stats.ttt.gamesPlayed += 1;
 
   if (outcome.winner === 'draw') {
-    tttStatus.textContent = '🤝 Unentschieden!';
+    tttStatus.textContent = (appState.language === 'de' ? '🤝 Unentschieden!' : '🤝 Draw Game!');
     appState.stats.ttt.draws += 1;
     SFX.draw();
     if (tttDifficulty === 'master') unlockTrophy('ttt_master');
@@ -4335,7 +4435,8 @@ function tickCyberRun() {
       if (!appState.admin.godCyber && cyberStarTimer <= 0 && obs.x < 68 && obs.x > 24 && cyberJumpHeight < 34) {
         cyberGameOver = true;
         SFX.hit();
-        document.getElementById('runner-status').textContent = `💥 Kollision! Score: ${Math.floor(cyberScore)}.`;
+        const isDe = appState.language === 'de';
+        document.getElementById('runner-status').textContent = isDe ? `💥 Kollision! Score: ${Math.floor(cyberScore)}.` : `💥 Crash! Score: ${Math.floor(cyberScore)}.`;
         
         if (cyberScore > appState.stats.cyber.highscore) {
           appState.stats.cyber.highscore = cyberScore;
@@ -4345,7 +4446,7 @@ function tickCyberRun() {
         if (cyberScore >= 500) unlockTrophy('cyber_runner');
 
         if (cyberAiAutopilot) {
-          document.getElementById('runner-status').textContent = '🤖 Autopilot startet in 1.2s neu…';
+          document.getElementById('runner-status').textContent = (appState.language === 'de' ? '🤖 Autopilot startet in 1.2s neu…' : '🤖 Autopilot restarting in 1.2s…');
           cyberAutoRestartTimer = setTimeout(() => resetCyberRun(), 1200);
         }
       }
@@ -4398,7 +4499,7 @@ function tickCyberRun() {
     if (cyberScore >= cyberGoalDistance) {
       cyberGameOver = true;
       SFX.win();
-      document.getElementById('runner-status').textContent = '🏁 Ziel erreicht! Fantastischer Lauf!';
+      document.getElementById('runner-status').textContent = (appState.language === 'de' ? '🏁 Ziel erreicht! Fantastischer Lauf!' : '🏁 Goal reached! Fantastic run!');
       unlockTrophy('cyber_runner');
       if (appState.isVip) mintVipCoins(2000);
     }
@@ -4588,7 +4689,7 @@ function resetCyberKart() {
     invincibleTimer: 0
   };
 
-  const botNames = ['Cyber', 'Luigi', 'Peach', 'Bowser', 'Yoshi', 'Toad'];
+  const botNames = ['Cyber-X', 'Vortex', 'Neon-Blade', 'Titan-9', 'Quantum', 'Pulse'];
   const botColors = ['#ef4444', '#22c55e', '#ec4899', '#78350f', '#10b981', '#38bdf8'];
   
   kartBots = botNames.map((name, i) => ({
@@ -4614,8 +4715,8 @@ function resetCyberKart() {
   kartDriftCharging = false;
   kartDriftLevel = 0;
 
-  document.getElementById('kart-item-pill').textContent = 'LEER';
-  document.getElementById('kart-status-banner').textContent = `Cup: ${kartSelectedCC}cc. Besiege alle 6 KI-Fahrer!`;
+  document.getElementById('kart-item-pill').textContent = (appState.language === 'de' ? 'LEER' : 'EMPTY');
+  document.getElementById('kart-status-banner').textContent = appState.language === 'de' ? `Cup: ${kartSelectedCC}cc. Besiege alle 6 KI-Fahrer!` : `Cup: ${kartSelectedCC}cc. Defeat all 6 AI drivers!`;
 
   runKartCountdown();
 }
@@ -4693,7 +4794,8 @@ function tickCyberKart() {
         SFX.coin();
         const items = ['mushroom', 'star', 'banana'];
         kartPlayerItem = items[Math.floor(Math.random() * items.length)];
-        const itemNames = { mushroom: '🍄 Turbo-Pilz', star: '⭐ Super-Stern', banana: '🍌 Banane' };
+        const isDe = appState.language === 'de';
+        const itemNames = isDe ? { mushroom: '🍄 Turbo-Pilz', star: '⭐ Super-Stern', banana: '🍌 Banane' } : { mushroom: '🍄 Turbo Mushroom', star: '⭐ Super Star', banana: '🍌 Banana' };
         document.getElementById('kart-item-pill').textContent = itemNames[kartPlayerItem];
       }
     });
@@ -4748,11 +4850,13 @@ function tickCyberKart() {
         SFX.win();
         triggerConfetti(90, true);
         if (appState.isVip) mintVipCoins(3000);
-        document.getElementById('kart-status-banner').textContent = `🏆 PLATZ 1! Du hast den ${kartSelectedCC}cc Grand Prix gewonnen!`;
+        const isDe = appState.language === 'de';
+        document.getElementById('kart-status-banner').textContent = isDe ? `🏆 PLATZ 1! Du hast den ${kartSelectedCC}cc Grand Prix gewonnen!` : `🏆 1ST PLACE! You won the ${kartSelectedCC}cc Grand Prix!`;
         unlockTrophy('kart_champion');
       } else {
         SFX.loss();
-        document.getElementById('kart-status-banner').textContent = `🏁 Ziel erreicht auf Platz ${playerRank}. Drücke Neu starten für ein Revanche!`;
+        const isDe = appState.language === 'de';
+        document.getElementById('kart-status-banner').textContent = isDe ? `🏁 Ziel erreicht auf Platz ${playerRank}. Drücke Neu starten für eine Revanche!` : `🏁 Finished in #${playerRank} place! Press Restart for a rematch!`;
       }
       saveState();
     }
@@ -5028,12 +5132,13 @@ function playRPS(userPick) {
   document.getElementById('rps-user-choice-display').textContent = emojiMap[userPick];
   document.getElementById('rps-ai-choice-display').textContent = emojiMap[aiPick];
   document.getElementById('rps-ai-meter-fill').style.width = `${confidence}%`;
-  document.getElementById('rps-ai-prediction-label').textContent = `Muster-Konfidenz: ${confidence}%`;
+  document.getElementById('rps-ai-prediction-label').textContent = (appState.language === 'de' ? 'Muster-Konfidenz: ' : 'Pattern Confidence: ') + confidence + '%';
 
   const statusEl = document.getElementById('rps-status');
 
   if (userPick === aiPick) {
-    statusEl.textContent = `🤝 Unentschieden! Beide wählten ${userPick}.`;
+    const isDe = appState.language === 'de';
+    statusEl.textContent = isDe ? `🤝 Unentschieden! Beide wählten ${userPick}.` : `🤝 Draw! Both picked ${userPick}.`;
     appState.stats.rps.draws += 1;
     document.getElementById('rps-draw-score').textContent = String(appState.stats.rps.draws);
     SFX.draw();
@@ -5041,14 +5146,16 @@ function playRPS(userPick) {
     rpsStreak += 1;
     appState.stats.rps.userWins += 1;
     if (rpsStreak > appState.stats.rps.maxStreak) appState.stats.rps.maxStreak = rpsStreak;
-    statusEl.textContent = `🎉 Du gewinnst! ${userPick} ${RPS_RULES[userPick].verb} ${aiPick}!`;
+    const isDe = appState.language === 'de';
+    statusEl.textContent = isDe ? `🎉 Du gewinnst! ${userPick} ${RPS_RULES[userPick].verb} ${aiPick}!` : `🎉 You win! ${userPick} beats ${aiPick}!`;
     SFX.win();
     if (appState.isVip) mintVipCoins(500);
     if (rpsStreak >= 4) unlockTrophy('markov_mind');
   } else {
     rpsStreak = 0;
     appState.stats.rps.compWins += 1;
-    statusEl.textContent = `🤖 KI gewinnt! ${aiPick} ${RPS_RULES[aiPick].verb} ${userPick}.`;
+    const isDe = appState.language === 'de';
+    statusEl.textContent = isDe ? `🤖 KI gewinnt! ${aiPick} ${RPS_RULES[aiPick].verb} ${userPick}.` : `🤖 AI wins! ${aiPick} beats ${userPick}.`;
     SFX.loss();
   }
 
@@ -5214,7 +5321,7 @@ function endSnakeGame() {
   saveState();
 
   const overlay = document.getElementById('snake-overlay-msg');
-  document.getElementById('snake-overlay-text').textContent = `Erreichte Punkte: ${snakeScore}`;
+  document.getElementById('snake-overlay-text').textContent = (appState.language === 'de' ? 'Erreichte Punkte: ' : 'Final Score: ') + snakeScore;
   overlay.classList.remove('hidden');
 }
 
@@ -5494,8 +5601,10 @@ function endBricksGame(won) {
   saveState();
 
   const overlay = document.getElementById('bricks-overlay-msg');
-  document.getElementById('bricks-overlay-title').textContent = won ? 'Gewonnen!' : 'Game Over';
-  document.getElementById('bricks-overlay-text').textContent = `Endstand: ${brickScore} Punkte (Level ${brickLevel})`;
+  const isDe = appState.language === 'de';
+  document.getElementById('bricks-overlay-title').textContent = won ? (isDe ? 'Gewonnen!' : 'Victory!') : 'Game Over';
+  const isDe = appState.language === 'de';
+  document.getElementById('bricks-overlay-text').textContent = isDe ? `Endstand: ${brickScore} Punkte (Level ${brickLevel})` : `Final Score: ${brickScore} Points (Level ${brickLevel})`;
   overlay.classList.remove('hidden');
 }
 
