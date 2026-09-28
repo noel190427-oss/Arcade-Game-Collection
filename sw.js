@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arcade-collection-v0.0.47-live-telemetry';
+const CACHE_NAME = 'arcade-collection-v0.0.51-crazygames-i18n';
 const APP_SHELL = [
   './',
   './index.html',
