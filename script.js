@@ -2676,8 +2676,25 @@ function initWelcomeFlow() {
     });
   });
 
+  const quickPlayBtn = document.getElementById('quick-play-instant-btn');
+  if (quickPlayBtn) {
+    quickPlayBtn.addEventListener('click', () => {
+      appState.playerName = appState.playerName || 'CyberPilot';
+      localStorage.setItem('arcade_welcomed', 'true');
+      saveState();
+      SFX.coin();
+      document.getElementById('welcome-screen').classList.add('hidden');
+      unfreezeApp();
+      showMainApp();
+      switchGame('mariokart');
+      if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+        try { window.CrazyGames.SDK.game.gameplayStart(); } catch(e) {}
+      }
+    });
+  }
+
   function submitName() {
-    const name = playerNameInput.value.trim() || 'Gast';
+    const name = playerNameInput.value.trim() || 'CyberPilot';
     appState.playerName = name;
     localStorage.setItem('arcade_welcomed', 'true');
     saveState();
@@ -2685,6 +2702,10 @@ function initWelcomeFlow() {
     document.getElementById('welcome-screen').classList.add('hidden');
     unfreezeApp();
     showMainApp();
+    switchGame('mariokart');
+    if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.game) {
+      try { window.CrazyGames.SDK.game.gameplayStart(); } catch(e) {}
+    }
   }
 
   startBtn.addEventListener('click', submitName);
@@ -2697,11 +2718,11 @@ function showMainApp() {
   document.getElementById('topbar').classList.remove('hidden');
   document.getElementById('jukebox-bar').classList.remove('hidden');
   document.getElementById('launcher').classList.remove('hidden');
-  document.getElementById('player-label').textContent = appState.playerName;
-  document.getElementById('topbar-avatar').textContent = appState.playerAvatar;
+  document.getElementById('player-label').textContent = appState.playerName || 'CyberPilot';
+  document.getElementById('topbar-avatar').textContent = appState.playerAvatar || '👾';
   updateTrophyCountBadge();
   updateVipVisualState();
-  switchGame('tictactoe');
+  switchGame('mariokart');
 }
 
 /* ==========================================================================
