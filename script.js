@@ -5603,7 +5603,6 @@ function endBricksGame(won) {
   const overlay = document.getElementById('bricks-overlay-msg');
   const isDe = appState.language === 'de';
   document.getElementById('bricks-overlay-title').textContent = won ? (isDe ? 'Gewonnen!' : 'Victory!') : 'Game Over';
-  const isDe = appState.language === 'de';
   document.getElementById('bricks-overlay-text').textContent = isDe ? `Endstand: ${brickScore} Punkte (Level ${brickLevel})` : `Final Score: ${brickScore} Points (Level ${brickLevel})`;
   overlay.classList.remove('hidden');
 }
@@ -7456,11 +7455,20 @@ window.addEventListener('DOMContentLoaded', () => {
 // ==========================================================================
 async function initCrazyGamesIntegration() {
   // 1. Auto-detect CrazyGames / iframe environment
-  const isIframe = window.self !== window.top || document.referrer.includes('crazygames') || window.location.ancestorOrigins?.length > 0;
+  const isIframe = window.self !== window.top || document.referrer.includes('crazygames') || (window.location.ancestorOrigins && window.location.ancestorOrigins.length > 0);
   
-  if (isIframe && !localStorage.getItem('arcade_lang_user_set')) {
-    // Default to English on CrazyGames platform
-    setLanguage('en');
+  if (isIframe) {
+    if (!localStorage.getItem('arcade_lang_user_set')) {
+      applyLanguage('en');
+    }
+    // Auto-close blocking overlays inside CrazyGames iframe so buttons and gameplay work immediately!
+    const langOverlay = document.getElementById('language-overlay');
+    if (langOverlay) langOverlay.classList.add('hidden');
+    const welcomeScreen = document.getElementById('welcome-screen');
+    if (welcomeScreen) welcomeScreen.classList.add('hidden');
+    localStorage.setItem('arcade_welcomed', 'true');
+    unfreezeApp();
+    showMainApp();
   }
 
   if (typeof window.CrazyGames !== 'undefined' && window.CrazyGames.SDK) {
