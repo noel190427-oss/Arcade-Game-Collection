@@ -20,6 +20,22 @@
     <link rel="stylesheet" href="style.css?v=0.0.48" />
     <!-- CrazyGames SDK v3 Official Integration -->
     <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+    <!-- Discord Embedded App SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@discord/embedded-app-sdk@1.1.0/dist/index.min.js"></script>
+    <script>
+      (function() {
+        if (window.DiscordSDK) {
+          try {
+            const discordSdk = new window.DiscordSDK.DiscordSDK("1556296743983783986");
+            discordSdk.ready().then(() => {
+              console.log("[DISCORD] Activity Handshake Ready!");
+            }).catch(e => console.warn("[DISCORD] Running outside embedded frame:", e));
+          } catch(err) {
+            console.warn("[DISCORD] Init skipped:", err);
+          }
+        }
+      })();
+    </script>
   </head>
   <body>
     <!-- Confetti & Fireworks Particle Canvas -->
