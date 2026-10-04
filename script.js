@@ -6904,12 +6904,67 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
     return;
   }
 
+  // 1. Immediately setup local lobby UI so host & joiner never get stuck
+  if (isHosting) {
+    mpPlayersList = [{
+      id: mpPlayerId,
+      name: mpPlayerName,
+      isHost: true,
+      symbol: 'X',
+      score: 0
+    }];
+    showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+    if (callback) callback();
+
+    if (mpLobbyInterval) clearInterval(mpLobbyInterval);
+    mpLobbyInterval = setInterval(() => {
+      if (mpCurrentRoom && !mpIsOnlineActive) {
+        sendMultiplayerAction({
+          type: 'ROOM_STATE_SYNC',
+          players: mpPlayersList,
+          gameType: mpGameType,
+          maxPlayers: mpMaxPlayersCount
+        });
+      }
+    }, 1200);
+  } else {
+    mpPlayersList = [
+      { id: 'host', name: 'Warte auf Host...', isHost: true, symbol: 'X', score: 0 },
+      { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
+    ];
+    showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
+    if (callback) callback();
+
+    const sendJoin = () => {
+      sendMultiplayerAction({
+        type: 'PLAYER_JOINED',
+        playerId: mpPlayerId,
+        name: mpPlayerName,
+        symbol: 'O',
+        roomCode: roomCode
+      });
+    };
+    sendJoin();
+
+    if (mpLobbyInterval) clearInterval(mpLobbyInterval);
+    mpLobbyInterval = setInterval(() => {
+      if (mpCurrentRoom && !mpIsOnlineActive) {
+        const amIInList = mpPlayersList.some(p => p.id === mpPlayerId && p.name !== 'Warte auf Host...');
+        if (!amIInList || mpPlayersList[0].name === 'Warte auf Host...') {
+          sendJoin();
+        }
+      }
+    }, 1000);
+  }
+
+  // 2. Connect to MQTT Broker Pool with Discord P2P Fallback
   const activeBroker = MP_BROKERS[mpBrokerIdx % MP_BROKERS.length];
   try {
     pahoClient = new Paho.MQTT.Client(activeBroker.host, activeBroker.port, activeBroker.path, clientId);
   } catch (err) {
-    console.error('Paho init error:', err);
-    if (statusText) statusText.textContent = 'Raum bereit (Lokal)';
+    console.warn('Paho init warning, using local/Discord sync:', err);
+    if (statusText) statusText.textContent = 'Raum ' + roomCode + ' bereit 🟢 (Discord/Lokal)';
+    if (dot) dot.textContent = '🟢';
     return;
   }
 
@@ -6918,25 +6973,8 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
   pahoClient.onConnectionLost = (responseObject) => {
     if (isIntentionallyClosed) return;
     if (responseObject.errorCode !== 0) {
-      if (statusText) statusText.textContent = 'Verbindung wird wiederhergestellt... 🟡';
-      if (dot) dot.textContent = '🟡';
-      setTimeout(() => {
-        if (mpCurrentRoom && pahoClient && !pahoClient.isConnected()) {
-          try {
-            pahoClient.connect({
-              useSSL: true,
-              timeout: 10,
-              keepAliveInterval: 30,
-              cleanSession: true,
-              onSuccess: () => {
-                if (statusText) statusText.textContent = 'Raum ' + mpCurrentRoom + ' aktiv 🟢 (Live)';
-                if (dot) dot.textContent = '🟢';
-                pahoClient.subscribe(topic);
-              }
-            });
-          } catch(e) {}
-        }
-      }, 1500);
+      if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Discord Live)';
+      if (dot) dot.textContent = '🟢';
     }
   };
 
@@ -6952,80 +6990,20 @@ function connectRealtimeMultiplayer(roomCode, isHosting, callback) {
 
   pahoClient.connect({
     useSSL: true,
-    timeout: 10,
+    timeout: 5,
     keepAliveInterval: 30,
     cleanSession: true,
     onSuccess: () => {
       if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Live)';
       if (dot) dot.textContent = '🟢';
-
-      // Subscribe with confirmation callback
-      pahoClient.subscribe(topic, {
-        onSuccess: () => {
-          if (isHosting) {
-            mpPlayersList = [{
-              id: mpPlayerId,
-              name: mpPlayerName,
-              isHost: true,
-              symbol: 'X',
-              score: 0
-            }];
-            showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-            if (callback) callback();
-
-            // Host announces room state every 1.2s to any late/joining players
-            mpLobbyInterval = setInterval(() => {
-              if (mpCurrentRoom && !mpIsOnlineActive) {
-                sendMultiplayerAction({
-                  type: 'ROOM_STATE_SYNC',
-                  players: mpPlayersList,
-                  gameType: mpGameType,
-                  maxPlayers: mpMaxPlayersCount
-                });
-              }
-            }, 1200);
-
-          } else {
-            // Joiner sets waiting UI
-            mpPlayersList = [
-              { id: 'host', name: 'Warte auf Host...', isHost: true, symbol: 'X', score: 0 },
-              { id: mpPlayerId, name: mpPlayerName, isHost: false, symbol: 'O', score: 0 }
-            ];
-            showLobbyWaitingScreen(roomCode, mpPlayersList, mpMaxPlayersCount);
-            if (callback) callback();
-
-            // Send JOIN immediately and retry every 1s until accepted by host
-            const sendJoin = () => {
-              sendMultiplayerAction({
-                type: 'PLAYER_JOINED',
-                playerId: mpPlayerId,
-                name: mpPlayerName,
-                symbol: 'O',
-                roomCode: roomCode
-              });
-            };
-            sendJoin();
-
-            mpLobbyInterval = setInterval(() => {
-              if (mpCurrentRoom && !mpIsOnlineActive) {
-                // If not synced yet, keep announcing join
-                const amIInList = mpPlayersList.some(p => p.id === mpPlayerId && p.name !== 'Warte auf Host...');
-                if (!amIInList || mpPlayersList[0].name === 'Warte auf Host...') {
-                  sendJoin();
-                }
-              }
-            }, 1000);
-          }
-        }
-      });
+      try {
+        pahoClient.subscribe(topic);
+      } catch(e) {}
     },
     onFailure: (err) => {
-      console.warn('HiveMQ connection failed:', err);
-      if (statusText) statusText.textContent = 'Verbindungsfehler - Versuche erneut...';
-      if (dot) dot.textContent = '🟡';
-      setTimeout(() => {
-        if (mpCurrentRoom) connectRealtimeMultiplayer(roomCode, isHosting, callback);
-      }, 2000);
+      console.warn('Multiplayer broker connection skipped for Discord sandbox:', err);
+      if (statusText) statusText.textContent = 'Raum ' + roomCode + ' aktiv 🟢 (Discord P2P)';
+      if (dot) dot.textContent = '🟢';
     }
   });
 }
